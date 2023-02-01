@@ -56,6 +56,7 @@ const useLocalStorage = (key:string, initialValue: any) =>
 export const useLocalStorageAfterHydration =
   (storageKey:string) => (selector?:any, compare?:any) => {
     const { isHydrated } = useContext(HydrationContext);
+    if(!allStorages.has(storageKey)) throw new Error(`${storageKey} n'est pas défini dans localStorageStore`)
     const store = allStorages.get(storageKey)!(selector, compare);
 
     return isHydrated ? store : selector((set:any) => ({
