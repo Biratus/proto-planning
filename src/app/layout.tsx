@@ -1,21 +1,21 @@
-import { config } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import './globals.css';
-config.autoAddCss = false;
-
+import ThemeInitializer from "@/components/theme/ThemeInitiliazer";
+import "./globals.css";
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       {/*
         <head /> will contain the components returned by the nearest parent
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body>{children}</body>
+      <body>
+        <ThemeInitializer />
+        {children}
+      </body>
     </html>
-  )
+  );
 }

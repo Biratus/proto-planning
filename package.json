@@ -24,6 +24,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-feather": "^2.0.10",
+    "theme-change": "^2.3.0",
     "typescript": "4.9.5",
     "uuid": "^9.0.0",
     "zustand": "^4.3.2"
