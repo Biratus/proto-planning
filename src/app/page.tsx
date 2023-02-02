@@ -1,16 +1,20 @@
-import SwitchTheme from "@/components/theme/SwitchTheme";
-import ZoomProvider from "@/components/zoom/ZoomProvider";
-import ZoomUI from "@/components/zoom/ZoomUI";
-import { zoom_calendar_filiere } from "@/hooks/localStorageStore";
+import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigationProvider";
+import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
+import { parseMonthAndYear } from "@/lib/date";
+import { formatISO, startOfMonth, startOfToday } from "date-fns";
 
-export default function Home() {
+const monthStart = startOfMonth(startOfToday());
+
+export default function Home({ searchParams: { date } }: any) {
+  console.log({ date });
+  if (date) date = parseMonthAndYear(date);
+
   return (
     <>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <SwitchTheme />
-      <ZoomProvider zoomKey={zoom_calendar_filiere}>
-        <ZoomUI range={5} />
-      </ZoomProvider>
+      <MonthNavigationProvider focus={formatISO(date || monthStart)}>
+        <MonthNavigationUI />
+      </MonthNavigationProvider>
     </>
   );
 }

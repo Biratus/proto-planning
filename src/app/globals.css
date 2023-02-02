@@ -7,7 +7,7 @@
   margin: 0;
 }
 :root {
-  --bg-color: red;
+  --bg-color: #fff;
 }
 
 /* @media (prefers-color-scheme: dark){
