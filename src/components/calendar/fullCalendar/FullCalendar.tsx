@@ -45,7 +45,6 @@ export default function FullCalendar<K, T extends IntervalWithDuration>({
     () => makeMonths(month, monthLength - 1),
     [month, monthLength]
   );
-
   // Only display data that is within the month interval
   const data = originalData.filter((d) =>
     dataOverlapInterval(d.events, {
@@ -62,7 +61,13 @@ export default function FullCalendar<K, T extends IntervalWithDuration>({
 
   const daysRow = useMemo(() => {
     return days.map((day, i) => (
-      <Day key={i} first={i == 0} day={day} style={styleProps(day)} />
+      <Day
+        key={i}
+        first={i == 0}
+        day={day}
+        style={styleProps(day)}
+        specialInfo={hasTooltip(day) ? tooltipInfo(day) : null}
+      />
     ));
   }, [days, hasTooltip, tooltipInfo, styleProps]);
 
@@ -81,7 +86,7 @@ export default function FullCalendar<K, T extends IntervalWithDuration>({
       }}
     >
       <div
-        className={`grid pb-5 overflow-x-auto gap-px`}
+        className={`grid pb-5 overflow-x-auto gap-y-px`}
         style={{
           gridTemplateColumns: `${10 + zoom}% repeat(${days.length},${
             minCellSize + zoom * 5
@@ -135,24 +140,28 @@ function Day({
   day,
   first,
   style,
+  specialInfo,
 }: {
   day: Date;
   first: boolean;
   style: Style;
+  specialInfo?: string;
 }) {
   return (
     <div
       className={`text-center ${first ? "col-start-2" : "col-start-auto"} ${
         style.className
-      }`}
+      }
+      ${specialInfo ? "tooltip" : ""}
+      `}
       style={style.props}
+      data-tip={specialInfo}
     >
       <div>{formatSimpleDayLabel(day)}</div>
       <div>{formatDayDate(day)}</div>
     </div>
   );
 }
-
 const dataOverlapInterval = (data: Interval[], interval: Interval) => {
   return data.some(({ start, end }) =>
     areIntervalsOverlapping({ start, end }, interval, { inclusive: true })

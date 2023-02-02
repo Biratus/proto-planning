@@ -35,16 +35,22 @@ export type CalendarData<K, T extends Interval> = {
   events: T[];
 };
 
-export type CalendarProps<K, T extends Interval> = {
-  data: CalendarData<K, T>[];
-  LabelComponent: CalendarRowLabel<K>;
+export type CommonCalendarProps<T> = {
   EventTooltip?: React.FC;
   time: { start: Date; monthLength: number };
-  event: EventProps<T>; // eventProps
   day: DayProps;
   commonDayStyle: (date: Date) => Style;
   zoom: number;
   drag?: any;
+  event: EventProps<T>; // eventProps
+};
+
+export type CalendarProps<
+  K,
+  T extends IntervalWithDuration
+> = CommonCalendarProps<T> & {
+  data: CalendarData<K, T>[];
+  LabelComponent: CalendarRowLabel<K>;
 };
 
 export type CalendarRowProps<K, T extends IntervalWithDuration> = {

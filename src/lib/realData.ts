@@ -8,56 +8,67 @@ import { Formateur, Module, RawModule } from "./types";
 
   ---------------------- */
 
-const rawFormateurs = [{
+const rawFormateurs = [
+  {
     prenom: "Jamarcus",
     nom: "Beier",
     mail: "Beier_Jamarcus@yahoo.com",
-  },{
+  },
+  {
     prenom: "Johan",
     nom: "Wiegand",
     mail: "Wiegand_Johan28@hotmail.com",
-  },{
+  },
+  {
     prenom: "Laurie",
     nom: "Leannon",
     mail: "Leannon.Laurie41@gmail.com",
-  },{
+  },
+  {
     prenom: "Jaden",
     nom: "Lockman",
     mail: "Lockman_Jaden94@yahoo.com",
-  },{
+  },
+  {
     prenom: "Terrill",
     nom: "Roberts",
     mail: "Roberts.Terrill38@yahoo.com",
-  },{
+  },
+  {
     prenom: "Misael",
     nom: "Batz",
     mail: "Batz_Misael@yahoo.com",
-  },{
+  },
+  {
     prenom: "Ramona",
     nom: "Schaefer",
     mail: "Schaefer_Ramona25@yahoo.com",
-  },{
+  },
+  {
     prenom: "Wallace",
     nom: "Wintheiser",
     mail: "Wintheiser88@yahoo.com",
-  },{
+  },
+  {
     prenom: "Justine",
     nom: "Dach",
     mail: "Dach37@gmail.com",
-  },{
+  },
+  {
     prenom: "Reuben",
     nom: "McLaughlin",
     mail: "McLaughlin_Reuben@hotmail.com",
-  },{
+  },
+  {
     nom: "NA",
     prenom: "Na",
     mail: "na@na.na",
   },
 ];
 
-const formateurMap = new Map<string,Formateur>();
-for(let form of rawFormateurs) {
-    formateurMap.set(form.mail,form);
+const formateurMap = new Map<string, Formateur>();
+for (let form of rawFormateurs) {
+  formateurMap.set(form.mail, form);
 }
 export const formateurs = formateurMap;
 /* ----------------------
@@ -616,15 +627,15 @@ export const modules: RawModule[] = parsedModules;
 
 const MISSING_FORMATEUR = "na@na.na";
 
-export const isFormateurMissing = (mod:Module) => {
+export const isFormateurMissing = (mod: Module | RawModule) => {
   return mod.formateur.mail == MISSING_FORMATEUR;
 };
 
-export function fetchFiliere(filiereId:string) {
+export function fetchFiliere(filiereId: string) {
   return modules.filter((m) => m.filiere == filiereId);
 }
 
-export function getModulesOfFormateur(formateurId:string, interval:Interval) {
+export function getModulesOfFormateur(formateurId: string, interval: Interval) {
   return modules.filter(
     (m) =>
       m.formateur.mail == formateurId &&

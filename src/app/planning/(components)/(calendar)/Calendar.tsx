@@ -1,22 +1,23 @@
 "use client";
-import FullCalendar from "@/components/calendar/fullCalendar/FullCalendar";
 import {
   calendarDayStyle,
   missingFormateurStyle,
   overlapModuleStyle,
 } from "@/components/calendar/styles";
-import { CalendarProps } from "@/components/calendar/types";
+import { CommonCalendarProps } from "@/components/calendar/types";
 import { useLegendStore } from "@/components/legend/Legend";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { LocalStorageState } from "@/hooks/localStorageStore";
-import { toCalendarData } from "@/lib/calendar";
 import { isFormateurMissing } from "@/lib/realData";
-import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+import { ModuleEvent, RawModule } from "@/lib/types";
+import { useMemo } from "react";
 import { AlertTriangle } from "react-feather";
+import CalendarFiliere from "./CalendarFiliere";
+import CalendarFormateur from "./CalendarFormateur";
 import { useJoursFeries } from "./CalendarProvider";
-import { FormateurView } from "./CalendarView";
+import { FiliereView, FormateurView } from "./CalendarView";
 
 export default function CommonCalendar({
   modules,
@@ -24,7 +25,7 @@ export default function CommonCalendar({
   monthLength = 3,
 }: {
   modules: RawModule[];
-  view?: string;
+  view: string;
   monthLength?: number;
 }) {
   const { isJoursFeries, getJourFerie } = useJoursFeries();
@@ -34,9 +35,7 @@ export default function CommonCalendar({
   const zoom = useZoom((s: LocalStorageState<number>) => s.value);
 
   // Props passed to Calendar
-  const commonProps: CalendarProps<Formateur, ModuleEvent> = {
-    data: toCalendarData(modules, "formateur.mail", FormateurView),
-    LabelComponent: FormateurView.LabelComponent,
+  const commonProps: CommonCalendarProps<ModuleEvent> = {
     zoom,
     time: { start: month, monthLength },
     event: {
@@ -69,31 +68,30 @@ export default function CommonCalendar({
         let style = {
           ...calendarDayStyle(date),
         };
-        if (isJoursFeries(date)) style.className = "red";
+        if (isJoursFeries(date)) style.className = "text-red-600";
         return style;
       },
     },
     commonDayStyle: calendarDayStyle,
   };
 
-  //   const calendarFiliere = useMemo(
-  //     () => <CalendarFiliere {...commonProps} />,
-  //     [modules, month, zoom]
-  //   );
+  const calendarFiliere = useMemo(
+    () => <CalendarFiliere modules={modules} {...commonProps} />,
+    [modules, month, zoom]
+  );
 
-  //   const calendarFormateur = useMemo(
-  //     () => <CalendarFormateur {...commonProps} />,
-  //     [modules, month, zoom]
-  //   );
+  const calendarFormateur = useMemo(
+    () => <CalendarFormateur modules={modules} {...commonProps} />,
+    [modules, month, zoom]
+  );
 
   // const days = eachDayOfInterval({ start: month, end: addMonths(month, 3) });
 
   return (
     <>
       <ZoomUI range={5} />
-      <FullCalendar {...commonProps} />
-      {/* {(!view || view === FiliereView.key) && calendarFiliere}
-      {view && view === FormateurView.key && calendarFormateur} */}
+      {(!view || view === FiliereView.key) && calendarFiliere}
+      {view === FormateurView.key && calendarFormateur}
     </>
   );
 }
