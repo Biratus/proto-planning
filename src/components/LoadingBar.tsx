@@ -1,3 +1,3 @@
 export default function LoadingBar() {
-  return <span>Loading...</span>;
+  return <span>Loading Bar</span>;
 }

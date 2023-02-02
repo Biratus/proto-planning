@@ -24,7 +24,7 @@ export const zoom_calendar_formateur = "zoom_calendar_formateur";
 interface LocalStorageProps<T> {
   value: T;
 }
-interface LocalStorageState<T> extends LocalStorageProps<T> {
+export interface LocalStorageState<T> extends LocalStorageProps<T> {
   setValue: (newValue: T) => void;
 }
 

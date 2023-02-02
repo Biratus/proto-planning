@@ -1,3 +1,4 @@
+import SwitchTheme from "@/components/theme/SwitchTheme";
 import ThemeInitializer from "@/components/theme/ThemeInitiliazer";
 import "./globals.css";
 export default function RootLayout({
@@ -14,6 +15,9 @@ export default function RootLayout({
       <head />
       <body>
         <ThemeInitializer />
+        <div className="flex justify-end">
+          <SwitchTheme />
+        </div>
         {children}
       </body>
     </html>

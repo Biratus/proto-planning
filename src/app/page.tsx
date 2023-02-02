@@ -1,17 +1,11 @@
-import Legend from "@/components/legend/Legend";
-import { parseMonthAndYear } from "@/lib/date";
-import { startOfMonth, startOfToday } from "date-fns";
+import Link from "next/link";
 
-const monthStart = startOfMonth(startOfToday());
-
-export default function Home({ searchParams: { date } }: any) {
-  console.log({ date });
-  if (date) date = parseMonthAndYear(date);
-
+export default function Home() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <Legend />
+      <Link href="/planning" prefetch={false}>
+        Planning
+      </Link>
     </>
   );
 }
