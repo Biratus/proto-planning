@@ -1,9 +1,12 @@
 import distinctColors from "distinct-colors";
 import { modules } from "./realData";
 
-type Color = {
-    r:number,g:number,b:number,rgb:string
-}
+export type Color = {
+  r: number;
+  g: number;
+  b: number;
+  rgb: string;
+};
 
 export function allColorsForThemes() {
   return getColorsForLabels(modules.map((m) => m.theme));
@@ -20,15 +23,17 @@ export function getColorsForLabels(labelList: string[]) {
   }).map((color) => {
     let [r, g, b] = color.rgb();
     return {
-      r,g,b,
+      r,
+      g,
+      b,
       rgb: `rgb(${r.toFixed(2)},${g.toFixed(2)},${b.toFixed(2)})`,
     };
   });
 
-  let colors = new Map<string,Color>();
+  let colors = new Map<string, Color>();
 
   for (let i in labels) {
-    colors.set(labels[i],arr[i]);
+    colors.set(labels[i], arr[i]);
   }
   return colors;
 }

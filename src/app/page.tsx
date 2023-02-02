@@ -1,7 +1,6 @@
-import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigationProvider";
-import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
+import Legend from "@/components/legend/Legend";
 import { parseMonthAndYear } from "@/lib/date";
-import { formatISO, startOfMonth, startOfToday } from "date-fns";
+import { startOfMonth, startOfToday } from "date-fns";
 
 const monthStart = startOfMonth(startOfToday());
 
@@ -12,9 +11,7 @@ export default function Home({ searchParams: { date } }: any) {
   return (
     <>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <MonthNavigationProvider focus={formatISO(date || monthStart)}>
-        <MonthNavigationUI />
-      </MonthNavigationProvider>
+      <Legend />
     </>
   );
 }
