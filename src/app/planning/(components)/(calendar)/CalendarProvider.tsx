@@ -13,7 +13,7 @@ const hoverElementsInit = {
 type CalendarStore = {
   joursFeries: JoursFeries;
   isJoursFeries: (date: Date) => boolean;
-  getJoursFeries: (date: Date) => string;
+  getJourFerie: (date: Date) => string;
   openMenu: () => void;
 };
 
@@ -21,7 +21,7 @@ export const calendarStore = create<CalendarStore>((set, get) => ({
   joursFeries: {},
   isJoursFeries: (day: Date) =>
     get().joursFeries.hasOwnProperty(format(day, "yyyy-MM-dd")),
-  getJoursFeries: (day: Date) => get().joursFeries[format(day, "yyyy-MM-dd")],
+  getJourFerie: (day: Date) => get().joursFeries[format(day, "yyyy-MM-dd")],
   openMenu: () => {},
 }));
 
@@ -29,5 +29,8 @@ export const setJoursFeries = (joursFeries: JoursFeries) =>
   calendarStore.setState((state) => (state.joursFeries = joursFeries));
 
 export const useJoursFeries = () =>
-  calendarStore((state) => [state.isJoursFeries, state.getJoursFeries]);
+  calendarStore((state) => ({
+    isJoursFeries: state.isJoursFeries,
+    getJourFerie: state.getJourFerie,
+  }));
 export const useCalendarMenu = () => calendarStore((state) => state.openMenu);

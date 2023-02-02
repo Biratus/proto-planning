@@ -21,7 +21,7 @@ export const monthLabel: Style = {
 //     "linear-gradient(170deg, hsl(47, 49%, 61%) 0%, hsl(47, 49%, 61%) 9%, rgba(0,0,0,0) 50%)",
 // };
 export const day: Style = {
-  className: "border-gray-600 border",
+  className: "border-gray-600 border-l",
 };
 // export const day = {
 //   borderLeft: "1px solid gray",
@@ -80,7 +80,11 @@ export const missingFormateurStyle: (color: string) => Style = (
 export const calendarDayStyle: (date: Date) => Style = (date: Date) => {
   let style = { ...day };
 
-  if (isWeekend(date)) style = { ...style, ...weekend };
+  if (isWeekend(date))
+    style = {
+      className: style.className + " " + weekend.className,
+      props: { ...style.props, ...weekend.props },
+    };
 
   return style;
 };

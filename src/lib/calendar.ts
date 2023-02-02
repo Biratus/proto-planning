@@ -1,64 +1,57 @@
+import { Interval, Month } from "@/components/calendar/types";
 import {
   addMonths,
-  eachDayOfInterval,
   endOfMonth,
   isAfter,
   isBefore,
   isSameDay,
   isWithinInterval,
-  parseISO,
   startOfMonth,
 } from "date-fns";
-import { formatDayDate, mapISO } from "./date";
-import {
-  CalendarData,
-  CalendarView,
-  Interval,
-  Module,
-  ModuleEvent,
-} from "./types";
+import { formatDayDate } from "./date";
+import { ModuleEvent } from "./types";
 
-export function toCalendarData<T>(
-  data: Module[],
-  groupingField: string, // for mapping
-  view: CalendarView<T>,
-  mapIso: boolean
-): CalendarData<T>[] {
-  let dataMap = new Map<string, ModuleEvent[]>();
-  for (let d of data) {
-    // modules list to map
-    let index = getDataField(d, groupingField);
+// export function toCalendarData<K>(
+//   data: Module[],
+//   groupingField: string, // for mapping
+//   view: CalendarView<K>,
+//   mapIso: boolean
+// ): CalendarData<K>[] {
+//   let dataMap = new Map<K,Module[]>();
+//   for (let d of data) {
+//     // modules list to map
+//     let index = getDataField(d, groupingField);
 
-    if (!dataMap.has(index)) dataMap.set(index, []);
-    dataMap.get(index)!.push({
-      ...d,
-      // label: duration > 1 ? d.name : "",
-      duration: eachDayOfInterval({
-        start: typeof d.start === "string" ? parseISO(d.start) : d.start,
-        end:
-          typeof d.end === "string"
-            ? parseISO(d.end).getTime()
-            : d.end.getTime(),
-      }).length,
-    });
-  }
+//     if (!dataMap.has(index)) dataMap.set(index, []);
+//     dataMap.get(index)!.push({
+//       ...d,
+//       // label: duration > 1 ? d.name : "",
+//       duration: eachDayOfInterval({
+//         start: typeof d.start === "string" ? parseISO(d.start) : d.start,
+//         end:
+//           typeof d.end === "string"
+//             ? parseISO(d.end).getTime()
+//             : d.end.getTime(),
+//       }).length,
+//     });
+//   }
 
-  let calendarData = []; // TODO make type calendarData
-  for (let key of dataMap.keys()) {
-    // Iterate over rows
-    let events = dataMap.get(key);
-    let keyObject = view.keyObject(events![0]);
-    calendarData.push({
-      key: keyObject,
-      labelTitle: view.labelTitle(keyObject),
-      events: mapIso
-        ? mapISO(dataMap.get(key)!, ["start", "end"])
-        : dataMap.get(key)!,
-    });
-  }
-  calendarData.sort((a, b) => a.labelTitle.localeCompare(b.labelTitle));
-  return calendarData;
-}
+//   let calendarData = []; // TODO make type calendarData
+//   for (let key of dataMap.keys()) {
+//     // Iterate over rows
+//     let events = dataMap.get(key);
+//     let keyObject = view.keyObject(events![0]);
+//     calendarData.push({
+//       key: keyObject,
+//       labelTitle: view.labelTitle(keyObject),
+//       events: mapIso
+//         ? mapISO(dataMap.get(key)!, ["start", "end"])
+//         : dataMap.get(key)!,
+//     });
+//   }
+//   calendarData.sort((a, b) => a.labelTitle.localeCompare(b.labelTitle));
+//   return calendarData;
+// }
 
 function getDataField(object: any, field: string) {
   let target = object;
@@ -92,7 +85,10 @@ export async function getJoursFeries(year: number) {
   }
 }
 
-export const makeMonths = (month: Date, length: number) => {
+export const makeMonths: (month: Date, length: number) => Month[] = (
+  month: Date,
+  length: number
+) => {
   let months = [];
   for (let i = 0; i <= length; i++) {
     let m = addMonths(month, i);
@@ -126,27 +122,27 @@ export function moduleDayLabel({ start, end }: Interval) {
     : formatDayDate(start) + " - " + formatDayDate(end);
 }
 
-export function checkOverlapModules(data: CalendarData<Module>[]) {
-  for (let row of data) {
-    let newEvents: ModuleEvent[] = [];
-    for (let mod of row.events) {
-      let overlap: ModuleEvent | undefined = undefined;
-      for (let eventIndex in newEvents) {
-        let event = newEvents[eventIndex];
-        if (moduleOverlap(mod, event)) {
-          overlap = overlap
-            ? mergeModule(overlap, event)
-            : mergeModule(event, mod);
-          newEvents.splice(+eventIndex, 1);
-        }
-      }
-      if (!overlap) newEvents.push(mod);
-      else {
-        overlap.duration = eachDayOfInterval(overlap).length;
+// export function checkOverlapModules(data: CalendarData<K, Module>[]) {
+//   for (let row of data) {
+//     let newEvents: ModuleEvent[] = [];
+//     for (let mod of row.events) {
+//       let overlap: ModuleEvent | undefined = undefined;
+//       for (let eventIndex in newEvents) {
+//         let event = newEvents[eventIndex];
+//         if (moduleOverlap(mod, event)) {
+//           overlap = overlap
+//             ? mergeModule(overlap, event)
+//             : mergeModule(event, mod);
+//           newEvents.splice(+eventIndex, 1);
+//         }
+//       }
+//       if (!overlap) newEvents.push(mod);
+//       else {
+//         overlap.duration = eachDayOfInterval(overlap).length;
 
-        newEvents.push(overlap);
-      }
-    }
-    row.events = newEvents;
-  }
-}
+//         newEvents.push(overlap);
+//       }
+//     }
+//     row.events = newEvents;
+//   }
+// }

@@ -1,11 +1,4 @@
-import { ReactElement } from "react";
-export interface CalendarView<T> {
-  key: string;
-  label: string;
-  keyObject: (key: ModuleEvent) => T;
-  labelTitle: (key: T) => string;
-  LabelComponent: (key: T) => ReactElement;
-}
+import { IntervalWithDuration } from "@/components/calendar/types";
 
 export interface Formateur {
   id?: string;
@@ -23,11 +16,7 @@ export interface RawModule {
   filiere: string;
   formateur: Formateur;
 }
-export type Interval = {
-  start: Date;
-  end: Date;
-};
-export interface Module extends Interval {
+export interface Module extends IntervalWithDuration {
   id: string;
   name: string;
   theme: string;
@@ -42,9 +31,3 @@ export type CalendarEvent = Interval & {
 };
 
 export type ModuleEvent = Module & CalendarEvent;
-
-export type CalendarData<T> = {
-  key: T;
-  labelTitle: string;
-  events: ModuleEvent[];
-};
