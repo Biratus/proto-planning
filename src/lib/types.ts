@@ -1,4 +1,7 @@
-import { IntervalWithDuration } from "@/components/calendar/types";
+import {
+  CalendarRowLabel,
+  IntervalWithDuration,
+} from "@/components/calendar/types";
 
 export interface Formateur {
   id?: string;
@@ -16,9 +19,11 @@ export interface RawModule {
   filiere: string;
   formateur: Formateur;
 }
-export interface Module extends IntervalWithDuration {
+export interface Module {
   id: string;
   name: string;
+  start: Date;
+  end: Date;
   theme: string;
   filiere: string;
   formateur: Formateur;
@@ -26,8 +31,12 @@ export interface Module extends IntervalWithDuration {
   overlappedModules?: Module[];
 }
 
-export type CalendarEvent = Interval & {
-  duration: number;
-};
+export type ModuleEvent = Module & IntervalWithDuration;
 
-export type ModuleEvent = Module & CalendarEvent;
+export type CalendarView<K> = {
+  key: string;
+  label: string;
+  keyObject: (obj: any) => K;
+  labelTitle: (key: K) => string;
+  LabelComponent: CalendarRowLabel<K>;
+};

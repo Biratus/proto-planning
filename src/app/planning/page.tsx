@@ -17,7 +17,6 @@ export default function page({ searchParams: { date } }: any) {
     <MonthNavigationProvider focus={formatISO(date || monthStart)}>
       <MonthNavigationUI />
       <ZoomProvider zoomKey={zoom_calendar_full}>
-        Planning
         <AfterHydration>
           <CommonCalendar modules={modules} />
         </AfterHydration>

@@ -11,62 +11,12 @@ import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigation
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { LocalStorageState } from "@/hooks/localStorageStore";
+import { toCalendarData } from "@/lib/calendar";
 import { isFormateurMissing } from "@/lib/realData";
-import { ModuleEvent, RawModule } from "@/lib/types";
+import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
 import { AlertTriangle } from "react-feather";
 import { useJoursFeries } from "./CalendarProvider";
-const testMods = [
-  {
-    id: "34842f84-e21e-42cc-9fb4-c9c556c0be94",
-    name: "AGILE SCRUM + SAFE",
-    start: new Date(2023, 1, 6),
-    end: new Date(2023, 1, 8),
-    theme: "METHODES ET OUTILS",
-    filiere: "I-221208-DIS-399-SOPRA-JAVA",
-    formateur: {
-      prenom: "Wallace",
-      nom: "Wintheiser",
-      mail: "Wintheiser88@yahoo.com",
-    },
-    duration: 3,
-  },
-  {
-    id: "fad6ecd0-9b3e-4a6b-9375-6773a9c58cf8",
-    name: "UNIX",
-    start: new Date(2023, 1, 10),
-    end: new Date(2023, 1, 10),
-    theme: "FONDAMENTAUX ET BASE DE DONNEES",
-    filiere: "I-221208-DIS-399-SOPRA-JAVA",
-    formateur: {
-      prenom: "Wallace",
-      nom: "Wintheiser",
-      mail: "Wintheiser88@yahoo.com",
-    },
-    duration: 1,
-  },
-  {
-    id: "4",
-    name: "MISS",
-    start: new Date(2023, 1, 11),
-    end: new Date(2023, 1, 12),
-    theme: "FONDAMENTAUX ET BASE DE DONNEES",
-    filiere: "I-221208-DIS-399-SOPRA-JAVA",
-    formateur: {
-      nom: "NA",
-      prenom: "Na",
-      mail: "na@na.na",
-    },
-    duration: 2,
-  },
-];
-
-const testData = [
-  {
-    key: "filiere 1 Key",
-    labelTitle: "Filiere 1 labelTitle",
-    events: testMods,
-  },
-];
+import { FormateurView } from "./CalendarView";
 
 export default function CommonCalendar({
   modules,
@@ -84,9 +34,9 @@ export default function CommonCalendar({
   const zoom = useZoom((s: LocalStorageState<number>) => s.value);
 
   // Props passed to Calendar
-  const commonProps: CalendarProps<string, ModuleEvent> = {
-    data: testData,
-    LabelComponent: FiliereLabel,
+  const commonProps: CalendarProps<Formateur, ModuleEvent> = {
+    data: toCalendarData(modules, "formateur.mail", FormateurView),
+    LabelComponent: FormateurView.LabelComponent,
     zoom,
     time: { start: month, monthLength },
     event: {
@@ -146,8 +96,4 @@ export default function CommonCalendar({
       {view && view === FormateurView.key && calendarFormateur} */}
     </>
   );
-}
-
-function FiliereLabel({ labelKey }: { labelKey: string }) {
-  return <>{labelKey}</>;
 }

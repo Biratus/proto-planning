@@ -81,7 +81,7 @@ export default function FullCalendar<K, T extends IntervalWithDuration>({
       }}
     >
       <div
-        className={`grid pb-5 overflow-x-auto`}
+        className={`grid pb-5 overflow-x-auto gap-px`}
         style={{
           gridTemplateColumns: `${10 + zoom}% repeat(${days.length},${
             minCellSize + zoom * 5

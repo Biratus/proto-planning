@@ -37,7 +37,7 @@ export type CalendarData<K, T extends Interval> = {
 
 export type CalendarProps<K, T extends Interval> = {
   data: CalendarData<K, T>[];
-  LabelComponent: React.FC<{ labelKey: K }>;
+  LabelComponent: CalendarRowLabel<K>;
   EventTooltip?: React.FC;
   time: { start: Date; monthLength: number };
   event: EventProps<T>; // eventProps
@@ -52,7 +52,7 @@ export type CalendarRowProps<K, T extends IntervalWithDuration> = {
   labelProps: {
     key: K;
     title: string;
-    LabelComponent: React.FC<{ labelKey: K }>;
+    LabelComponent: CalendarRowLabel<K>;
   };
   EventTooltip?: React.FC;
 };
@@ -69,3 +69,5 @@ export type FullCalendarContext<T> = {
   commonDayStyle?: (date: Date) => Style;
   drag?: any;
 };
+
+export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;

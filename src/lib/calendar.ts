@@ -1,57 +1,54 @@
-import { Interval, Month } from "@/components/calendar/types";
+import { CalendarData, Interval, Month } from "@/components/calendar/types";
 import {
   addMonths,
+  eachDayOfInterval,
   endOfMonth,
   isAfter,
   isBefore,
   isSameDay,
   isWithinInterval,
+  parseISO,
   startOfMonth,
 } from "date-fns";
 import { formatDayDate } from "./date";
-import { ModuleEvent } from "./types";
+import { CalendarView, Module, ModuleEvent, RawModule } from "./types";
 
-// export function toCalendarData<K>(
-//   data: Module[],
-//   groupingField: string, // for mapping
-//   view: CalendarView<K>,
-//   mapIso: boolean
-// ): CalendarData<K>[] {
-//   let dataMap = new Map<K,Module[]>();
-//   for (let d of data) {
-//     // modules list to map
-//     let index = getDataField(d, groupingField);
+export function toCalendarData<K>(
+  data: RawModule[] | Module[],
+  groupingField: string, // for mapping
+  view: CalendarView<K>
+): CalendarData<K, ModuleEvent>[] {
+  let dataMap = new Map<K, ModuleEvent[]>();
+  for (let d of data) {
+    // modules list to map
+    let index = getDataField(d, groupingField);
 
-//     if (!dataMap.has(index)) dataMap.set(index, []);
-//     dataMap.get(index)!.push({
-//       ...d,
-//       // label: duration > 1 ? d.name : "",
-//       duration: eachDayOfInterval({
-//         start: typeof d.start === "string" ? parseISO(d.start) : d.start,
-//         end:
-//           typeof d.end === "string"
-//             ? parseISO(d.end).getTime()
-//             : d.end.getTime(),
-//       }).length,
-//     });
-//   }
+    if (!dataMap.has(index)) dataMap.set(index, []);
+    let start = typeof d.start === "string" ? parseISO(d.start) : d.start;
+    let end = typeof d.end === "string" ? parseISO(d.end) : d.end;
+    let duration = eachDayOfInterval({ start, end }).length;
+    dataMap.get(index)!.push({
+      ...d,
+      start,
+      end,
+      duration,
+    });
+  }
 
-//   let calendarData = []; // TODO make type calendarData
-//   for (let key of dataMap.keys()) {
-//     // Iterate over rows
-//     let events = dataMap.get(key);
-//     let keyObject = view.keyObject(events![0]);
-//     calendarData.push({
-//       key: keyObject,
-//       labelTitle: view.labelTitle(keyObject),
-//       events: mapIso
-//         ? mapISO(dataMap.get(key)!, ["start", "end"])
-//         : dataMap.get(key)!,
-//     });
-//   }
-//   calendarData.sort((a, b) => a.labelTitle.localeCompare(b.labelTitle));
-//   return calendarData;
-// }
+  let calendarData = [];
+  for (let key of dataMap.keys()) {
+    // Iterate over rows
+    let events = dataMap.get(key);
+    let keyObject = view.keyObject(events![0]);
+    calendarData.push({
+      key: keyObject,
+      labelTitle: view.labelTitle(keyObject),
+      events: dataMap.get(key)!,
+    });
+  }
+  calendarData.sort((a, b) => a.labelTitle.localeCompare(b.labelTitle));
+  return calendarData;
+}
 
 function getDataField(object: any, field: string) {
   let target = object;

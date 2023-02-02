@@ -30,7 +30,10 @@ export default function CalendarRow<K, T extends IntervalWithDuration>({
 
   return (
     <>
-      <div className={`tooltip tooltip-right`} data-tip={labelTitle}>
+      <div
+        className={`tooltip tooltip-right sticky self-auto left-0 z-10`}
+        data-tip={labelTitle}
+      >
         <LabelComponent labelKey={labelKey} />
       </div>
       {daysAndEvents.map((day, id) => {
