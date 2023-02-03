@@ -1,0 +1,79 @@
+"use client";
+
+import CalendarSimple from "@/components/calendar/SimpleView/CalendarSimple";
+import { calendarDayStyle } from "@/components/calendar/styles";
+import { useLegendStore } from "@/components/legend/Legend";
+import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
+import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
+import { useZoom } from "@/components/zoom/ZoomProvider";
+import ZoomUI from "@/components/zoom/ZoomUI";
+import { mapISO } from "@/lib/date";
+import { Formateur, Module, RawModule } from "@/lib/types";
+import { isWeekend } from "date-fns";
+import { useMemo } from "react";
+import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
+import GlobalViewLink from "../../(components)/GlobalViewLink";
+
+const viewWidth = 50;
+
+type CalendarFormateurProps = {
+  formateur: Formateur;
+  data: RawModule[];
+};
+
+export default function CalendarFormateur({
+  formateur: { nom, prenom, mail },
+  data,
+}: CalendarFormateurProps) {
+  const formateurData = useMemo(
+    () => mapISO<Module>(data, ["start", "end"]),
+    [data]
+  );
+  //   console.log({ formateurData });
+  const { isJoursFeries, getJourFerie } = useJoursFeries();
+  //   const {openMenu} = useCalendarMenu();
+  const [month] = useMonthNavigation();
+  const colorOf = useLegendStore((state) => state.colorOf);
+  const zoom = useZoom((s) => s.value);
+
+  return (
+    <div className="flex flex-col gap-2 items-center">
+      <h2 className="text-center">{`${nom} ${prenom} - [${mail}]`}</h2>
+      <div className="flex flex-row justify-between w-1/2">
+        <GlobalViewLink />
+        <ZoomUI range={5} />
+      </div>
+      <MonthNavigationUI />
+      <CalendarSimple
+        time={{ start: month, monthLength: 3 }}
+        events={formateurData}
+        zoom={zoom}
+        eventProps={{
+          label: (mod: Module) => mod.name,
+          //   EventTooltip: FormateurView.EventTooltip,
+          color: (evt: Module) => colorOf(evt.theme),
+          onClick: () => {
+            console.log("TODO");
+            //openMenu,
+          },
+          highlighted: () => false,
+          highlightedProps: () => ({ className: "" }),
+        }}
+        dayProps={{
+          tooltip: {
+            hasTooltip: isJoursFeries,
+            tooltipInfo: getJourFerie,
+          },
+          styleProps: (date: Date) => {
+            let style = {
+              ...calendarDayStyle(date),
+            };
+            if (isJoursFeries(date)) style.className += " text-red-500";
+            else if (isWeekend(date)) style.className += " text-white";
+            return style;
+          },
+        }}
+      />
+    </div>
+  );
+}

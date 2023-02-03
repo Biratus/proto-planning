@@ -1,4 +1,3 @@
-import { ModuleEvent } from "@/lib/types";
 import { isSameDay, isWeekend } from "date-fns";
 
 export type Style = {
@@ -46,11 +45,7 @@ export const weekend: Style = {
 //   },
 // };
 
-export const backgroundFor = (
-  date: Date,
-  event: ModuleEvent,
-  color: string
-) => {
+export const backgroundFor = (date: Date, event: Interval, color: string) => {
   let isStart = isSameDay(date, event.start);
   let isEnd = isSameDay(date, event.end);
 

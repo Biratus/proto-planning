@@ -641,7 +641,8 @@ export function getModulesOfFormateur(formateurId: string, interval: Interval) {
       m.formateur.mail == formateurId &&
       areIntervalsOverlapping(
         { start: parseISO(m.start), end: parseISO(m.end) },
-        interval
+        interval,
+        { inclusive: true }
       )
   );
 }

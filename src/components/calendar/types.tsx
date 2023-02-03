@@ -107,3 +107,31 @@ export type CalendarDetailRowProps<T extends Interval> = {
   context: React.Context<CalendarDetailContext<T>>;
   AdditionalInfo: React.FC<{ event: T }>;
 };
+
+/*
+-----
+SIMPLE VIEW
+-----
+
+*/
+
+export type CalendarItem = { id: any } & Interval;
+
+export type CalendarSimpleProps<T extends CalendarItem> = {
+  time: { start: Date; monthLength: number };
+  events: T[];
+  zoom: number;
+  eventProps: EventProps<T>;
+  dayProps: DayProps;
+  style?: Style;
+};
+
+export type SimpleCalendarContext<T extends CalendarItem> = {
+  cellHeight: string;
+  event: EventProps<T>;
+  day: DayProps;
+};
+export type DayAndEvent<T extends CalendarItem> = {
+  date: Date;
+  event?: T;
+};
