@@ -12,15 +12,11 @@ import {
   endOfMonth,
   startOfMonth,
 } from "date-fns";
-import { createContext, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { monthLabel, Style } from "../styles";
-import {
-  CalendarProps,
-  FullCalendarContext,
-  IntervalWithDuration,
-  Month,
-} from "../types";
+import { CalendarProps, IntervalWithDuration, Month } from "../types";
 import CalendarRow from "./CalendarRow";
+import FullCalendarProvider from "./FullCalendarProvider";
 
 const minCellSize = 20;
 
@@ -75,10 +71,9 @@ export default function FullCalendar<K, T extends IntervalWithDuration>({
     return months.map((m, i) => <Month month={m} key={i} first={i == 0} />);
   }, [months]);
 
-  const FullContext = useRef(createContext<FullCalendarContext<T>>({})).current;
   return (
-    <FullContext.Provider
-      value={{
+    <FullCalendarProvider
+      {...{
         days,
         eventProps,
         commonDayStyle,
@@ -101,7 +96,6 @@ export default function FullCalendar<K, T extends IntervalWithDuration>({
         {/* Data */}
         {data.map((d, i) => (
           <CalendarRow
-            ctx={FullContext}
             key={i}
             events={d.events}
             // EventTooltip={EventTooltip}
@@ -113,7 +107,7 @@ export default function FullCalendar<K, T extends IntervalWithDuration>({
           />
         ))}
       </div>
-    </FullContext.Provider>
+    </FullCalendarProvider>
   );
 }
 

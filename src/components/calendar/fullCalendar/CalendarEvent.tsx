@@ -1,19 +1,15 @@
 "use client";
 
-import { Context, useContext } from "react";
 import { Style } from "../styles";
-import {
-  CalendarEvent as CalendarEventType,
-  FullCalendarContext,
-} from "../types";
+import { CalendarEvent as CalendarEventType } from "../types";
+import { useFullCalendarEvent } from "./FullCalendarProvider";
 
-export default function CalendarEvent<T>({
+export default function CalendarEvent<T extends Interval>({
   day: { date, event, span },
-  ctx,
 }: {
   day: CalendarEventType<T>;
-} & { ctx: Context<FullCalendarContext<T>> }) {
-  const { commonDayStyle, eventProps } = useContext(ctx);
+}) {
+  const { commonDayStyle, eventProps } = useFullCalendarEvent();
   const {
     highlighted: eventHighlighted,
     highlightedProps,

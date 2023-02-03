@@ -1,26 +1,24 @@
 "use client";
 
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
-import { Context, useContext } from "react";
 import {
   CalendarEvent as CalendarEventType,
   CalendarRowProps,
-  FullCalendarContext,
   IntervalWithDuration,
 } from "../types";
 import CalendarEvent from "./CalendarEvent";
+import { useFullCalendarRow } from "./FullCalendarProvider";
 
 export default function CalendarRow<K, T extends IntervalWithDuration>({
   events,
   labelProps: { key: labelKey, title: labelTitle, LabelComponent },
   EventTooltip,
-  ctx,
-}: CalendarRowProps<K, T> & { ctx: Context<FullCalendarContext<T>> }) {
+}: CalendarRowProps<K, T>) {
   const {
     days,
     commonDayStyle,
     // drag: { enter, leave, move, drop, drag },
-  } = useContext(ctx);
+  } = useFullCalendarRow();
 
   const daysAndEvents = mergeDaysAndEvent(
     days!,
@@ -45,7 +43,7 @@ export default function CalendarRow<K, T extends IntervalWithDuration>({
         //   onDrop: (evt) => drop(day, labelKey, evt),
         // };
         return "event" in day ? (
-          <CalendarEvent key={id} day={day} ctx={ctx} />
+          <CalendarEvent key={id} day={day} />
         ) : (
           <div
             key={id}
