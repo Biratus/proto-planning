@@ -15,7 +15,7 @@ import { useMemo } from "react";
 import { AlertTriangle } from "react-feather";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
-import { useJoursFeries } from "./CalendarProvider";
+import { useHoverActions, useJoursFeries } from "./CalendarProvider";
 import { FiliereView, FormateurView } from "./CalendarView";
 
 export default function CommonCalendar({
@@ -32,6 +32,7 @@ export default function CommonCalendar({
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const zoom = useZoom((s) => s.value);
+  const { openMenu } = useHoverActions();
 
   // Props passed to Calendar
   const commonProps: CommonCalendarProps<ModuleEvent> = {
@@ -43,9 +44,7 @@ export default function CommonCalendar({
         else return mod.duration == 1 ? "" : mod.name;
       },
       color: (mod: ModuleEvent) => colorOf(mod.theme),
-      onClick: (event: ModuleEvent, target: HTMLElement) => {
-        console.log("TODO", event);
-      }, //openMenu,
+      onClick: openMenu,
       highlighted: (mod: ModuleEvent) => {
         if (isFormateurMissing(mod)) return true;
         else if ("overlap" in mod && mod.overlap) return true;

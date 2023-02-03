@@ -4,6 +4,7 @@ import { startOfMonth, startOfToday } from "date-fns";
 import { PropsWithChildren } from "react";
 import CalendarInitializer from "./(components)/(calendar)/CalendarInitializer";
 import { setJoursFeries } from "./(components)/(calendar)/CalendarProvider";
+import HoverElements from "./(components)/HoverElements";
 const monthStart = startOfMonth(startOfToday());
 
 export default async function layout({ children }: PropsWithChildren) {
@@ -15,6 +16,7 @@ export default async function layout({ children }: PropsWithChildren) {
       <CalendarInitializer joursFeries={joursFeries} />
       {children}
       <Legend />
+      <HoverElements />
     </>
   );
 }

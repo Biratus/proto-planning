@@ -1,5 +1,6 @@
 import { JoursFeries } from "@/lib/calendar";
 import { format } from "@/lib/date";
+import { Module } from "@/lib/types";
 import { create } from "zustand";
 const hoverElementsInit = {
   anchorEl: null,
@@ -33,4 +34,38 @@ export const useJoursFeries = () =>
     isJoursFeries: state.isJoursFeries,
     getJourFerie: state.getJourFerie,
   }));
-export const useCalendarMenu = () => calendarStore((state) => state.openMenu);
+
+/*
+  ------ Hover
+*/
+
+type CalendarHoverStore = {
+  menuOpen: boolean;
+  anchor: HTMLElement | null;
+  focus: Module | null;
+  openMenu: (mod: Module, ref: HTMLElement) => void;
+  closeMenu: () => void;
+};
+
+const calendarHoverStore = create<CalendarHoverStore>((set) => ({
+  menuOpen: false,
+  anchor: null,
+  focus: null,
+  openMenu: (mod: Module, ref: HTMLElement) =>
+    set({ menuOpen: true, anchor: ref, focus: mod }),
+  closeMenu: () => set({ menuOpen: false, anchor: null, focus: null }),
+}));
+
+export const usePopUpMenuProps = () =>
+  calendarHoverStore((state) => ({
+    menuOpen: state.menuOpen,
+    anchor: state.anchor,
+  }));
+
+export const useFocusModule = () => calendarHoverStore((state) => state.focus);
+
+export const useHoverActions = () =>
+  calendarHoverStore((state) => ({
+    openMenu: state.openMenu,
+    closeMenu: state.closeMenu,
+  }));
