@@ -32,7 +32,7 @@ const fullLegend: LegendItem[] = [
 
 export const useLegendStore = create<{
   legendList: LegendItem[];
-  showLegend: (themes: string[], includeMissingFormateur: boolean) => void;
+  showLegend: (themes: string[], includeMissingFormateur?: boolean) => void;
   colorOf: (label: string) => string;
 }>((set) => ({
   legendList: fullLegend,

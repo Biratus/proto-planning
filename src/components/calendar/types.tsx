@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
 import { Style } from "./styles";
 
 export type Duration = {
@@ -77,3 +77,33 @@ export type FullCalendarContext<T> = {
 };
 
 export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
+
+/*
+  -----
+  SINGLE DATA
+  -----
+ 
+*/
+
+export type CalendarDetailContext<T> = {
+  color: (mod: T) => string;
+  eventHighlighted: (mod: T) => boolean;
+  highlightedProps: (color: string) => Style;
+  onClick: (mod: T, event: MouseEvent) => void;
+  label: (mod: T) => string;
+};
+
+export type CalendarDetailProps<T extends Interval> = {
+  style?: Style;
+  additionalLabel: string;
+  AdditionalInfo: React.FC<{ event: T }>;
+  cellHeight: string;
+  events: T[];
+  context: React.Context<CalendarDetailContext<T>>;
+};
+
+export type CalendarDetailRowProps<T extends Interval> = {
+  event: T;
+  context: React.Context<CalendarDetailContext<T>>;
+  AdditionalInfo: React.FC<{ event: T }>;
+};

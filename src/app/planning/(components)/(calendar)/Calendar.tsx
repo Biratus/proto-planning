@@ -9,7 +9,6 @@ import { useLegendStore } from "@/components/legend/Legend";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
-import { LocalStorageState } from "@/hooks/localStorageStore";
 import { isFormateurMissing } from "@/lib/realData";
 import { ModuleEvent, RawModule } from "@/lib/types";
 import { useMemo } from "react";
@@ -32,7 +31,7 @@ export default function CommonCalendar({
 
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
-  const zoom = useZoom((s: LocalStorageState<number>) => s.value);
+  const zoom = useZoom((s) => s.value);
 
   // Props passed to Calendar
   const commonProps: CommonCalendarProps<ModuleEvent> = {

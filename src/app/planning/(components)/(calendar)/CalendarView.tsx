@@ -50,7 +50,7 @@ function FormateurLabel({
 }
 function RowLabel({ href, label }: { href: string; label: string }) {
   return (
-    <div className="flex items-center  bg-blue-600 pl-1  hover:bg-blue-900 h-full">
+    <div className="flex items-center  bg-blue-600 pl-1  hover:bg-blue-900 h-full  border-b border-blue-900">
       <span className="truncate">
         <Link
           href={`planning/${href}`}
@@ -64,17 +64,3 @@ function RowLabel({ href, label }: { href: string; label: string }) {
     </div>
   );
 }
-
-// const RowLabel = React.forwardRef(({ href, label, ...props }, ref) => (
-//   <Box sx={labelStyle} {...props} ref={ref}>
-//     <Typography noWrap>
-//       <Link
-//         style={{ textDecoration: "none", color: "inherit" }}
-//         href={`planning/${href}`}
-//         prefetch={false}
-//       >
-//         {label}
-//       </Link>
-//     </Typography>
-//   </Box>
-// ));

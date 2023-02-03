@@ -1,18 +1,24 @@
 "use client";
 
 import { createContext, PropsWithChildren, useContext } from "react";
-import { useLocalStorageAfterHydration } from "../../hooks/localStorageStore";
+import {
+  LocalStorageState,
+  useLocalStorageAfterHydration,
+} from "../../hooks/localStorageStore";
 import AfterHydration from "../AfterHydration";
 type StorageKeyProps = {
-    zoomKey:string
-}
+  zoomKey: string;
+};
 type StorageKeyObject = {
-    key:string
-}
+  key: string;
+};
 
-export const ZoomContext = createContext<StorageKeyObject>({key:''});
+export const ZoomContext = createContext<StorageKeyObject>({ key: "" });
 
-export default function ZoomProvider({ zoomKey, children }:PropsWithChildren & StorageKeyProps) {
+export default function ZoomProvider({
+  zoomKey,
+  children,
+}: PropsWithChildren & StorageKeyProps) {
   return (
     <ZoomContext.Provider value={{ key: zoomKey }}>
       <AfterHydration>{children}</AfterHydration>
@@ -20,7 +26,10 @@ export default function ZoomProvider({ zoomKey, children }:PropsWithChildren & S
   );
 }
 
-export function useZoom(selector?:any, compare?:any) {
+export function useZoom(
+  selector?: (s: LocalStorageState<number>) => any,
+  compare?: any
+) {
   const ctx = useContext(ZoomContext);
   if (ctx === undefined) {
     throw new Error("useZoom must be used within a ZoomProvider");

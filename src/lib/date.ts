@@ -4,60 +4,60 @@ import { upperFirst } from "./strings";
 
 const locale = { locale: fr };
 
-export function formatMonthYear(d:Date) {
+export function formatMonthYear(d: Date) {
   return upperFirst(format(d, "MMMM yyyy"));
 }
 
-export function formatSimpleDayLabel(d:Date) {
+export function formatSimpleDayLabel(d: Date) {
   return upperFirst(format(d, "EEEEE"));
 }
 
-export function formatShortDayLabel(d:Date) {
+export function formatShortDayLabel(d: Date) {
   return upperFirst(format(d, "E"));
 }
 
-export function formatFullDayLabel(d:Date) {
+export function formatFullDayLabel(d: Date) {
   return upperFirst(format(d, "EEEE"));
 }
 
-export function formatDayDate(d:Date) {
+export function formatDayDate(d: Date) {
   return format(d, "dd");
 }
 
-export function formatFullDate(d:Date) {
+export function formatFullDate(d: Date) {
   return format(d, "dd/MM/yy");
 }
 
-export function formatFullPrettyDate(d:Date) {
+export function formatFullPrettyDate(d: Date) {
   return `${formatFullDayLabel(d)} ${format(d, "d")} ${formatMonthYear(d)}`;
 }
 
-export function parseMonthAndYear(monthStr:string) {
+export function parseMonthAndYear(monthStr: string) {
   return parse(monthStr, "MMMM yyyy");
 }
 
-export function parse(d:string, format:string) {
+export function parse(d: string, format: string) {
   return dateFns.parse(d, format, new Date(), locale);
 }
 
-export function format(d:Date, f:string) {
+export function format(d: Date, f: string) {
   return dateFns.format(d, f, locale);
 }
 
-export function endOfWeek(d:Date) {
+export function endOfWeek(d: Date) {
   return dateFns.endOfWeek(d, locale);
 }
-export function startOfWeek(d:Date) {
+export function startOfWeek(d: Date) {
   return dateFns.startOfWeek(d, locale);
 }
 
-export function nbOfDaysBetween(start:Date, end:Date) {
+export function nbOfDaysBetween(start: Date, end: Date) {
   return dateFns.isSameMonth(start, end)
     ? end.getDate() - start.getDate() + 1
     : dateFns.eachDayOfInterval({ start, end }).length;
 }
 
-export function mapISO(list:any[], fields:string[]) {
+export function mapISO<OUT>(list: any[], fields: string[]): Array<OUT> {
   return list.map((item) => {
     let newItem = { ...item };
 
