@@ -1,19 +1,33 @@
 "use client";
 import { createContext, PropsWithChildren, useContext, useRef } from "react";
 import { create, useStore } from "zustand";
+import { shallow } from "zustand/shallow";
 
 type HoverState = {
   hoverElement: string | null;
+  hoverElements: { [key: string]: boolean };
   hoverThis: (elt?: string) => void;
 };
 
 type HoverStore = ReturnType<typeof createHoverStore>;
 
-const createHoverStore = (elements: string[]) =>
-  create<HoverState>((set) => ({
+const createHoverStore = (elements: string[]) => {
+  const hoverElements: { [key: string]: boolean } = {};
+  elements.forEach((s) => (hoverElements[s] = false));
+  return create<HoverState>((set) => ({
     hoverElement: null,
-    hoverThis: (elt?: string) => set({ hoverElement: elt }),
+    hoverElements,
+    hoverThis: (elt?: string) =>
+      set((state) => ({
+        hoverElement: elt,
+        hoverElements: {
+          ...state.hoverElements,
+          ...(elt ? { [elt]: true } : {}),
+          ...(state.hoverElement ? { [state.hoverElement]: false } : {}),
+        },
+      })),
   }));
+};
 
 const HoverContext = createContext<HoverStore | null>(null);
 
@@ -42,9 +56,13 @@ export function useHover(subscriber?: string): HoverHook {
   const hoverStore = useContext(HoverContext);
   if (!hoverStore)
     throw new Error("useHover must be used within a HoverProvider");
-  return useStore(hoverStore, (s) => ({
-    hover: subscriber !== undefined && s.hoverElement == subscriber,
-    hoverMe: () => s.hoverThis(subscriber),
-    unHoverMe: () => s.hoverThis(),
-  }));
+  return useStore(
+    hoverStore,
+    (s) => ({
+      hover: subscriber !== undefined && s.hoverElements[subscriber!],
+      hoverMe: () => s.hoverThis(subscriber),
+      unHoverMe: () => s.hoverThis(),
+    }),
+    shallow
+  );
 }

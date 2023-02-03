@@ -69,13 +69,6 @@ export type CalendarEvent<T> = {
   span: number;
 };
 
-export type FullCalendarContext<T> = {
-  days?: Date[];
-  eventProps?: EventProps<T>;
-  commonDayStyle?: (date: Date) => Style;
-  drag?: any;
-};
-
 export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
 
 /*
