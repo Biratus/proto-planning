@@ -1,20 +1,18 @@
 "use client";
 
 import { formatMonthYear } from "@/lib/date";
-import { Context, useMemo } from "react";
+import { useMemo } from "react";
 import { monthLabel } from "../styles";
-import { CalendarItem, DayAndEvent, SimpleCalendarContext } from "../types";
+import { CalendarItem, DayAndEvent } from "../types";
 import CalendarCell from "./CalendarCell";
 
 export type CalendarMonthProp<T extends CalendarItem> = {
   days: DayAndEvent<T>[];
-  context: Context<SimpleCalendarContext<T>>;
   isFirstMonth: boolean;
 };
 
 export default function CalendarMonth<T extends CalendarItem>({
   days,
-  context,
   isFirstMonth,
 }: CalendarMonthProp<T>) {
   return useMemo(
@@ -31,7 +29,6 @@ export default function CalendarMonth<T extends CalendarItem>({
             key={id}
             day={d}
             forceEventLabel={id == 0 && isFirstMonth}
-            ctx={context}
           />
         ))}
       </>

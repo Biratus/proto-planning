@@ -126,11 +126,6 @@ export type CalendarSimpleProps<T extends CalendarItem> = {
   style?: Style;
 };
 
-export type SimpleCalendarContext<T extends CalendarItem> = {
-  cellHeight: string;
-  event: EventProps<T>;
-  day: DayProps;
-};
 export type DayAndEvent<T extends CalendarItem> = {
   date: Date;
   event?: T;

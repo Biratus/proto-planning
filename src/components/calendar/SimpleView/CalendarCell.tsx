@@ -2,25 +2,23 @@
 
 import { formatDayDate } from "@/lib/date";
 import { isSameDay } from "date-fns";
-import { Context, useContext } from "react";
 import { backgroundFor, Style } from "../styles";
-import { CalendarItem, DayAndEvent, SimpleCalendarContext } from "../types";
+import { CalendarItem, DayAndEvent } from "../types";
 import { useHover } from "./HoverProvider";
+import { useSimpleCalendar } from "./SimpleCalendarProvider";
 
 export default function CalendarCell<T extends CalendarItem>({
   day: { date, event },
   forceEventLabel,
-  ctx,
 }: {
   day: DayAndEvent<T>;
   forceEventLabel: boolean;
-  ctx: Context<SimpleCalendarContext<T>>;
 }) {
   const {
     cellHeight: height,
     event: eventProps,
     day: { tooltip: dayTooltip, styleProps: dayStyleProps },
-  } = useContext(ctx);
+  } = useSimpleCalendar();
 
   const { hover, hoverMe, unHoverMe } = useHover(event?.id);
   //   const EventTooltip = eventProps.EventTooltip;

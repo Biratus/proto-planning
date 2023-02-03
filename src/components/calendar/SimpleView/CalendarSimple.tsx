@@ -6,16 +6,16 @@ import {
   isWithinInterval,
   startOfMonth,
 } from "date-fns";
-import { createContext, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import {
   CalendarItem,
   CalendarSimpleProps,
   DayAndEvent,
   Month,
-  SimpleCalendarContext,
 } from "../types";
 import CalendarMonth from "./CalendarMonth";
 import HoverProvider from "./HoverProvider";
+import SimpleCalendarProvider from "./SimpleCalendarProvider";
 
 const week = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const minCellHeight = 5;
@@ -42,37 +42,27 @@ export default function CalendarSimple<T extends CalendarItem>({
       events
     );
 
-  const SimpleCalendarContext = useRef(
-    createContext<SimpleCalendarContext<T>>({
-      cellHeight: `${minCellHeight + zoom * 0.5}em`,
-      event: eventProps,
-      day: dayProps,
-    })
-  ).current;
   return (
     <div
       className={`grid grid-cols-7 ${style?.className}`}
       style={{ width: `${50 + zoom * 10}%`, ...style?.props }}
     >
       <Week />
-      <SimpleCalendarContext.Provider
-        value={{
-          cellHeight: `${minCellHeight + zoom * 0.5}em`,
-          event: eventProps,
-          day: dayProps,
-        }}
+      <SimpleCalendarProvider
+        cellHeight={`${minCellHeight + zoom * 0.5}em`}
+        event={eventProps}
+        day={dayProps}
       >
         <HoverProvider elements={events.map((m) => m.id)}>
           {months.map((m, id) => (
             <CalendarMonth
               key={id}
               days={daysAndEventsOf(m)}
-              context={SimpleCalendarContext}
               isFirstMonth={id == 0}
             />
           ))}
         </HoverProvider>
-      </SimpleCalendarContext.Provider>
+      </SimpleCalendarProvider>
     </div>
   );
 }
