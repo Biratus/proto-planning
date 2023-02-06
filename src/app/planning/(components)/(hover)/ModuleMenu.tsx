@@ -5,7 +5,8 @@ import { User, Users } from "react-feather";
 import {
   useHoverActions,
   usePopUpMenuProps,
-} from "./(calendar)/CalendarProvider";
+} from "../(calendar)/CalendarProvider";
+import { SwitchFormateurDrawerId } from "./SwitchFormateurDrawer";
 
 type ModuleMenuProps = {
   switchFormateur: () => void;
@@ -21,6 +22,7 @@ export default function ModuleMenu({
   const menuRef = useRef<HTMLUListElement>(null);
 
   useOnClickOutside(menuRef, closeMenu);
+
   return (
     <ul
       className={`menu bg-base-100 w-56 rounded-box shadow-2xl ${
@@ -32,11 +34,15 @@ export default function ModuleMenu({
       }}
       ref={menuRef}
     >
-      <li onClick={switchFormateur}>
-        <a>
+      <li>
+        <label
+          htmlFor={SwitchFormateurDrawerId}
+          onClick={switchFormateur}
+          className="drawer-button"
+        >
           <User className="mr-1" />
           Modifier le formateur
-        </a>
+        </label>
       </li>
       <li onClick={splitModule}>
         <a>
@@ -47,17 +53,3 @@ export default function ModuleMenu({
     </ul>
   );
 }
-/*
-const menuItems = useMemo(() => [
-    {
-      icon: <SwapHorizIcon />,
-      text: "Modifier le formateur",
-      onClick: () => hoverDispatch({ type: "SWITCH_FORM" }),
-    },
-    {
-      icon: <SafetyDividerIcon />,
-      text: "Scinder le module",
-      onClick: () => hoverDispatch({ type: "SPLIT_MODULE" }),
-    },
-  ]);
-  */

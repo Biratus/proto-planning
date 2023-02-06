@@ -22,3 +22,7 @@
 body {
   background-color: var(--bg-color);
 }
+
+.drawer-toggle:checked ~ .drawer-side {
+  position: absolute;
+}

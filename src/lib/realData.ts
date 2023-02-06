@@ -1,3 +1,4 @@
+import { Interval } from "@/components/calendar/types";
 import { areIntervalsOverlapping, formatISO, parseISO } from "date-fns";
 import { parse } from "./date";
 import { Formateur, Module, RawModule } from "./types";
@@ -630,6 +631,32 @@ const MISSING_FORMATEUR = "na@na.na";
 export const isFormateurMissing = (mod: Module | RawModule) => {
   return mod.formateur.mail == MISSING_FORMATEUR;
 };
+
+export function filterFormateur({
+  search,
+  available,
+  able,
+}: {
+  search?: string;
+  available?: Interval;
+  able?: Module;
+}): Formateur[] {
+  let filtered = [];
+  for (let form of formateurMap.values()) {
+    let satisfies = true;
+    if (
+      search &&
+      !form.nom.toLowerCase().includes(search.toLowerCase()) &&
+      !form.prenom.toLowerCase().includes(search.toLowerCase())
+    )
+      satisfies = false;
+    // if(available && !formateurAvailable(form,available)) satisfies = false; // Wait for BDD
+    // if(able && !formateurAble(form,able)) satisfies = false; // Wait for BDD
+
+    if (satisfies) filtered.push(form);
+  }
+  return filtered;
+}
 
 export function fetchFiliere(filiereId: string) {
   return modules.filter((m) => m.filiere == filiereId);

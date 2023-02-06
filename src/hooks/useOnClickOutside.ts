@@ -7,14 +7,18 @@ export default function useOnClickOutside(
 ) {
   useEffect(
     () => {
-      console.log("useEffect");
       const listener = (event: any) => {
         // if the referenece is not present
         // or the target is descendant of the refefence
         // return
-        if (!ref.current || ref!.current.contains(event.target)) {
+        if (
+          !ref.current ||
+          ref.current.offsetParent === null ||
+          ref!.current.contains(event.target)
+        ) {
           return;
         }
+        console.log("clickOutside => close :", ref.current);
         // invoke the callback
         callback(event);
       };

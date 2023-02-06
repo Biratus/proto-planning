@@ -4,7 +4,6 @@ import {
 } from "@/components/calendar/types";
 
 export interface Formateur {
-  id?: string;
   mail: string;
   nom: string;
   prenom: string;

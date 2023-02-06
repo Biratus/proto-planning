@@ -27,7 +27,8 @@ export const calendarStore = create<CalendarStore>((set, get) => ({
 }));
 
 export const setJoursFeries = (joursFeries: JoursFeries) =>
-  calendarStore.setState((state) => (state.joursFeries = joursFeries));
+  calendarStore.setState((state) => (state.joursFeries = joursFeries)); // ServerSide
+// (calendarStore().joursFeries = joursFeries); //ClientSide
 
 export const useJoursFeries = () =>
   calendarStore((state) => ({
@@ -45,16 +46,29 @@ type CalendarHoverStore = {
   focus: Module | null;
   openMenu: (mod: Module, ref: HTMLElement) => void;
   closeMenu: () => void;
+
+  // Panel
+  switchFormateurPanelRef: React.RefObject<HTMLInputElement> | null;
 };
 
-const calendarHoverStore = create<CalendarHoverStore>((set) => ({
+const initialHoverProps = {
   menuOpen: false,
   anchor: null,
   focus: null,
+};
+
+const calendarHoverStore = create<CalendarHoverStore>((set) => ({
+  ...initialHoverProps,
+  switchFormateurPanelRef: null,
   openMenu: (mod: Module, ref: HTMLElement) =>
     set({ menuOpen: true, anchor: ref, focus: mod }),
-  closeMenu: () => set({ menuOpen: false, anchor: null, focus: null }),
+  closeMenu: () => set({ menuOpen: false, anchor: null }),
 }));
+
+export const resetHoverProps = () => {
+  calendarHoverStore.setState((state) => ({ ...initialHoverProps }));
+  closeSwitchPanel();
+};
 
 export const usePopUpMenuProps = () =>
   calendarHoverStore((state) => ({
@@ -63,9 +77,16 @@ export const usePopUpMenuProps = () =>
   }));
 
 export const useFocusModule = () => calendarHoverStore((state) => state.focus);
-
 export const useHoverActions = () =>
   calendarHoverStore((state) => ({
     openMenu: state.openMenu,
     closeMenu: state.closeMenu,
   }));
+export const setSwitchPanel = (element: React.RefObject<HTMLInputElement>) => {
+  // calendarHoverStore.setState({ switchFormateurPanelRef: element });// ServerSide
+  calendarHoverStore().switchFormateurPanelRef = element; //ClientSide
+};
+
+export const closeSwitchPanel = () =>
+  (calendarHoverStore.getState().switchFormateurPanelRef!.current!.checked =
+    false);
