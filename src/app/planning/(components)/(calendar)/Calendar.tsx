@@ -15,7 +15,11 @@ import { useMemo } from "react";
 import { AlertTriangle } from "react-feather";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
-import { useHoverActions, useJoursFeries } from "./CalendarProvider";
+import {
+  openOverlapUI,
+  useJoursFeries,
+  usePopUpMenu,
+} from "./CalendarProvider";
 import { FiliereView, FormateurView } from "./CalendarView";
 
 export default function CommonCalendar({
@@ -32,7 +36,7 @@ export default function CommonCalendar({
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const zoom = useZoom((s) => s.value);
-  const { openMenu } = useHoverActions();
+  const { open: openPopupMenu } = usePopUpMenu();
 
   // Props passed to Calendar
   const commonProps: CommonCalendarProps<ModuleEvent> = {
@@ -40,16 +44,23 @@ export default function CommonCalendar({
     time: { start: month, monthLength },
     event: {
       label: (mod: ModuleEvent) => {
-        if (mod.overlap) return <AlertTriangle color="red" />;
+        if (mod.overlap)
+          return (
+            <AlertTriangle
+              color="red"
+              className={mod.duration != 1 ? "ml-2" : ""}
+            />
+          );
         else return mod.duration == 1 ? "" : mod.name;
       },
       color: (mod: ModuleEvent) => colorOf(mod.theme),
-      onClick: openMenu,
-      highlighted: (mod: ModuleEvent) => {
-        if (isFormateurMissing(mod)) return true;
-        else if ("overlap" in mod && mod.overlap) return true;
-        else return false;
+      onClick: (mod, ref) => {
+        if (mod.overlap) {
+          openOverlapUI(mod, ref);
+        } else openPopupMenu(mod, ref);
       },
+      highlighted: (mod: ModuleEvent) =>
+        isFormateurMissing(mod) || mod.overlap == true,
       highlightedProps: (mod: ModuleEvent) => {
         if (mod.overlap) return overlapModuleStyle;
         else if (isFormateurMissing(mod))

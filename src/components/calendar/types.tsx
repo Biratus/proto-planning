@@ -1,16 +1,16 @@
-import { MouseEvent, ReactNode } from "react";
+import { DragEvent, MouseEvent, ReactNode } from "react";
 import { Style } from "./styles";
-
-export type Duration = {
-  duration: number;
-};
 
 export type Interval = {
   start: Date;
   end: Date;
 };
 
-export type IntervalWithDuration = Interval & Duration;
+export type IntervalWithDuration = Interval & {
+  duration: number;
+};
+
+export type CalendarItem = { id: any } & IntervalWithDuration;
 
 export type Month = {
   day: Date;
@@ -41,16 +41,16 @@ export type CommonCalendarProps<T> = {
   day: DayProps;
   commonDayStyle: (date: Date) => Style;
   zoom: number;
-  drag?: any;
   event: EventProps<T>; // eventProps
 };
 
 export type CalendarProps<
   K,
-  T extends IntervalWithDuration
+  T extends CalendarItem
 > = CommonCalendarProps<T> & {
   data: CalendarData<K, T>[];
   LabelComponent: CalendarRowLabel<K>;
+  drag: DragEvents<K, T>;
 };
 
 export type CalendarRowProps<K, T extends IntervalWithDuration> = {
@@ -67,6 +67,34 @@ export type CalendarEvent<T> = {
   date: Date;
   event: T;
   span: number;
+};
+
+export type DragEvents<K, T extends CalendarItem> = {
+  drag: (
+    dayAndEvent: DayAndEvent<T>,
+    key: K,
+    evt: DragEvent<HTMLElement>
+  ) => void;
+  enter: (
+    dayAndEvent: DayAndEvent<T>,
+    key: K,
+    evt: DragEvent<HTMLElement>
+  ) => void;
+  leave: (
+    dayAndEvent: DayAndEvent<T>,
+    key: K,
+    evt: DragEvent<HTMLElement>
+  ) => void;
+  drop: (
+    dayAndEvent: DayAndEvent<T>,
+    key: K,
+    evt: DragEvent<HTMLElement>
+  ) => void;
+  move: (
+    dayAndEvent: DayAndEvent<T>,
+    key: K,
+    evt: DragEvent<HTMLElement>
+  ) => void;
 };
 
 export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
@@ -107,8 +135,6 @@ SIMPLE VIEW
 -----
 
 */
-
-export type CalendarItem = { id: any } & Interval;
 
 export type CalendarSimpleProps<T extends CalendarItem> = {
   time: { start: Date; monthLength: number };

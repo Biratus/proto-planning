@@ -1,21 +1,15 @@
+import { Interval } from "@/components/calendar/types";
 import { JoursFeries } from "@/lib/calendar";
 import { format } from "@/lib/date";
-import { Module } from "@/lib/types";
+import { ModuleEvent } from "@/lib/types";
+import { isWithinInterval } from "date-fns";
+import { RefObject } from "react";
 import { create } from "zustand";
-const hoverElementsInit = {
-  anchorEl: null,
-  switchModal: false,
-  splitModal: false,
-  module: null,
-  overlapDisplay: false,
-  menuOpen: false,
-};
 
 type CalendarStore = {
   joursFeries: JoursFeries;
   isJoursFeries: (date: Date) => boolean;
   getJourFerie: (date: Date) => string;
-  openMenu: () => void;
 };
 
 export const calendarStore = create<CalendarStore>((set, get) => ({
@@ -23,12 +17,10 @@ export const calendarStore = create<CalendarStore>((set, get) => ({
   isJoursFeries: (day: Date) =>
     get().joursFeries.hasOwnProperty(format(day, "yyyy-MM-dd")),
   getJourFerie: (day: Date) => get().joursFeries[format(day, "yyyy-MM-dd")],
-  openMenu: () => {},
 }));
 
 export const setJoursFeries = (joursFeries: JoursFeries) =>
-  calendarStore.setState((state) => (state.joursFeries = joursFeries)); // ServerSide
-// (calendarStore().joursFeries = joursFeries); //ClientSide
+  calendarStore.setState({ joursFeries });
 
 export const useJoursFeries = () =>
   calendarStore((state) => ({
@@ -40,40 +32,93 @@ export const useJoursFeries = () =>
   ------ Hover
 */
 
-type CalendarHoverStore = {
-  menuOpen: boolean;
+interface CalendarHoverStore {
+  popupMenu: RefObject<HTMLUListElement> | null;
   anchor: HTMLElement | null;
-  focus: Module | null;
-  openMenu: (mod: Module, ref: HTMLElement) => void;
-  closeMenu: () => void;
-};
+  focus: ModuleEvent | null;
+  overlapToggle: RefObject<HTMLInputElement> | null;
+  openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) => void;
+  openPopUpMenu: (mod: ModuleEvent, ref: HTMLElement) => void;
+  closePopUpMenu: () => void;
+}
 
 const initialHoverProps = {
-  menuOpen: false,
   anchor: null,
   focus: null,
 };
 
-const calendarHoverStore = create<CalendarHoverStore>((set) => ({
+const calendarHoverStore = create<CalendarHoverStore>((set, get) => ({
   ...initialHoverProps,
-  openMenu: (mod: Module, ref: HTMLElement) =>
-    set({ menuOpen: true, anchor: ref, focus: mod }),
-  closeMenu: () => set({ menuOpen: false, anchor: null }),
+  overlapToggle: null,
+  popupMenu: null,
+  openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) => {
+    get().overlapToggle!.current!.checked = true;
+    return set({ anchor: ref, focus: mod });
+  },
+  openPopUpMenu: (mod: ModuleEvent, ref: HTMLElement) => {
+    get().popupMenu!.current!.classList.remove("hidden");
+    return set({ anchor: ref, focus: mod });
+  },
+  closePopUpMenu: () => {
+    get().popupMenu!.current!.classList.add("hidden");
+    return set({ anchor: null });
+  },
 }));
+export const setPopUpMenu = (ref: RefObject<HTMLUListElement>) =>
+  calendarHoverStore.setState({ popupMenu: ref });
 
 export const resetHoverProps = () => {
-  calendarHoverStore.setState((state) => ({ ...initialHoverProps }));
+  calendarHoverStore.setState({ ...initialHoverProps });
 };
 
-export const usePopUpMenuProps = () =>
+export const usePopUpMenu = () =>
   calendarHoverStore((state) => ({
-    menuOpen: state.menuOpen,
+    open: state.openPopUpMenu,
+    close: state.closePopUpMenu,
     anchor: state.anchor,
   }));
 
 export const useFocusModule = () => calendarHoverStore((state) => state.focus);
-export const useHoverActions = () =>
+
+export const setOverlapToggle = (ref: RefObject<HTMLInputElement>) =>
+  calendarHoverStore.setState({ overlapToggle: ref });
+
+export const useOverlapModuleUI = () =>
   calendarHoverStore((state) => ({
-    openMenu: state.openMenu,
-    closeMenu: state.closeMenu,
+    // isOpen:
+    //   state.overlapToggle &&
+    //   state.overlapToggle.current &&
+    //   state.overlapToggle.current.checked,
+    focus: state.focus,
+    anchor: state.anchor,
+    // setDraggedModule,
   }));
+
+export const openOverlapUI = calendarHoverStore.getState().openOverlapUI;
+
+/*
+  ------ Drag
+*/
+
+interface CalendarDragStore {
+  draggedModule: ModuleEvent | null;
+  dropTarget: Interval | null;
+}
+
+const dragStore = create<CalendarDragStore>((set, get) => ({
+  draggedModule: null,
+  dropTarget: null,
+}));
+
+export const setDraggedModule = (mod: ModuleEvent) =>
+  dragStore.setState({ draggedModule: mod });
+export const getDraggedModule = () => dragStore((s) => s.draggedModule);
+export const useDropTarget = () => ({
+  draggedModule: dragStore((s) => s.draggedModule),
+  dropTarget: dragStore((s) => s.dropTarget),
+  setDropTarget: (dropTarget: Interval) => dragStore.setState({ dropTarget }),
+  isDropTarget: (day: Date) =>
+    dragStore.getState().dropTarget &&
+    isWithinInterval(day, dragStore.getState().dropTarget!),
+  cleanDropTarget: () => dragStore.setState({ dropTarget: null }),
+});

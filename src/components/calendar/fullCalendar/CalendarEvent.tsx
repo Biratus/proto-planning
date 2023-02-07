@@ -6,6 +6,7 @@ import { useFullCalendarEvent } from "./FullCalendarProvider";
 
 export default function CalendarEvent<T extends Interval>({
   day: { date, event, span },
+  ...props
 }: {
   day: CalendarEventType<T>;
 }) {
@@ -26,7 +27,7 @@ export default function CalendarEvent<T extends Interval>({
     <div
       className={`flex items-center px-1 cursor-pointer hover:opacity-60 ${
         commonDayStyle!(date).className
-      }${styleProps.className}`}
+      } ${styleProps.className}`}
       style={{
         background: `radial-gradient(circle, ${color(
           event
@@ -35,6 +36,7 @@ export default function CalendarEvent<T extends Interval>({
         ...styleProps.props,
       }}
       onClick={(evt) => onClick(event, evt.currentTarget)}
+      {...props}
     >
       <span className="truncate">{label(event)}</span>
     </div>

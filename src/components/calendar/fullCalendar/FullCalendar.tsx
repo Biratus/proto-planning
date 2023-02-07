@@ -14,13 +14,13 @@ import {
 } from "date-fns";
 import { useMemo } from "react";
 import { monthLabel, Style } from "../styles";
-import { CalendarProps, IntervalWithDuration, Month } from "../types";
+import { CalendarItem, CalendarProps, Month } from "../types";
 import CalendarRow from "./CalendarRow";
 import FullCalendarProvider from "./FullCalendarProvider";
 
 const minCellSize = 20;
 
-export default function FullCalendar<K, T extends IntervalWithDuration>({
+export default function FullCalendar<K, T extends CalendarItem>({
   data: originalData,
   LabelComponent,
   EventTooltip,

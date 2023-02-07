@@ -85,8 +85,9 @@ export const calendarDayStyle: (date: Date) => Style = (date: Date) => {
 };
 
 export const overlapModuleStyle: Style = {
-  className: "bg-black white",
+  className: "white",
   props: {
+    background: "black",
     boxShadow: `0px 0px 0.7em 0.1em #D6C588 inset`,
   },
 };

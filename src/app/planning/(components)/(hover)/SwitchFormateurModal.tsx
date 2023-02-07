@@ -1,6 +1,5 @@
 "use client";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
-import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { formatFullPrettyDate } from "@/lib/date";
 import { formateurs } from "@/lib/realData";
 import { Formateur, Module } from "@/lib/types";
@@ -18,7 +17,6 @@ export default function SwitchFormateurModal({
   onClose,
   submit,
 }: SwitchFormateurModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLInputElement>(null);
 
   const formateurRef = useRef<Formateur | null>(null);
@@ -28,16 +26,12 @@ export default function SwitchFormateurModal({
       onClose();
     }
   }, []);
-  useOnClickOutside(modalRef, close);
 
-  if (!module) return null;
-
-  const { name, start, end, filiere } = module;
-  formateurRef.current = module.formateur;
+  if (module) formateurRef.current = module.formateur;
 
   const submitForm = async () => {
     const success = await submit({
-      ...module,
+      ...module!,
       formateur: formateurs.get(formateurRef.current!.mail)!,
     });
     if (success) close();
@@ -55,28 +49,31 @@ export default function SwitchFormateurModal({
         id={SwitchFormateurModalId}
         className="modal-toggle"
       />
-      <div className="modal justify-end">
-        <div
-          className="modal-box max-w-none w-2/5 h-full max-h-screen rounded-none"
-          ref={modalRef}
-        >
-          <h3 className="font-bold text-lg text-center">{name}</h3>
-          <div>Filière :{filiere}</div>
-          <div>Début : {formatFullPrettyDate(start)}</div>
-          <div>Fin : {formatFullPrettyDate(end)}</div>
-          <div>{JSON.stringify(module.formateur)}</div>
-          <FormateurSelect
-            formateur={module.formateur}
-            forModule={module}
-            onSelect={onSelectFormateur}
-          />
-          <div className="modal-action w-full">
-            <button className="btn btn-success" onClick={submitForm}>
-              Modifier
-            </button>
-          </div>
-        </div>
-      </div>
+      <label htmlFor={SwitchFormateurModalId} className="modal justify-end">
+        {module && (
+          <label
+            className="modal-box max-w-none w-2/5 h-full max-h-screen rounded-none"
+            // ref={modalRef}
+            htmlFor=""
+          >
+            <h3 className="font-bold text-lg text-center">{module.name}</h3>
+            <div>Filière :{module.filiere}</div>
+            <div>Début : {formatFullPrettyDate(module.start)}</div>
+            <div>Fin : {formatFullPrettyDate(module.end)}</div>
+            <div>{JSON.stringify(module.formateur)}</div>
+            <FormateurSelect
+              formateur={module.formateur}
+              forModule={module}
+              onSelect={onSelectFormateur}
+            />
+            <div className="modal-action w-full">
+              <button className="btn btn-success" onClick={submitForm}>
+                Modifier
+              </button>
+            </div>
+          </label>
+        )}
+      </label>
     </>
   );
 }

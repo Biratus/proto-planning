@@ -1,15 +1,16 @@
 "use client";
 
 import { eachDayOfInterval, isWithinInterval } from "date-fns";
+import { DragEvent } from "react";
 import {
   CalendarEvent as CalendarEventType,
+  CalendarItem,
   CalendarRowProps,
-  IntervalWithDuration,
 } from "../types";
 import CalendarEvent from "./CalendarEvent";
 import { useFullCalendarRow } from "./FullCalendarProvider";
 
-export default function CalendarRow<K, T extends IntervalWithDuration>({
+export default function CalendarRow<K, T extends CalendarItem>({
   events,
   labelProps: { key: labelKey, title: labelTitle, LabelComponent },
   EventTooltip,
@@ -17,7 +18,7 @@ export default function CalendarRow<K, T extends IntervalWithDuration>({
   const {
     days,
     commonDayStyle,
-    // drag: { enter, leave, move, drop, drag },
+    drag: { enter, leave, move, drop, drag },
   } = useFullCalendarRow();
 
   const daysAndEvents = mergeDaysAndEvent(
@@ -35,20 +36,23 @@ export default function CalendarRow<K, T extends IntervalWithDuration>({
         <LabelComponent labelKey={labelKey} />
       </div>
       {daysAndEvents.map((day, id) => {
-        // const dragEvents = {
-        //   onDrag: (evt) => drag(day, labelKey, evt),
-        //   onDragOver: (evt) => move(day, labelKey, evt),
-        //   onDragEnter: (evt) => enter(day, labelKey, evt),
-        //   onDragLeave: (evt) => leave(day, labelKey, evt),
-        //   onDrop: (evt) => drop(day, labelKey, evt),
-        // };
+        const dragEvents = {
+          onDrag: (evt: DragEvent<HTMLElement>) => drag(day, labelKey, evt),
+          onDragOver: (evt: DragEvent<HTMLElement>) => move(day, labelKey, evt),
+          onDragEnter: (evt: DragEvent<HTMLElement>) =>
+            enter(day, labelKey, evt),
+          onDragLeave: (evt: DragEvent<HTMLElement>) =>
+            leave(day, labelKey, evt),
+          onDrop: (evt: DragEvent<HTMLElement>) => drop(day, labelKey, evt),
+        };
         return "event" in day ? (
-          <CalendarEvent key={id} day={day} />
+          <CalendarEvent key={id} day={day} {...dragEvents} />
         ) : (
           <div
             key={id}
             className={`text-center ${commonDayStyle!(day.date).className}`}
             style={commonDayStyle!(day.date).props}
+            {...dragEvents}
           ></div>
         );
       })}
@@ -56,7 +60,7 @@ export default function CalendarRow<K, T extends IntervalWithDuration>({
   );
 }
 
-function mergeDaysAndEvent<T extends IntervalWithDuration>(
+function mergeDaysAndEvent<T extends CalendarItem>(
   days: Date[],
   events: T[],
   limit: Date

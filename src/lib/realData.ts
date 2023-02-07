@@ -172,6 +172,19 @@ const raw: RawModule[] = [
     },
   },
   {
+    id: "569cd8ed-16e2-444f-9634-e7aa3d9b8d62",
+    name: "JAVA AVANCEE Superp",
+    start: "1/5/2023",
+    end: "1/7/2023",
+    theme: "JAVA",
+    filiere: "I-221208-DIS-399-SOPRA-JAVA",
+    formateur: {
+      prenom: "Reuben",
+      nom: "McLaughlin",
+      mail: "McLaughlin_Reuben@hotmail.com",
+    },
+  },
+  {
     id: "66432815-2bc6-47bf-b4df-5f24ea5cbe93",
     name: "XML ET JSON",
     start: "1/10/2023",

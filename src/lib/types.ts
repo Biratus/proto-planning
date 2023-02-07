@@ -26,11 +26,15 @@ export interface Module {
   theme: string;
   filiere: string;
   formateur: Formateur;
-  overlap?: boolean;
-  overlappedModules?: Module[];
+  // overlap?: boolean;
+  // overlappedModules?: Module[];
 }
 
-export type ModuleEvent = Module & IntervalWithDuration;
+export type ModuleEvent = Module &
+  IntervalWithDuration & {
+    overlap?: boolean;
+    overlappedModules?: ModuleEvent[];
+  };
 
 export type CalendarView<K> = {
   key: string;

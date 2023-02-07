@@ -7,6 +7,7 @@ export default function useOnClickOutside(
 ) {
   useEffect(
     () => {
+      // console.log("useOnClickOutside effect");
       const listener = (event: any) => {
         // if the referenece is not present
         // or the target is descendant of the refefence
@@ -14,6 +15,9 @@ export default function useOnClickOutside(
         if (
           !ref.current ||
           ref.current.offsetParent === null ||
+          document
+            .defaultView!.getComputedStyle(ref.current, null)
+            .getPropertyValue("visibility") == "hidden" ||
           ref!.current.contains(event.target)
         ) {
           return;

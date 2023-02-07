@@ -119,27 +119,26 @@ export function moduleDayLabel({ start, end }: Interval) {
     : formatDayDate(start) + " - " + formatDayDate(end);
 }
 
-// export function checkOverlapModules(data: CalendarData<K, Module>[]) {
-//   for (let row of data) {
-//     let newEvents: ModuleEvent[] = [];
-//     for (let mod of row.events) {
-//       let overlap: ModuleEvent | undefined = undefined;
-//       for (let eventIndex in newEvents) {
-//         let event = newEvents[eventIndex];
-//         if (moduleOverlap(mod, event)) {
-//           overlap = overlap
-//             ? mergeModule(overlap, event)
-//             : mergeModule(event, mod);
-//           newEvents.splice(+eventIndex, 1);
-//         }
-//       }
-//       if (!overlap) newEvents.push(mod);
-//       else {
-//         overlap.duration = eachDayOfInterval(overlap).length;
-
-//         newEvents.push(overlap);
-//       }
-//     }
-//     row.events = newEvents;
-//   }
-// }
+export function checkOverlapModules<K>(data: CalendarData<K, ModuleEvent>[]) {
+  for (let row of data) {
+    let newEvents: ModuleEvent[] = [];
+    for (let mod of row.events) {
+      let overlap: ModuleEvent | undefined = undefined;
+      for (let eventIndex in newEvents) {
+        let event = newEvents[eventIndex];
+        if (moduleOverlap(mod, event)) {
+          overlap = overlap
+            ? mergeModule(overlap, event)
+            : mergeModule(event, mod);
+          newEvents.splice(+eventIndex, 1);
+        }
+      }
+      if (!overlap) newEvents.push(mod);
+      else {
+        overlap.duration = eachDayOfInterval(overlap).length;
+        newEvents.push(overlap);
+      }
+    }
+    row.events = newEvents;
+  }
+}
