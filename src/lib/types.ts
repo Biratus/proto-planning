@@ -26,8 +26,6 @@ export interface Module {
   theme: string;
   filiere: string;
   formateur: Formateur;
-  // overlap?: boolean;
-  // overlappedModules?: Module[];
 }
 
 export type ModuleEvent = Module &

@@ -1,16 +1,16 @@
 "use client";
 
 import { emptyStyle, Style } from "../styles";
-import { CalendarEvent as CalendarEventType } from "../types";
+import { CalendarEvent as CalendarEventType, CalendarItem } from "../types";
 import { useFullCalendarEvent } from "./FullCalendarProvider";
 
-export default function CalendarEvent<T extends Interval>({
+export default function CalendarEvent<T extends CalendarItem>({
   day: { date, event, span },
   ...props
 }: {
   day: CalendarEventType<T>;
 }) {
-  const { commonDayStyle, eventProps } = useFullCalendarEvent();
+  const { commonDayStyle, eventProps } = useFullCalendarEvent<T>();
   const {
     highlighted: eventHighlighted,
     highlightedProps,

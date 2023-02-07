@@ -53,7 +53,7 @@ export type CalendarProps<
   drag: DragEvents<K, T>;
 };
 
-export type CalendarRowProps<K, T extends IntervalWithDuration> = {
+export type CalendarRowProps<K, T extends CalendarItem> = {
   events: T[];
   labelProps: {
     key: K;

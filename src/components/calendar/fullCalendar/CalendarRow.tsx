@@ -19,7 +19,7 @@ export default function CalendarRow<K, T extends CalendarItem>({
     days,
     commonDayStyle,
     drag: { enter, leave, move, drop, drag },
-  } = useFullCalendarRow();
+  } = useFullCalendarRow<K, T>();
 
   const daysAndEvents = mergeDaysAndEvent(
     days!,
