@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { setSwitchPanel } from "./(calendar)/CalendarProvider";
-import { SwitchFormateurDrawerId } from "./(hover)/SwitchFormateurDrawer";
+import { SwitchFormateurDrawerId } from "./(hover)/SwitchFormateurModal";
 
 export default function SwitchPanelUI() {
   const switchPanel = useRef<HTMLInputElement>(null);

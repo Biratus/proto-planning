@@ -46,9 +46,6 @@ type CalendarHoverStore = {
   focus: Module | null;
   openMenu: (mod: Module, ref: HTMLElement) => void;
   closeMenu: () => void;
-
-  // Panel
-  switchFormateurPanelRef: React.RefObject<HTMLInputElement> | null;
 };
 
 const initialHoverProps = {
@@ -59,7 +56,6 @@ const initialHoverProps = {
 
 const calendarHoverStore = create<CalendarHoverStore>((set) => ({
   ...initialHoverProps,
-  switchFormateurPanelRef: null,
   openMenu: (mod: Module, ref: HTMLElement) =>
     set({ menuOpen: true, anchor: ref, focus: mod }),
   closeMenu: () => set({ menuOpen: false, anchor: null }),
@@ -67,7 +63,6 @@ const calendarHoverStore = create<CalendarHoverStore>((set) => ({
 
 export const resetHoverProps = () => {
   calendarHoverStore.setState((state) => ({ ...initialHoverProps }));
-  closeSwitchPanel();
 };
 
 export const usePopUpMenuProps = () =>
@@ -82,11 +77,3 @@ export const useHoverActions = () =>
     openMenu: state.openMenu,
     closeMenu: state.closeMenu,
   }));
-export const setSwitchPanel = (element: React.RefObject<HTMLInputElement>) => {
-  // calendarHoverStore.setState({ switchFormateurPanelRef: element });// ServerSide
-  calendarHoverStore().switchFormateurPanelRef = element; //ClientSide
-};
-
-export const closeSwitchPanel = () =>
-  (calendarHoverStore.getState().switchFormateurPanelRef!.current!.checked =
-    false);

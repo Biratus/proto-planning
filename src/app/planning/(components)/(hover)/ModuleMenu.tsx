@@ -6,7 +6,7 @@ import {
   useHoverActions,
   usePopUpMenuProps,
 } from "../(calendar)/CalendarProvider";
-import { SwitchFormateurDrawerId } from "./SwitchFormateurDrawer";
+import { SwitchFormateurModalId } from "./SwitchFormateurModal";
 
 type ModuleMenuProps = {
   switchFormateur: () => void;
@@ -36,7 +36,7 @@ export default function ModuleMenu({
     >
       <li>
         <label
-          htmlFor={SwitchFormateurDrawerId}
+          htmlFor={SwitchFormateurModalId}
           onClick={switchFormateur}
           className="drawer-button"
         >

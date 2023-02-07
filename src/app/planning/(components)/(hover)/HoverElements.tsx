@@ -8,7 +8,7 @@ import {
   useHoverActions,
 } from "../(calendar)/CalendarProvider";
 import ModuleMenu from "./ModuleMenu";
-import SwitchFormateurDrawer from "./SwitchFormateurDrawer";
+import SwitchFormateurModal from "./SwitchFormateurModal";
 
 export default function HoverElements() {
   const focusModule = useFocusModule();
@@ -38,8 +38,7 @@ export default function HoverElements() {
   return (
     <>
       <ModuleMenu switchFormateur={switchFormateur} splitModule={splitModule} />
-      {/* <SwitchFormateurModal module={focusModule} submit={submitSwitchForm} /> */}
-      <SwitchFormateurDrawer
+      <SwitchFormateurModal
         onClose={resetHoverProps}
         module={focusModule}
         submit={submitSwitchForm}
