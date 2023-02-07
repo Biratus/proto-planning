@@ -172,7 +172,7 @@ const raw: RawModule[] = [
     },
   },
   {
-    id: "569cd8ed-16e2-444f-9634-e7aa3d9b8d62",
+    id: "666",
     name: "JAVA AVANCEE Superp",
     start: "1/5/2023",
     end: "1/7/2023",

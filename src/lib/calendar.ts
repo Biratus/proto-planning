@@ -124,13 +124,14 @@ export function checkOverlapModules<K>(data: CalendarData<K, ModuleEvent>[]) {
     let newEvents: ModuleEvent[] = [];
     for (let mod of row.events) {
       let overlap: ModuleEvent | undefined = undefined;
-      for (let eventIndex in newEvents) {
-        let event = newEvents[eventIndex];
+      for (let i = 0; i < newEvents.length; i++) {
+        let event = newEvents[i];
         if (moduleOverlap(mod, event)) {
           overlap = overlap
             ? mergeModule(overlap, event)
             : mergeModule(event, mod);
-          newEvents.splice(+eventIndex, 1);
+          newEvents.splice(i, 1);
+          i--;
         }
       }
       if (!overlap) newEvents.push(mod);

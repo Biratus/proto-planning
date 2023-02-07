@@ -1,6 +1,6 @@
 "use client";
 
-import { Style } from "../styles";
+import { emptyStyle, Style } from "../styles";
 import { CalendarEvent as CalendarEventType } from "../types";
 import { useFullCalendarEvent } from "./FullCalendarProvider";
 
@@ -21,7 +21,7 @@ export default function CalendarEvent<T extends Interval>({
 
   const styleProps: Style = eventHighlighted(event)
     ? highlightedProps(event)
-    : { className: "" };
+    : emptyStyle();
 
   return (
     <div
@@ -37,6 +37,7 @@ export default function CalendarEvent<T extends Interval>({
       }}
       onClick={(evt) => onClick(event, evt.currentTarget)}
       {...props}
+      draggable
     >
       <span className="truncate">{label(event)}</span>
     </div>

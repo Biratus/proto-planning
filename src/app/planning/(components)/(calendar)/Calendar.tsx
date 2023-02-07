@@ -1,6 +1,7 @@
 "use client";
 import {
   calendarDayStyle,
+  emptyStyle,
   missingFormateurStyle,
   overlapModuleStyle,
 } from "@/components/calendar/styles";
@@ -65,7 +66,7 @@ export default function CommonCalendar({
         if (mod.overlap) return overlapModuleStyle;
         else if (isFormateurMissing(mod))
           return missingFormateurStyle(colorOf(mod.theme));
-        else return { className: "" };
+        else return emptyStyle();
       },
     },
     day: {

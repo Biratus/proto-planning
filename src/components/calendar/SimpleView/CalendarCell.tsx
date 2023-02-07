@@ -2,7 +2,7 @@
 
 import { formatDayDate } from "@/lib/date";
 import { isSameDay } from "date-fns";
-import { backgroundFor, Style } from "../styles";
+import { backgroundFor, emptyStyle, Style } from "../styles";
 import { CalendarItem, DayAndEvent } from "../types";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
@@ -34,7 +34,7 @@ export default function CalendarCell<T extends CalendarItem>({
 
   const highlightProps: Style = highlighted
     ? eventProps.highlightedProps(event)
-    : { className: "" };
+    : emptyStyle();
   return (
     <div
       className={`flex flex-col ${dayStyleProps(date).className}`}

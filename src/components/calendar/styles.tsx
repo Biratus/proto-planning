@@ -2,48 +2,28 @@ import { isSameDay, isWeekend } from "date-fns";
 
 export type Style = {
   className: string;
-  props?: any;
+  props: any;
 };
 
-export const monthLabel: Style = {
-  className: "font-bold",
-  props: {
-    background:
-      "linear-gradient(170deg, hsl(47, 49%, 61%) 0%, hsl(47, 49%, 61%) 9%, rgba(0,0,0,0) 50%)",
-  },
-};
+export function createStyle(className: string, props = {}): Style {
+  return { className, props };
+}
 
-// export const monthLabel = {
-//   color: "ajcBlue.dark",
-//   fontWeight: "bold",
-//   background:
-//     "linear-gradient(170deg, hsl(47, 49%, 61%) 0%, hsl(47, 49%, 61%) 9%, rgba(0,0,0,0) 50%)",
-// };
-export const day: Style = {
-  className: "border-gray-600 border-l",
-};
-// export const day = {
-//   borderLeft: "1px solid gray",
-// };
+export function emptyStyle() {
+  return createStyle("");
+}
 
-export const weekend: Style = {
-  className: "",
-  props: {
-    background:
-      "linear-gradient(170deg, #424242 0%, #424242 10%, #ffffff00 100%)",
-  },
-};
+export const monthLabel = createStyle("font-bold", {
+  background:
+    "linear-gradient(170deg, hsl(47, 49%, 61%) 0%, hsl(47, 49%, 61%) 9%, rgba(0,0,0,0) 50%)",
+});
 
-// export const weekend = {
-//   light: {
-//     background:
-//       "linear-gradient(170deg, #bdbdbd 0%, #bdbdbd 10%, #ffffff00 100%)",
-//   },
-//   dark: {
-//     background:
-//       "linear-gradient(170deg, #424242 0%, #424242 10%, #ffffff00 100%)",
-//   },
-// };
+export const day = createStyle("border-gray-600 border-l");
+
+export const weekend: Style = createStyle("", {
+  background:
+    "linear-gradient(170deg, #424242 0%, #424242 10%, #ffffff00 100%)",
+});
 
 export const backgroundFor = (date: Date, event: Interval, color: string) => {
   let isStart = isSameDay(date, event.start);
@@ -62,15 +42,13 @@ export const backgroundFor = (date: Date, event: Interval, color: string) => {
 
 export const missingFormateurStyle: (color: string) => Style = (
   eventColor: string
-) => ({
-  className: "",
-  props: {
+) =>
+  createStyle("", {
     background: `repeating-linear-gradient(30deg,
     transparent,
     ${eventColor} 20%,
     transparent 40%)`,
-  },
-});
+  });
 
 export const calendarDayStyle: (date: Date) => Style = (date: Date) => {
   let style = { ...day };
@@ -84,10 +62,7 @@ export const calendarDayStyle: (date: Date) => Style = (date: Date) => {
   return style;
 };
 
-export const overlapModuleStyle: Style = {
-  className: "white",
-  props: {
-    background: "black",
-    boxShadow: `0px 0px 0.7em 0.1em #D6C588 inset`,
-  },
-};
+export const overlapModuleStyle = createStyle("white", {
+  background: "black",
+  boxShadow: `0px 0px 0.7em 0.1em #D6C588 inset`,
+});

@@ -2,7 +2,7 @@
 import { useLegendStore } from "@/components/legend/Legend";
 import { Module, ModuleEvent } from "@/lib/types";
 import { eachDayOfInterval } from "date-fns";
-import { DragEvent, useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
   setDraggedModule,
   setOverlapToggle,
@@ -37,9 +37,8 @@ export default function OverlapModuleOverlay() {
     [focus]
   );
 
-  const dragStart = (evt: DragEvent<HTMLElement>) => {
-    console.log("dragStart");
-    setDraggedModule(focus!);
+  const dragStart = (mod: ModuleEvent) => {
+    setDraggedModule(mod);
     toggleRef.current!.checked = false;
   };
   return (
@@ -74,7 +73,7 @@ export default function OverlapModuleOverlay() {
                   marginLeft: `${dayOffset(mod) * cellWidth!}px`,
                 }}
                 draggable
-                onDragStart={dragStart}
+                onDragStart={() => dragStart(mod)}
                 //   onDragEnd={onClose}
               >
                 <span className="truncate">{mod.name}</span>

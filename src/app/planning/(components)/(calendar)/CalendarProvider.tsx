@@ -112,7 +112,9 @@ const dragStore = create<CalendarDragStore>((set, get) => ({
 
 export const setDraggedModule = (mod: ModuleEvent) =>
   dragStore.setState({ draggedModule: mod });
+
 export const getDraggedModule = () => dragStore((s) => s.draggedModule);
+
 export const useDropTarget = () => ({
   draggedModule: dragStore((s) => s.draggedModule),
   dropTarget: dragStore((s) => s.dropTarget),

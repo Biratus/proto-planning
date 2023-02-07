@@ -1,14 +1,14 @@
 "use client";
 
 import CalendarSimple from "@/components/calendar/SimpleView/CalendarSimple";
-import { calendarDayStyle } from "@/components/calendar/styles";
+import { calendarDayStyle, emptyStyle } from "@/components/calendar/styles";
 import { useLegendStore } from "@/components/legend/Legend";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { mapISO } from "@/lib/date";
-import { Formateur, Module, RawModule } from "@/lib/types";
+import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
 import { isWeekend } from "date-fns";
 import { useMemo } from "react";
 import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
@@ -26,7 +26,7 @@ export default function CalendarFormateur({
   data,
 }: CalendarFormateurProps) {
   const formateurData = useMemo(
-    () => mapISO<Module>(data, ["start", "end"]),
+    () => mapISO<ModuleEvent>(data, ["start", "end"]),
     [data]
   );
   //   console.log({ formateurData });
@@ -49,15 +49,15 @@ export default function CalendarFormateur({
         events={formateurData}
         zoom={zoom}
         eventProps={{
-          label: (mod: Module) => mod.name,
+          label: (mod: ModuleEvent) => mod.name,
           //   EventTooltip: FormateurView.EventTooltip,
-          color: (evt: Module) => colorOf(evt.theme),
+          color: (evt: ModuleEvent) => colorOf(evt.theme),
           onClick: () => {
             console.log("TODO");
             //openMenu,
           },
           highlighted: () => false,
-          highlightedProps: () => ({ className: "" }),
+          highlightedProps: () => emptyStyle(),
         }}
         dayProps={{
           tooltip: {
