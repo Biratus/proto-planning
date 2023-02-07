@@ -1,6 +1,6 @@
 "use client";
 
-import { Module } from "@/lib/types";
+import { Formateur, Module } from "@/lib/types";
 import { useCallback } from "react";
 import {
   resetHoverProps,
@@ -8,6 +8,7 @@ import {
   useHoverActions,
 } from "../(calendar)/CalendarProvider";
 import ModuleMenu from "./ModuleMenu";
+import SplitModuleModal from "./SplitModuleModal";
 import SwitchFormateurModal from "./SwitchFormateurModal";
 
 export default function HoverElements() {
@@ -35,6 +36,16 @@ export default function HoverElements() {
     },
     [focusModule]
   );
+  const submitSplitForm = useCallback(
+    async ({ split, formateurs }: { split: Date; formateurs: Formateur[] }) => {
+      console.log("submitSplitForm");
+      console.log({ split, formateurs });
+      // if(success)
+      resetHoverProps();
+      return true;
+    },
+    [focusModule]
+  );
   return (
     <>
       <ModuleMenu switchFormateur={switchFormateur} splitModule={splitModule} />
@@ -42,6 +53,11 @@ export default function HoverElements() {
         onClose={resetHoverProps}
         module={focusModule}
         submit={submitSwitchForm}
+      />
+      <SplitModuleModal
+        onClose={resetHoverProps}
+        module={focusModule}
+        submit={submitSplitForm}
       />
     </>
   );

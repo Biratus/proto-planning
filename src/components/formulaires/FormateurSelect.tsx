@@ -62,7 +62,7 @@ export default function FormateurSelect({
         {selected.prenom} {selected.nom} <User className="ml-1" />
       </label>
       <div
-        className="dropdown-content shadow rounded-box bg-base-100 w-full mt-1 p-5 border border-base-300"
+        className="dropdown-content shadow rounded-box bg-base-100 w-auto mt-1 p-5 border border-base-300"
         tabIndex={0}
       >
         {/* Disponible */}

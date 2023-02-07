@@ -6,8 +6,9 @@ import {
   useHoverActions,
   usePopUpMenuProps,
 } from "../(calendar)/CalendarProvider";
+import { SplitModuleModalId } from "./SplitModuleModal";
 import { SwitchFormateurModalId } from "./SwitchFormateurModal";
-
+2;
 type ModuleMenuProps = {
   switchFormateur: () => void;
   splitModule: () => void;
@@ -45,10 +46,14 @@ export default function ModuleMenu({
         </label>
       </li>
       <li onClick={splitModule}>
-        <a>
+        <label
+          htmlFor={SplitModuleModalId}
+          onClick={splitModule}
+          className="drawer-button"
+        >
           <Users className="mr-1" />
           Scinder le module
-        </a>
+        </label>
       </li>
     </ul>
   );

@@ -1,6 +1,7 @@
 import { Interval } from "@/components/calendar/types";
 import { areIntervalsOverlapping, formatISO, parseISO } from "date-fns";
 import { parse } from "./date";
+import { includesIgnoreCase } from "./strings";
 import { Formateur, Module, RawModule } from "./types";
 
 /* ----------------------
@@ -646,8 +647,8 @@ export function filterFormateur({
     let satisfies = true;
     if (
       search &&
-      !form.nom.toLowerCase().includes(search.toLowerCase()) &&
-      !form.prenom.toLowerCase().includes(search.toLowerCase())
+      !includesIgnoreCase(form.nom, search) &&
+      !includesIgnoreCase(form.prenom, search)
     )
       satisfies = false;
     // if(available && !formateurAvailable(form,available)) satisfies = false; // Wait for BDD

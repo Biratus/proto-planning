@@ -60,7 +60,7 @@ export default function SwitchFormateurModal({
           className="modal-box max-w-none w-2/5 h-full max-h-screen rounded-none"
           ref={modalRef}
         >
-          <h3 className="font-bold text-lg">{name}</h3>
+          <h3 className="font-bold text-lg text-center">{name}</h3>
           <div>Filière :{filiere}</div>
           <div>Début : {formatFullPrettyDate(start)}</div>
           <div>Fin : {formatFullPrettyDate(end)}</div>

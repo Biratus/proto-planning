@@ -3,6 +3,11 @@ import fr from "date-fns/locale/fr";
 import { upperFirst } from "./strings";
 
 const locale = { locale: fr };
+/*
+  --------
+    FORMATING
+  --------
+*/
 
 export function formatMonthYear(d: Date) {
   return upperFirst(format(d, "MMMM yyyy"));
@@ -32,9 +37,27 @@ export function formatFullPrettyDate(d: Date) {
   return `${formatFullDayLabel(d)} ${format(d, "d")} ${formatMonthYear(d)}`;
 }
 
+export function formatDateValue(d: Date) {
+  return format(d, "yyyy-MM-dd");
+}
+
+/*
+  --------
+    PARSING
+  --------
+*/
+
 export function parseMonthAndYear(monthStr: string) {
   return parse(monthStr, "MMMM yyyy");
 }
+export function parseDateValue(date: string) {
+  return parse(date, "yyyy-MM-dd");
+}
+/*
+  --------
+    FACADE
+  --------
+*/
 
 export function parse(d: string, format: string) {
   return dateFns.parse(d, format, new Date(), locale);
