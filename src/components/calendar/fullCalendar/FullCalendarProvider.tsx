@@ -37,7 +37,6 @@ const calendarStore: CreateFullCalendarStoreFuction = <
     days,
     eventProps,
     dayStyle,
-    // commonDayStyle,
     drag,
   }));
 
@@ -45,7 +44,6 @@ export default function FullCalendarProvider<K, T extends CalendarItem>({
   days,
   eventProps,
   dayStyle,
-  // commonDayStyle,
   drag,
   children,
 }: PropsWithChildren & FullCalendarProps<K, T>) {
@@ -80,7 +78,6 @@ export function useFullCalendarRow<
   return useStore(store, (state) => ({
     days: state.days,
     dayStyle: state.dayStyle,
-    // commonDayStyle: state.commonDayStyle,
     drag: state.drag,
   }));
 }

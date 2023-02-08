@@ -3,7 +3,7 @@
 import { formatDayDate } from "@/lib/date";
 import { isSameDay } from "date-fns";
 import { Style } from "../styles";
-import { CalendarItem, DayAndEvent } from "../types";
+import { CalendarEvent, CalendarItem } from "../types";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
 
@@ -11,7 +11,7 @@ export default function CalendarCell<T extends CalendarItem>({
   day: { date, event },
   forceEventLabel,
 }: {
-  day: DayAndEvent<T>;
+  day: CalendarEvent<T>;
   forceEventLabel: boolean;
 }) {
   const {

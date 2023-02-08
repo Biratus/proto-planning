@@ -102,7 +102,7 @@ export const openOverlapUI = calendarHoverStore.getState().openOverlapUI;
 
 interface CalendarDragStore {
   draggedModule: ModuleEvent | null;
-  dropTarget: Interval | null;
+  dropTarget: { row: any; interval: Interval } | null;
 }
 
 const dragStore = create<CalendarDragStore>((set, get) => ({
@@ -118,9 +118,12 @@ export const getDraggedModule = () => dragStore((s) => s.draggedModule);
 export const useDropTarget = () => ({
   draggedModule: dragStore((s) => s.draggedModule),
   dropTarget: dragStore((s) => s.dropTarget),
-  setDropTarget: (dropTarget: Interval) => dragStore.setState({ dropTarget }),
+  setDropTarget: (interval: Interval, row?: any) =>
+    dragStore.setState({ dropTarget: { interval, row } }),
   isDropTarget: (day: Date) =>
     dragStore.getState().dropTarget &&
-    isWithinInterval(day, dragStore.getState().dropTarget!),
-  cleanDropTarget: () => dragStore.setState({ dropTarget: null }),
+    isWithinInterval(day, dragStore.getState().dropTarget!.interval),
+  cleanDropTarget: () => {
+    dragStore.setState({ dropTarget: null });
+  },
 });

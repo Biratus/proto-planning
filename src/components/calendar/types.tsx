@@ -17,6 +17,8 @@ export type Month = {
   nbOfDays: number;
 };
 
+export type TimeProps = { start: Date; monthLength: number };
+
 export type DayProps = {
   tooltip: { hasTooltip: (day: Date) => boolean; tooltipInfo: any };
   styleProps: (day: Date) => Style;
@@ -35,7 +37,7 @@ export type CalendarData<K, T extends Interval> = {
 
 export type CommonCalendarProps<T> = {
   EventTooltip?: React.FC;
-  time: { start: Date; monthLength: number };
+  time: TimeProps;
   day: DayProps;
   zoom: number;
   event: EventProps<T>; // eventProps
@@ -62,33 +64,33 @@ export type CalendarRowProps<K, T extends CalendarItem> = {
 
 export type CalendarEvent<T> = {
   date: Date;
-  event: T;
+  event?: T;
   span: number;
 };
 
 export type DragEvents<K, T extends CalendarItem> = {
   drag: (
-    dayAndEvent: DayAndEvent<T>,
+    dayAndEvent: CalendarEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
   enter: (
-    dayAndEvent: DayAndEvent<T>,
+    dayAndEvent: CalendarEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
   leave: (
-    dayAndEvent: DayAndEvent<T>,
+    dayAndEvent: CalendarEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
   drop: (
-    dayAndEvent: DayAndEvent<T>,
+    dayAndEvent: CalendarEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
   move: (
-    dayAndEvent: DayAndEvent<T>,
+    dayAndEvent: CalendarEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
@@ -134,15 +136,10 @@ export type SimpleEventProps<T> = {
 };
 
 export type CalendarSimpleProps<T extends CalendarItem> = {
-  time: { start: Date; monthLength: number };
+  time: TimeProps;
   events: T[];
   zoom: number;
   eventProps: SimpleEventProps<T>;
   dayProps: DayProps;
   style?: Style;
-};
-
-export type DayAndEvent<T extends CalendarItem> = {
-  date: Date;
-  event?: T;
 };

@@ -52,7 +52,6 @@ export default function CalendarRow<K, T extends CalendarItem>({
             key={id}
             className={`text-center ${dayStyle!(day.date).className}`}
             style={dayStyle!(day.date).props}
-            draggable
             {...dragEvents}
           ></div>
         );
@@ -65,7 +64,7 @@ function mergeDaysAndEvent<T extends CalendarItem>(
   days: Date[],
   events: T[],
   limit: Date
-): (CalendarEventType<T> | { date: Date })[] {
+): CalendarEventType<T>[] {
   function eventOf(d: Date) {
     for (let evt of events) {
       let { start, end } = evt;
@@ -94,7 +93,7 @@ function mergeDaysAndEvent<T extends CalendarItem>(
           : evt.duration;
       currSkip = span - 1;
       newDays.push({ date: d, event: evt, span });
-    } else newDays.push({ date: d });
+    } else newDays.push({ date: d, span: 1 });
   }
   return newDays;
 }

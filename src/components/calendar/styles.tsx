@@ -60,6 +60,8 @@ export const overlapModuleStyle = createStyle("white", {
   boxShadow: `0px 0px 0.7em 0.1em #D6C588 inset`,
 });
 
+export const dropTargetStyle = createStyle("", { background: "#D6C588" });
+
 // For FullCalendarView
 export const eventStyle: (c: string) => Style = (color: string) =>
   mergeStyle(day, {
