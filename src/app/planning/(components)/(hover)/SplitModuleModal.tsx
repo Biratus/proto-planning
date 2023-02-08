@@ -25,7 +25,7 @@ export default function SplitModuleModal({
       toggleRef.current.checked = false;
       onClose();
     }
-  }, []);
+  }, [onClose]);
 
   if (module) {
     formateursOfModule.current = [module.formateur, module.formateur];

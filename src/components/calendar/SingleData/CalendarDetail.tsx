@@ -71,7 +71,7 @@ export default function CalendarDetail<T extends Interval>({
     }
 
     return eventsComp;
-  }, [events, AdditionalInfo]);
+  }, [events, eventProps, AdditionalInfo]);
   return (
     <div className={style?.className} style={{ ...style?.props }}>
       <div

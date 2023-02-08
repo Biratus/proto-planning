@@ -17,10 +17,6 @@ export const zoom_calendar_full = "zoom_calendar_full";
 export const zoom_calendar_filiere = "zoom_calendar_filiere";
 export const zoom_calendar_formateur = "zoom_calendar_formateur";
 
-// const emptyState = (set) => ({
-//   value: null,
-//   setValue: (newValue) => set({ value: newValue }),
-// });
 interface LocalStorageProps<T> {
   value: T;
 }
@@ -46,11 +42,6 @@ const allStorages = new Map([
   [zoom_calendar_filiere, useLocalStorage(zoom_calendar_filiere, 5)],
   [zoom_calendar_formateur, useLocalStorage(zoom_calendar_formateur, 5)],
 ]);
-// const allStorages = {
-//   [zoom_calendar_full]: useLocalStorage(zoom_calendar_full, 2),
-//   [zoom_calendar_filiere]: useLocalStorage(zoom_calendar_filiere, 5),
-//   [zoom_calendar_formateur]: useLocalStorage(zoom_calendar_formateur, 5),
-// };
 
 export const useLocalStorageAfterHydration =
   (storageKey: string) => (selector?: any, compare?: any) => {

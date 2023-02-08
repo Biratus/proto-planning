@@ -76,7 +76,7 @@ export default function CalendarFormateur({
         );
       }
     },
-    [draggedModule, dropTarget]
+    [draggedModule, dropTarget, props.time]
   );
 
   const dropModule = useCallback(() => {
@@ -91,7 +91,7 @@ export default function CalendarFormateur({
       return newModules;
     });
     cleanDropTarget();
-  }, [modules, dropTarget]);
+  }, [modules, dropTarget, draggedModule]);
 
   return (
     <>

@@ -42,14 +42,17 @@ export default function FormateurSelect({
         available: evt.target.checked ? moduleInterval : undefined,
       }));
     },
-    []
+    [moduleInterval]
   );
-  const ableFormateurs = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
-    setSearchProps((prev) => ({
-      ...prev,
-      able: evt.target.checked ? forModule : undefined,
-    }));
-  }, []);
+  const ableFormateurs = useCallback(
+    (evt: ChangeEvent<HTMLInputElement>) => {
+      setSearchProps((prev) => ({
+        ...prev,
+        able: evt.target.checked ? forModule : undefined,
+      }));
+    },
+    [forModule]
+  );
 
   const changeFormateur = (f: Formateur) => {
     setSelected(f);

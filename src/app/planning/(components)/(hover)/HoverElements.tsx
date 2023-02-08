@@ -35,7 +35,7 @@ export default function HoverElements() {
   const submitSplitForm = useCallback(
     async ({ split, formateurs }: { split: Date; formateurs: Formateur[] }) => {
       console.log("submitSplitForm");
-      console.log({ split, formateurs });
+      console.log({ split, formateurs, focusModule });
       // if(success)
       resetHoverProps();
       return true;

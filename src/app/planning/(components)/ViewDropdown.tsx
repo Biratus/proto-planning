@@ -30,7 +30,7 @@ export default function ViewDropdown({ view: viewParam = FiliereView.key }) {
           selected: view == views[k],
         };
       }),
-    [view]
+    [view, params, path, router]
   );
 
   return <Dropdown label="Changer de vue" actions={viewActions} />;

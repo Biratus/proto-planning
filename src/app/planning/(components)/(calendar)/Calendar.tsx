@@ -41,59 +41,64 @@ export default function CommonCalendar({
   const { open: openPopupMenu } = usePopUpMenu();
 
   // Props passed to Calendar
-  const commonProps: CommonCalendarProps<ModuleEvent> = {
-    zoom,
-    time: { start: month, monthLength },
-    event: {
-      label: (mod: ModuleEvent) => {
-        if (mod.overlap)
-          return (
-            <AlertTriangle
-              color="red"
-              className={mod.duration != 1 ? "ml-2" : ""}
-            />
-          );
-        else return mod.duration == 1 ? "" : mod.name;
+  const commonProps: CommonCalendarProps<ModuleEvent> = useMemo(
+    () => ({
+      zoom,
+      time: { start: month, monthLength },
+      event: {
+        label: (mod: ModuleEvent) => {
+          if (mod.overlap)
+            return (
+              <AlertTriangle
+                color="red"
+                className={mod.duration != 1 ? "ml-2" : ""}
+              />
+            );
+          else return mod.duration == 1 ? "" : mod.name;
+        },
+        onClick: (mod, ref) => {
+          if (mod.overlap) {
+            openOverlapUI(mod, ref);
+          } else openPopupMenu(mod, ref);
+        },
+        style: (mod: ModuleEvent) => {
+          let style = eventStyle(colorOf(mod.theme));
+          if (mod.overlap) {
+            style = mergeStyle(style, overlapModuleStyle);
+          } else if (isFormateurMissing(mod)) {
+            style = mergeStyle(
+              style,
+              missingFormateurStyle(colorOf(mod.theme))
+            );
+          }
+          return style;
+        },
       },
-      onClick: (mod, ref) => {
-        if (mod.overlap) {
-          openOverlapUI(mod, ref);
-        } else openPopupMenu(mod, ref);
+      day: {
+        tooltip: {
+          hasTooltip: isJoursFeries,
+          tooltipInfo: getJourFerie,
+        },
+        styleProps: (date: Date) => {
+          let style = {
+            ...calendarDayStyle(date),
+          };
+          if (isJoursFeries(date)) style.className = "text-red-600";
+          return style;
+        },
       },
-      style: (mod: ModuleEvent) => {
-        let style = eventStyle(colorOf(mod.theme));
-        if (mod.overlap) {
-          style = mergeStyle(style, overlapModuleStyle);
-        } else if (isFormateurMissing(mod)) {
-          style = mergeStyle(style, missingFormateurStyle(colorOf(mod.theme)));
-        }
-        return style;
-      },
-    },
-    day: {
-      tooltip: {
-        hasTooltip: isJoursFeries,
-        tooltipInfo: getJourFerie,
-      },
-      styleProps: (date: Date) => {
-        let style = {
-          ...calendarDayStyle(date),
-        };
-        if (isJoursFeries(date)) style.className = "text-red-600";
-        return style;
-      },
-    },
-    // commonDayStyle: calendarDayStyle,
-  };
+    }),
+    [month, monthLength]
+  );
 
   const calendarFiliere = useMemo(
     () => <CalendarFiliere modules={modules} {...commonProps} />,
-    [modules, month, zoom]
+    [modules, month, zoom, commonProps]
   );
 
   const calendarFormateur = useMemo(
     () => <CalendarFormateur modules={modules} {...commonProps} />,
-    [modules, month, zoom]
+    [modules, month, zoom, commonProps]
   );
 
   return (

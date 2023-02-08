@@ -25,7 +25,7 @@ export default function SwitchFormateurModal({
       toggleRef.current.checked = false;
       onClose();
     }
-  }, []);
+  }, [onClose]);
 
   if (module) formateurRef.current = module.formateur;
 

@@ -17,7 +17,7 @@ export default function FastSelectMonth({
 }) {
   const months = useMemo(
     () => generateMonthList(min, max, focusedMonth),
-    [focusedMonth]
+    [min, max, focusedMonth]
   );
 
   const monthsActions = months.map((m) => ({
@@ -28,25 +28,6 @@ export default function FastSelectMonth({
 
   return (
     <Dropdown label="Aller au mois..." actions={monthsActions} compact={true} />
-    // <div className="dropdown">
-    //   <label
-    //     tabIndex={0}
-    //     className={`btn m-1 btn-outline ${disabled ? "btn-disabled" : ""}`}
-    //   >
-    //     <span className="mx-1">Aller au mois...</span>
-    //     <ChevronDown />
-    //   </label>
-    //   <ul
-    //     tabIndex={0}
-    //     className="dropdown-content menu menu-compact p-2 shadow bg-base-100 rounded-box w-52"
-    //   >
-    //     {monthsActions.map(({ label, onClick, selected }) => (
-    //       <li onClick={onClick} key={label}>
-    //         <a className={selected ? `active` : ``}>{label}</a>
-    //       </li>
-    //     ))}
-    //   </ul>
-    // </div>
   );
 }
 

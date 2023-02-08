@@ -21,7 +21,7 @@ export default function CalendarRow<T extends Interval>({
     (evt: MouseEvent<HTMLElement>) => {
       onClick(event, evt.currentTarget);
     },
-    [onClick]
+    [onClick, event]
   );
   return (
     <>

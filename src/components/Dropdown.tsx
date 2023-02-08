@@ -14,7 +14,7 @@ export default function Dropdown({
 }: {
   label: string;
   actions: DropdownAction[];
-  compact: boolean;
+  compact?: boolean;
 }) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const itemClick = useCallback(
