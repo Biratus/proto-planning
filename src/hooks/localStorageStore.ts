@@ -2,13 +2,13 @@
 import { HydrationContext } from "@/components/AfterHydration";
 import { useContext } from "react";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 /**
  * 
  * Si on veut ajouter un lien vers une clé du localStorage
  * 1. Ajouter une constante de la clé (i.e. zoom_calendar_full)
- * 2. Ajouterune propriété dans allStorages (i.e.   [zoom_calendar_full]: useLocalStorage(zoom_calendar_full, 2),
+ * 2. Ajouter une propriété dans defaultPlanningStorage (i.e.   [zoom_calendar_full]: 2 et dans le type PlanningStorage,
 )
  * 
  */
@@ -17,43 +17,57 @@ export const zoom_calendar_full = "zoom_calendar_full";
 export const zoom_calendar_filiere = "zoom_calendar_filiere";
 export const zoom_calendar_formateur = "zoom_calendar_formateur";
 
-interface LocalStorageProps<T> {
-  value: T;
-}
-export interface LocalStorageState<T> extends LocalStorageProps<T> {
-  setValue: (newValue: T) => void;
+interface PlanningStorage {
+  [zoom_calendar_full]: number;
+  [zoom_calendar_filiere]: number;
+  [zoom_calendar_formateur]: number;
+  set(partial: Partial<Omit<PlanningStorage, "set">>): void;
 }
 
-const useLocalStorage = (key: string, initialValue: any) =>
-  create<LocalStorageState<typeof initialValue>>()(
+const defaultPlanningStorage = {
+  [zoom_calendar_full]: 2,
+  [zoom_calendar_filiere]: 5,
+  [zoom_calendar_formateur]: 5,
+};
+
+const usePersistedStore = create<PlanningStorage>()(
+  devtools(
     persist(
       (set) => ({
-        value: initialValue,
-        setValue: (newValue) => set({ value: newValue }),
+        ...defaultPlanningStorage,
+        set(partial) {
+          set(partial);
+        },
       }),
       {
-        name: key,
-        partialize: (state) => ({ value: state.value }),
+        name: "planningZooms", // needs to be Dynamic
+        partialize: (state) => ({
+          [zoom_calendar_full]: state[zoom_calendar_full],
+          [zoom_calendar_filiere]: state[zoom_calendar_filiere],
+          [zoom_calendar_formateur]: state[zoom_calendar_formateur],
+        }),
       }
     )
-  );
-const allStorages = new Map([
-  [zoom_calendar_full, useLocalStorage(zoom_calendar_full, 2)],
-  [zoom_calendar_filiere, useLocalStorage(zoom_calendar_filiere, 5)],
-  [zoom_calendar_formateur, useLocalStorage(zoom_calendar_formateur, 5)],
-]);
+  )
+);
 
-export const useLocalStorageAfterHydration =
-  (storageKey: string) => (selector?: any, compare?: any) => {
-    const { isHydrated } = useContext(HydrationContext);
-    if (!allStorages.has(storageKey))
-      throw new Error(`${storageKey} n'est pas défini dans localStorageStore`);
-    const store = allStorages.get(storageKey)!(selector, compare);
+const useStore = ((selector, compare) => {
+  const store = usePersistedStore(selector, compare);
+  const { isHydrated } = useContext(HydrationContext);
+  return isHydrated
+    ? store
+    : selector({
+        ...defaultPlanningStorage,
+        set() {
+          /**/
+        },
+      });
+}) as typeof usePersistedStore;
+useStore.getState = usePersistedStore.getState;
 
-    return isHydrated
-      ? store
-      : selector((set: any) => ({
-          value: null,
-          setValue: (newValue: any) => set({ value: newValue }),
-        }));
-  };
+export const useSpecialStore = (key: string) => {
+  return useStore((s) => ({
+    value: s[key as keyof PlanningStorage] as number,
+    setValue: (nv: number) => s.set({ [key]: nv }),
+  }));
+};

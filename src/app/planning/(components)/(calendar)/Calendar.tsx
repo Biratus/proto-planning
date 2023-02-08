@@ -37,7 +37,7 @@ export default function CommonCalendar({
 
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
-  const zoom = useZoom((s) => s.value);
+  const { zoom } = useZoom();
   const { open: openPopupMenu } = usePopUpMenu();
 
   // Props passed to Calendar
@@ -88,7 +88,7 @@ export default function CommonCalendar({
         },
       },
     }),
-    [month, monthLength]
+    [zoom, month, monthLength]
   );
 
   const calendarFiliere = useMemo(

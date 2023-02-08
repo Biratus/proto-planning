@@ -12,7 +12,7 @@ export default function CalendarEvent<T extends CalendarItem>({
 }) {
   const { onClick, style, label } = useFullCalendarEvent<T>();
 
-  const styleProps: Style = style(event);
+  const styleProps: Style = style(event!);
 
   return (
     <div
@@ -21,11 +21,11 @@ export default function CalendarEvent<T extends CalendarItem>({
         gridColumnEnd: `span ${span}`,
         ...styleProps.props,
       }}
-      onClick={(evt) => onClick(event, evt.currentTarget)}
+      onClick={(evt) => onClick(event!, evt.currentTarget)}
       {...props}
       draggable
     >
-      <span className="truncate">{label(event)}</span>
+      <span className="truncate">{label(event!)}</span>
     </div>
   );
 }

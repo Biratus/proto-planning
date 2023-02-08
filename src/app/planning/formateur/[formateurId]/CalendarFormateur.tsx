@@ -18,8 +18,6 @@ import { useMemo } from "react";
 import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
-const viewWidth = 50;
-
 type CalendarFormateurProps = {
   formateur: Formateur;
   data: RawModule[];
@@ -37,7 +35,7 @@ export default function CalendarFormateur({
   //   const {openMenu} = useCalendarMenu();
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
-  const zoom = useZoom((s) => s.value);
+  const { zoom } = useZoom();
 
   return (
     <div className="flex flex-col gap-2 items-center">

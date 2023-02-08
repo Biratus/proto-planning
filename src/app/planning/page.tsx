@@ -1,4 +1,3 @@
-import AfterHydration from "@/components/AfterHydration";
 import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigationProvider";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
 import ZoomProvider from "@/components/zoom/ZoomProvider";
@@ -19,9 +18,7 @@ export default function page({ searchParams: { date, view } }: any) {
       <ViewDropdown view={view} />
       <MonthNavigationUI />
       <ZoomProvider zoomKey={zoom_calendar_full}>
-        <AfterHydration>
-          <CommonCalendar modules={modules} view={view} />
-        </AfterHydration>
+        <CommonCalendar modules={modules} view={view} />
       </ZoomProvider>
     </MonthNavigationProvider>
   );

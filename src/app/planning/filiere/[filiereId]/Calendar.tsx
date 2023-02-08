@@ -26,7 +26,7 @@ export default function CalendarFiliere({
   const filiereData = mapISO<Module>(modules, ["start", "end"]);
   const colorOf = useLegendStore((state) => state.colorOf);
 
-  const zoom = useZoom((s) => s.value);
+  const { zoom } = useZoom();
   //   const { openMenu } = useCalendar();
 
   return (

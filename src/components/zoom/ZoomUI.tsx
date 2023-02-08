@@ -4,7 +4,7 @@ import { ZoomIn, ZoomOut } from "react-feather";
 import { useZoom } from "./ZoomProvider";
 
 export default function ZoomUI({ range }: { range: number }) {
-  const { value: zoom, setValue: setZoom } = useZoom();
+  const { zoom, setZoom } = useZoom();
 
   const incZoom = useCallback(() => setZoom(zoom + 1), [zoom]);
   const decZoom = useCallback(() => setZoom(zoom - 1), [zoom]);

@@ -12,19 +12,24 @@ import CalendarFormateur from "./CalendarFormateur";
 const monthStart = startOfMonth(startOfToday());
 const monthLength = 3;
 
+type FormateurPageProps = {
+  params?: { formateurId: string };
+  searchParams?: { date: string };
+};
+
 export default function FormateurPage({
-  params: { formateurId },
-  searchParams: { date: monthParam },
-}: {
-  params: { formateurId: string };
-  searchParams: { date: string };
-}) {
-  if (!formateurs.has(decodeURIComponent(formateurId))) {
+  params,
+  searchParams,
+}: FormateurPageProps) {
+  if (!params || !formateurs.has(decodeURIComponent(params.formateurId))) {
     notFound();
   }
 
-  const formateur = formateurs.get(decodeURIComponent(formateurId))!;
-  const month = monthParam ? parseMonthAndYear(monthParam) : monthStart;
+  const formateur = formateurs.get(decodeURIComponent(params.formateurId))!;
+  const month =
+    searchParams && searchParams.date
+      ? parseMonthAndYear(searchParams.date)
+      : monthStart;
 
   const modules = getModulesOfFormateur(formateur.mail, {
     start: month,
