@@ -6,11 +6,11 @@ import CalendarRow from "./CalendarRow";
 
 export default function CalendarDetail<T extends Interval>({
   style,
+  eventProps,
   events,
   cellHeight,
   additionalLabel,
   AdditionalInfo,
-  context,
 }: CalendarDetailProps<T>) {
   const dayNb = events.reduce(
     (acc, { start, end }) => acc + nbOfDaysBetween(start, end),
@@ -50,7 +50,7 @@ export default function CalendarDetail<T extends Interval>({
         <CalendarRow
           event={event}
           key={i}
-          context={context}
+          eventProps={eventProps}
           AdditionalInfo={AdditionalInfo}
         />
       );
@@ -71,7 +71,7 @@ export default function CalendarDetail<T extends Interval>({
     }
 
     return eventsComp;
-  }, [events, AdditionalInfo, context]);
+  }, [events, AdditionalInfo]);
   return (
     <div className={style?.className} style={{ ...style?.props }}>
       <div

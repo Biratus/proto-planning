@@ -105,21 +105,19 @@ export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
  
 */
 
-export type CalendarDetailContext<T> = EventProps<T>;
-
 export type CalendarDetailProps<T extends Interval> = {
   style?: Style;
   additionalLabel: string;
   AdditionalInfo: React.FC<{ event: T }>;
   cellHeight: string;
   events: T[];
-  context: React.Context<CalendarDetailContext<T>>;
+  eventProps: EventProps<T>;
 };
 
 export type CalendarDetailRowProps<T extends Interval> = {
   event: T;
-  context: React.Context<CalendarDetailContext<T>>;
   AdditionalInfo: React.FC<{ event: T }>;
+  eventProps: EventProps<T>;
 };
 
 /*

@@ -2,7 +2,6 @@
 
 import CalendarDetail from "@/components/calendar/SingleData/CalendarDetail";
 import { missingFormateurStyle } from "@/components/calendar/styles";
-import { CalendarDetailContext } from "@/components/calendar/types";
 import { useLegendStore } from "@/components/legend/Legend";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
@@ -10,7 +9,6 @@ import { mapISO } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
 import { Module, RawModule } from "@/lib/types";
 import Link from "next/link";
-import { createContext, useRef } from "react";
 import { User } from "react-feather";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
@@ -30,24 +28,7 @@ export default function CalendarFiliere({
 
   const zoom = useZoom((s) => s.value);
   //   const { openMenu } = useCalendar();
-  const FiliereContext = useRef(
-    createContext<CalendarDetailContext<Module>>({
-      style: (mod: Module) => {
-        if (mod.name == "INIT BDD ET SQL") debugger;
-        return isFormateurMissing(mod)
-          ? missingFormateurStyle(colorOf(mod.theme))
-          : {
-              className: "",
-              props: { backgroundColor: colorOf(mod.theme) },
-            };
-      },
-      onClick: (mod: Module) => {
-        console.log("TODO onClick", mod);
-        //openMenu()
-      },
-      label: (mod: Module) => mod.name,
-    })
-  ).current;
+
   return (
     <div className="flex flex-col justify-center items-center gap-4">
       <h2 className="text-center">{name}</h2>
@@ -59,8 +40,10 @@ export default function CalendarFiliere({
         </button>
       </div>
       <div style={{ width: `${viewWidth + zoom * 10}%` }}>
-        <FiliereContext.Provider
-          value={{
+        <CalendarDetail
+          cellHeight={`${minCellHeight + zoom * zoomCoef}em`}
+          events={filiereData}
+          eventProps={{
             style: (mod: Module) => {
               return isFormateurMissing(mod)
                 ? missingFormateurStyle(colorOf(mod.theme))
@@ -75,15 +58,9 @@ export default function CalendarFiliere({
             },
             label: (mod: Module) => mod.name,
           }}
-        >
-          <CalendarDetail
-            context={FiliereContext}
-            cellHeight={`${minCellHeight + zoom * zoomCoef}em`}
-            events={filiereData}
-            additionalLabel="Formateur"
-            AdditionalInfo={FormateurSimple}
-          />
-        </FiliereContext.Provider>
+          additionalLabel="Formateur"
+          AdditionalInfo={FormateurSimple}
+        />
       </div>
     </div>
   );

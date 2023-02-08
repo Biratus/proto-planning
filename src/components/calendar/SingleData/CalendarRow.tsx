@@ -1,17 +1,17 @@
 import { moduleDayLabel } from "@/lib/calendar";
 import { eachDayOfInterval } from "date-fns";
-import { MouseEvent, useCallback, useContext } from "react";
+import { MouseEvent, useCallback } from "react";
 import { Style } from "../styles";
 import { CalendarDetailRowProps, Interval } from "../types";
 
 export default function CalendarRow<T extends Interval>({
   event,
   AdditionalInfo,
-  context,
+  eventProps,
 }: CalendarDetailRowProps<T>) {
   const { start, end } = event;
 
-  const { style, onClick, label } = useContext(context);
+  const { style, onClick, label } = eventProps;
 
   let dayNb = eachDayOfInterval({ start, end }).length;
 
