@@ -17,7 +17,7 @@ export default function CalendarRow<K, T extends CalendarItem>({
 }: CalendarRowProps<K, T>) {
   const {
     days,
-    commonDayStyle,
+    dayStyle,
     drag: { enter, leave, move, drop, drag },
   } = useFullCalendarRow<K, T>();
 
@@ -50,8 +50,8 @@ export default function CalendarRow<K, T extends CalendarItem>({
         ) : (
           <div
             key={id}
-            className={`text-center ${commonDayStyle!(day.date).className}`}
-            style={commonDayStyle!(day.date).props}
+            className={`text-center ${dayStyle!(day.date).className}`}
+            style={dayStyle!(day.date).props}
             draggable
             {...dragEvents}
           ></div>

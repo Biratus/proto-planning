@@ -2,7 +2,7 @@
 
 import { formatDayDate } from "@/lib/date";
 import { isSameDay } from "date-fns";
-import { backgroundFor, emptyStyle, Style } from "../styles";
+import { Style } from "../styles";
 import { CalendarItem, DayAndEvent } from "../types";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
@@ -28,13 +28,9 @@ export default function CalendarCell<T extends CalendarItem>({
     return date.getDay() || 7;
   };
 
-  const highlighted = event && eventProps.highlighted(event);
-
   const Day = <div className="p-2">{formatDayDate(date)}</div>;
 
-  const highlightProps: Style = highlighted
-    ? eventProps.highlightedProps(event)
-    : emptyStyle();
+  const styleProps: Style = eventProps.style(date, event);
   return (
     <div
       className={`flex flex-col ${dayStyleProps(date).className}`}
@@ -54,14 +50,9 @@ export default function CalendarCell<T extends CalendarItem>({
 
       {event && (
         <div
-          className={`pl-2 flex-grow cursor-pointer flex items-center ${highlightProps.className}`}
+          className={`pl-2 flex-grow cursor-pointer flex items-center ${styleProps.className}`}
           style={{
-            background: `${backgroundFor(
-              date,
-              event,
-              eventProps.color(event)
-            )}`,
-            ...highlightProps.props,
+            ...styleProps.props,
           }}
           onMouseEnter={hoverMe!}
           onMouseLeave={unHoverMe!}

@@ -19,7 +19,7 @@ export default function CalendarMonth<T extends CalendarItem>({
     () => (
       <>
         <div
-          className={`col-span-7 p-1 top-11 ${monthLabel.className}`}
+          className={`col-span-7 p-4 ${monthLabel.className}`}
           style={monthLabel.props}
         >
           {formatMonthYear(days[0].date)}

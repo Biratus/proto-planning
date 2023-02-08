@@ -32,11 +32,17 @@ export default function CalendarFiliere({
   //   const { openMenu } = useCalendar();
   const FiliereContext = useRef(
     createContext<CalendarDetailContext<Module>>({
-      color: (mod: Module) => colorOf(mod.theme),
-      eventHighlighted: isFormateurMissing,
-      highlightedProps: missingFormateurStyle,
+      style: (mod: Module) => {
+        if (mod.name == "INIT BDD ET SQL") debugger;
+        return isFormateurMissing(mod)
+          ? missingFormateurStyle(colorOf(mod.theme))
+          : {
+              className: "",
+              props: { backgroundColor: colorOf(mod.theme) },
+            };
+      },
       onClick: (mod: Module) => {
-        console.log("TODO onClick", module);
+        console.log("TODO onClick", mod);
         //openMenu()
       },
       label: (mod: Module) => mod.name,
@@ -55,11 +61,16 @@ export default function CalendarFiliere({
       <div style={{ width: `${viewWidth + zoom * 10}%` }}>
         <FiliereContext.Provider
           value={{
-            color: ({ theme }: Module) => colorOf(theme),
-            eventHighlighted: isFormateurMissing,
-            highlightedProps: missingFormateurStyle,
+            style: (mod: Module) => {
+              return isFormateurMissing(mod)
+                ? missingFormateurStyle(colorOf(mod.theme))
+                : {
+                    className: "",
+                    props: { backgroundColor: colorOf(mod.theme) },
+                  };
+            },
             onClick: (mod: Module) => {
-              console.log("TODO onClick", module);
+              console.log("TODO onClick", mod);
               //openMenu()
             },
             label: (mod: Module) => mod.name,

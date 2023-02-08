@@ -1,7 +1,8 @@
 "use client";
 import {
   calendarDayStyle,
-  emptyStyle,
+  eventStyle,
+  mergeStyle,
   missingFormateurStyle,
   overlapModuleStyle,
 } from "@/components/calendar/styles";
@@ -54,19 +55,19 @@ export default function CommonCalendar({
           );
         else return mod.duration == 1 ? "" : mod.name;
       },
-      color: (mod: ModuleEvent) => colorOf(mod.theme),
       onClick: (mod, ref) => {
         if (mod.overlap) {
           openOverlapUI(mod, ref);
         } else openPopupMenu(mod, ref);
       },
-      highlighted: (mod: ModuleEvent) =>
-        isFormateurMissing(mod) || mod.overlap == true,
-      highlightedProps: (mod: ModuleEvent) => {
-        if (mod.overlap) return overlapModuleStyle;
-        else if (isFormateurMissing(mod))
-          return missingFormateurStyle(colorOf(mod.theme));
-        else return emptyStyle();
+      style: (mod: ModuleEvent) => {
+        let style = eventStyle(colorOf(mod.theme));
+        if (mod.overlap) {
+          style = mergeStyle(style, overlapModuleStyle);
+        } else if (isFormateurMissing(mod)) {
+          style = mergeStyle(style, missingFormateurStyle(colorOf(mod.theme)));
+        }
+        return style;
       },
     },
     day: {
@@ -82,7 +83,7 @@ export default function CommonCalendar({
         return style;
       },
     },
-    commonDayStyle: calendarDayStyle,
+    // commonDayStyle: calendarDayStyle,
   };
 
   const calendarFiliere = useMemo(
@@ -94,8 +95,6 @@ export default function CommonCalendar({
     () => <CalendarFormateur modules={modules} {...commonProps} />,
     [modules, month, zoom]
   );
-
-  // const days = eachDayOfInterval({ start: month, end: addMonths(month, 3) });
 
   return (
     <>

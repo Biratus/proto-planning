@@ -110,23 +110,23 @@ export default function CalendarFormateur({
           } else event.onClick(mod, ref);
         },
       }}
-      //   drag={{
-      //     drag: (dayAndEvent, formateur, evt) => {
-      //       if (!dayAndEvent.event.overlap) setDraggedModule(dayAndEvent.event);
-      //       else evt.preventDefault();
-      //     },
-      //     enter: (dayAndEvent, formateur, evt) => {
-      //       changeDropTarget(dayAndEvent, formateur, evt);
-      //     },
-      //     leave: (dayAndEvent, formateur, evt) => {},
-      //     drop: (dayAndEvent, formateur, evt) => {
-      //       dropModule();
-      //     },
-      //     move: (dayAndEvent, formateur, evt) => {
-      //       evt.preventDefault();
-      //       changeDropTarget(dayAndEvent, formateur, evt);
-      //     },
-      //   }}
+      drag={{
+        drag: (dayAndEvent, formateur, evt) => {
+          // if (!dayAndEvent.event.overlap) setDraggedModule(dayAndEvent.event);
+          // else evt.preventDefault();
+        },
+        enter: (dayAndEvent, formateur, evt) => {
+          // changeDropTarget(dayAndEvent, formateur, evt);
+        },
+        leave: (dayAndEvent, formateur, evt) => {},
+        drop: (dayAndEvent, formateur, evt) => {
+          // dropModule();
+        },
+        move: (dayAndEvent, formateur, evt) => {
+          // evt.preventDefault();
+          // changeDropTarget(dayAndEvent, formateur, evt);
+        },
+      }}
     />
   );
 }

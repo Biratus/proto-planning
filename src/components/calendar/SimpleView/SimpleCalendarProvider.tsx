@@ -1,11 +1,11 @@
 "use client";
 import { createContext, PropsWithChildren, useContext, useRef } from "react";
 import { create, useStore } from "zustand";
-import { CalendarItem, DayProps, EventProps } from "../types";
+import { CalendarItem, DayProps, SimpleEventProps } from "../types";
 
 type SimpleCalendarProps<T extends CalendarItem> = {
   cellHeight: string;
-  event: EventProps<T>;
+  event: SimpleEventProps<T>;
   day: DayProps;
 };
 
@@ -14,7 +14,7 @@ type SimpleCalendarStore = ReturnType<typeof calendarStore>;
 const CalendarContext = createContext<SimpleCalendarStore | null>(null);
 const calendarStore = (
   cellHeight: string,
-  event: EventProps<any & CalendarItem>,
+  event: SimpleEventProps<any & CalendarItem>,
   day: DayProps
 ) =>
   create<SimpleCalendarProps<CalendarItem>>((set) => ({

@@ -1,4 +1,4 @@
-import { DragEvent, MouseEvent, ReactNode } from "react";
+import { DragEvent, ReactNode } from "react";
 import { Style } from "./styles";
 
 export type Interval = {
@@ -22,11 +22,9 @@ export type DayProps = {
   styleProps: (day: Date) => Style;
 };
 export type EventProps<T> = {
-  highlighted: (event: T) => boolean;
-  highlightedProps: (event: T) => Style;
   onClick: (event: T, evt: HTMLElement) => void;
-  color: (event: T) => string;
   label: (event: T) => ReactNode;
+  style: (event: T) => Style;
 };
 
 export type CalendarData<K, T extends Interval> = {
@@ -39,7 +37,6 @@ export type CommonCalendarProps<T> = {
   EventTooltip?: React.FC;
   time: { start: Date; monthLength: number };
   day: DayProps;
-  commonDayStyle: (date: Date) => Style;
   zoom: number;
   event: EventProps<T>; // eventProps
 };
@@ -106,13 +103,7 @@ export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
  
 */
 
-export type CalendarDetailContext<T> = {
-  color: (mod: T) => string;
-  eventHighlighted: (mod: T) => boolean;
-  highlightedProps: (color: string) => Style;
-  onClick: (mod: T, event: MouseEvent) => void;
-  label: (mod: T) => string;
-};
+export type CalendarDetailContext<T> = EventProps<T>;
 
 export type CalendarDetailProps<T extends Interval> = {
   style?: Style;
@@ -136,11 +127,17 @@ SIMPLE VIEW
 
 */
 
+export type SimpleEventProps<T> = {
+  onClick: (event: T, evt: HTMLElement) => void;
+  label: (event: T) => ReactNode;
+  style: (date: Date, event?: T) => Style;
+};
+
 export type CalendarSimpleProps<T extends CalendarItem> = {
   time: { start: Date; monthLength: number };
   events: T[];
   zoom: number;
-  eventProps: EventProps<T>;
+  eventProps: SimpleEventProps<T>;
   dayProps: DayProps;
   style?: Style;
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { emptyStyle, Style } from "../styles";
+import { Style } from "../styles";
 import { CalendarEvent as CalendarEventType, CalendarItem } from "../types";
 import { useFullCalendarEvent } from "./FullCalendarProvider";
 
@@ -10,28 +10,14 @@ export default function CalendarEvent<T extends CalendarItem>({
 }: {
   day: CalendarEventType<T>;
 }) {
-  const { commonDayStyle, eventProps } = useFullCalendarEvent<T>();
-  const {
-    highlighted: eventHighlighted,
-    highlightedProps,
-    onClick,
-    color,
-    label,
-  } = eventProps!;
+  const { onClick, style, label } = useFullCalendarEvent<T>();
 
-  const styleProps: Style = eventHighlighted(event)
-    ? highlightedProps(event)
-    : emptyStyle();
+  const styleProps: Style = style(event);
 
   return (
     <div
-      className={`flex items-center px-1 cursor-pointer hover:opacity-60 ${
-        commonDayStyle!(date).className
-      } ${styleProps.className}`}
+      className={`flex items-center px-1 cursor-pointer hover:opacity-60 ${styleProps.className}`}
       style={{
-        background: `radial-gradient(circle, ${color(
-          event
-        )} 30%, rgba(148,187,233,0) 100%)`,
         gridColumnEnd: `span ${span}`,
         ...styleProps.props,
       }}

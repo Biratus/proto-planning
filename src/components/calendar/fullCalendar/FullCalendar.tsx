@@ -27,7 +27,6 @@ export default function FullCalendar<K, T extends CalendarItem>({
   time: { start, monthLength },
   event: eventProps,
   day,
-  commonDayStyle,
   zoom,
   drag,
 }: CalendarProps<K, T>) {
@@ -76,7 +75,7 @@ export default function FullCalendar<K, T extends CalendarItem>({
       {...{
         days,
         eventProps,
-        commonDayStyle,
+        dayStyle: styleProps,
         drag,
       }}
     >
