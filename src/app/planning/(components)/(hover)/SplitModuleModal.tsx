@@ -2,22 +2,25 @@
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
 import { formatDateValue, parseDateValue } from "@/lib/date";
 import { Formateur, Module } from "@/lib/types";
+import { addDays } from "date-fns";
 import { useCallback, useRef } from "react";
 export const SplitModuleModalId = "splitModuleModal";
 
-type SplitModuleModalProps = {
-  module: Module | null;
+type SplitModuleModalProps<T extends Module> = {
+  modules: T[] | null;
+  setModules: (mod: T[]) => void;
   onClose: () => void;
-  submit: (obj: { split: Date; formateurs: Formateur[] }) => Promise<boolean>;
+  submit: (obj?: { split: Date; formateurs: Formateur[] }) => Promise<boolean>;
 };
 
-export default function SplitModuleModal({
-  module,
+export default function SplitModuleModal<T extends Module>({
+  modules,
+  setModules,
   onClose,
   submit,
-}: SplitModuleModalProps) {
+}: SplitModuleModalProps<T>) {
   const toggleRef = useRef<HTMLInputElement>(null);
-  const formateursOfModule = useRef<Formateur[]>([]);
+  // const formateursOfModule = useRef<Formateur[]>([]);
   const splitDate = useRef<HTMLInputElement>(null);
 
   const close = useCallback(() => {
@@ -27,25 +30,46 @@ export default function SplitModuleModal({
     }
   }, [onClose]);
 
-  if (module) {
-    formateursOfModule.current = [module.formateur, module.formateur];
-  }
+  // if (module) {
+  //   formateursOfModule.current = [module.formateur, module.formateur];
+  // }
 
   const submitForm = async () => {
-    let [f1, f2] = formateursOfModule.current;
-    console.log({ date: parseDateValue(splitDate.current!.value), f1, f2 });
-    const success = await submit({
-      split: parseDateValue(splitDate.current!.value),
-      formateurs: formateursOfModule.current,
-    });
+    // let [f1, f2] = formateursOfModule.current;
+    // console.log({ date: parseDateValue(splitDate.current!.value), f1, f2 });
+    const success = await submit();
+    // const success = await submit({
+    //   split: parseDateValue(splitDate.current!.value),
+    //   formateurs: formateursOfModule.current,
+    // });
     if (success) close();
   };
 
   const onSelectFirstFormateur = (f: Formateur) => {
-    formateursOfModule.current[0] = f;
+    setModules([
+      {
+        ...modules![0],
+        end: parseDateValue(splitDate.current!.value),
+        formateur: f,
+      },
+      {
+        ...modules![1],
+        start: addDays(parseDateValue(splitDate.current!.value), 1),
+      },
+    ]);
   };
   const onSelectSecondFormateur = (f: Formateur) => {
-    formateursOfModule.current[1] = f;
+    setModules([
+      {
+        ...modules![0],
+        end: parseDateValue(splitDate.current!.value),
+      },
+      {
+        ...modules![1],
+        start: addDays(parseDateValue(splitDate.current!.value), 1),
+        formateur: f,
+      },
+    ]);
   };
 
   return (
@@ -57,12 +81,12 @@ export default function SplitModuleModal({
         className="modal-toggle"
       />
       <label htmlFor={SplitModuleModalId} className="modal justify-end">
-        {module && (
+        {modules?.length && (
           <label
             className="modal-box max-w-none w-2/5 h-full max-h-screen rounded-none"
             htmlFor=""
           >
-            <h3 className="font-bold text-lg text-center">{module.name}</h3>
+            <h3 className="font-bold text-lg text-center">{modules[0].name}</h3>
             <div className="grid grid-cols-2 grid-rows-6 gap-2">
               <div className="form-control columns-1 row-start-1 row-end-3">
                 <label className="label">
@@ -72,7 +96,7 @@ export default function SplitModuleModal({
                   type="date"
                   className="input input-bordered"
                   disabled
-                  value={formatDateValue(module.start)}
+                  value={formatDateValue(modules[0].start)}
                 />
               </div>
               <div className="form-control columns-1 row-start-3 row-end-5">
@@ -83,9 +107,9 @@ export default function SplitModuleModal({
                   type="date"
                   className="input input-bordered"
                   ref={splitDate}
-                  defaultValue={formatDateValue(module.start)}
-                  min={formatDateValue(module.start)}
-                  max={formatDateValue(module.end)}
+                  defaultValue={formatDateValue(modules[0].start)}
+                  min={formatDateValue(modules[0].start)}
+                  max={formatDateValue(modules[1].end)}
                 />
               </div>
               <div className="form-control columns-1 row-start-5 row-end-7">
@@ -96,21 +120,21 @@ export default function SplitModuleModal({
                   type="date"
                   className="input input-bordered"
                   disabled
-                  value={formatDateValue(module.end)}
+                  value={formatDateValue(modules[1].end)}
                 />
               </div>
               <div className="columns-2 flex px-4 items-start row-start-1 row-end-4 pt-9">
                 <FormateurSelect
-                  formateur={module.formateur}
-                  forModule={module}
-                  onSelect={onSelectFirstFormateur}
+                  formateur={modules[0].formateur}
+                  forModule={modules[0]}
+                  setFormateur={onSelectFirstFormateur}
                 />
               </div>
               <div className="columns-2 flex px-4 items-end row-start-4 row-end-7">
                 <FormateurSelect
-                  formateur={module.formateur}
-                  forModule={module}
-                  onSelect={onSelectSecondFormateur}
+                  formateur={modules[1].formateur}
+                  forModule={modules[1]}
+                  setFormateur={onSelectSecondFormateur}
                 />
               </div>
             </div>

@@ -1,25 +1,25 @@
 "use client";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
 import { formatFullPrettyDate } from "@/lib/date";
-import { formateurs } from "@/lib/realData";
 import { Formateur, Module } from "@/lib/types";
 import { useCallback, useRef } from "react";
 export const SwitchFormateurModalId = "switchFormateurModal";
 
-type SwitchFormateurModalProps = {
-  module: Module | null;
+type SwitchFormateurModalProps<T extends Module> = {
+  module: T | null;
+  setModule: (mod: T) => void;
   onClose: () => void;
-  submit: (mod?: Module) => Promise<boolean>;
+  submit: (mod?: T) => Promise<boolean>;
 };
 
-export default function SwitchFormateurModal({
+export default function SwitchFormateurModal<T extends Module>({
   module,
+  setModule,
   onClose,
   submit,
-}: SwitchFormateurModalProps) {
+}: SwitchFormateurModalProps<T>) {
   const toggleRef = useRef<HTMLInputElement>(null);
 
-  const formateurRef = useRef<Formateur | null>(null);
   const close = useCallback(() => {
     if (toggleRef.current && toggleRef.current.checked) {
       toggleRef.current.checked = false;
@@ -27,18 +27,20 @@ export default function SwitchFormateurModal({
     }
   }, [onClose]);
 
-  if (module) formateurRef.current = module.formateur;
-
   const submitForm = async () => {
-    const success = await submit({
-      ...module!,
-      formateur: formateurs.get(formateurRef.current!.mail)!,
-    });
+    const success = await submit();
+    // const success = await submit({
+    //   ...module!,
+    //   formateur: formateurs.get(formateurRef.current!.mail)!,
+    // });
     if (success) close();
   };
 
-  const onSelectFormateur = (f: Formateur) => {
-    formateurRef.current = f;
+  const onSelectFormateur = (formateur: Formateur) => {
+    setModule({
+      ...module!,
+      formateur,
+    });
   };
 
   return (
@@ -53,7 +55,6 @@ export default function SwitchFormateurModal({
         {module && (
           <label
             className="modal-box max-w-none w-2/5 h-full max-h-screen rounded-none"
-            // ref={modalRef}
             htmlFor=""
           >
             <h3 className="font-bold text-lg text-center">{module.name}</h3>
@@ -64,7 +65,7 @@ export default function SwitchFormateurModal({
             <FormateurSelect
               formateur={module.formateur}
               forModule={module}
-              onSelect={onSelectFormateur}
+              setFormateur={onSelectFormateur}
             />
             <div className="modal-action w-full">
               <button className="btn btn-success" onClick={submitForm}>

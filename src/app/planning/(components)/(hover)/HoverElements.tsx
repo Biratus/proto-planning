@@ -1,6 +1,6 @@
 "use client";
 
-import { Formateur, Module } from "@/lib/types";
+import { Module } from "@/lib/types";
 import { useCallback } from "react";
 import {
   resetHoverProps,
@@ -12,47 +12,45 @@ import SplitModuleModal from "./SplitModuleModal";
 import SwitchFormateurModal from "./SwitchFormateurModal";
 
 export default function HoverElements() {
-  const focusModule = useFocusModule();
-
-  const switchFormateur = useCallback(() => {
-    console.log("switchFormateur", focusModule);
-  }, [focusModule]);
-
-  const splitModule = useCallback(() => {
-    console.log("splitModule", focusModule);
-  }, [focusModule]);
+  const {
+    focus: focusModule,
+    temps: tempModules,
+    setTempModule,
+    setTempModules,
+  } = useFocusModule();
 
   const submitSwitchForm = useCallback(
     async (module?: Module) => {
       console.log("submitSwitchForm");
-      console.log({ focusModule, module });
+      console.log({ old: focusModule, new: tempModules[0] });
       // if(success)
       resetHoverProps();
       return true;
     },
-    [focusModule]
+    [tempModules, focusModule]
   );
-  const submitSplitForm = useCallback(
-    async ({ split, formateurs }: { split: Date; formateurs: Formateur[] }) => {
-      console.log("submitSplitForm");
-      console.log({ split, formateurs, focusModule });
-      // if(success)
-      resetHoverProps();
-      return true;
-    },
-    [focusModule]
-  );
+  const submitSplitForm = useCallback(async () => {
+    console.log(tempModules);
+    // async ({ split, formateurs }: { split: Date; formateurs: Formateur[] }) => {
+    // console.log("submitSplitForm");
+    // console.log({ split, formateurs, focusModule });
+    // if(success)
+    resetHoverProps();
+    return true;
+  }, [tempModules]);
   return (
     <>
-      <ModuleMenu switchFormateur={switchFormateur} splitModule={splitModule} />
+      <ModuleMenu />
       <SwitchFormateurModal
         onClose={resetHoverProps}
-        module={focusModule}
+        module={tempModules[0]}
+        setModule={setTempModule}
         submit={submitSwitchForm}
       />
       <SplitModuleModal
         onClose={resetHoverProps}
-        module={focusModule}
+        modules={tempModules}
+        setModules={setTempModules}
         submit={submitSplitForm}
       />
       <OverlapModuleOverlay />

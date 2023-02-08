@@ -15,11 +15,11 @@ type SearchProps = {
 export default function FormateurSelect({
   formateur,
   forModule,
-  onSelect,
+  setFormateur,
 }: {
   formateur: Formateur;
   forModule?: Module;
-  onSelect: (f: Formateur) => void;
+  setFormateur: (f: Formateur) => void;
 }) {
   const moduleInterval = useMemo<Interval | undefined>(
     () =>
@@ -29,7 +29,11 @@ export default function FormateurSelect({
 
   const [searchProps, setSearchProps] = useState<SearchProps>({});
 
-  const [selected, setSelected] = useState(formateur);
+  // const [selected, setSelected] = useState(formateur);
+  // console.log("Render FormateurSelect", {
+  //   selected: selected.mail,
+  //   prop: formateur.mail,
+  // });
 
   const filterFormateurs = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
     setSearchProps((prev) => ({ ...prev, search: evt.target.value }));
@@ -54,15 +58,15 @@ export default function FormateurSelect({
     [forModule]
   );
 
-  const changeFormateur = (f: Formateur) => {
-    setSelected(f);
-    onSelect(f);
-  };
+  // const changeFormateur = (f: Formateur) => {
+  //   setSelected(f);
+  //   onSelect(f);
+  // };
 
   return (
     <div className="dropdown">
       <label className="btn" tabIndex={0}>
-        {selected.prenom} {selected.nom} <User className="ml-1" />
+        {formateur.prenom} {formateur.nom} <User className="ml-1" />
       </label>
       <div
         className="dropdown-content shadow rounded-box bg-base-100 w-auto mt-1 p-5 border border-base-300"
@@ -99,8 +103,8 @@ export default function FormateurSelect({
           {filterFormateur(searchProps).map((f) => (
             <li key={f.mail}>
               <a
-                className={`${f.mail == selected.mail ? "active" : ""}`}
-                onClick={() => changeFormateur(f)}
+                className={`${f.mail == formateur.mail ? "active" : ""}`}
+                onClick={() => setFormateur(f)}
               >
                 {f.prenom} {f.nom}
               </a>

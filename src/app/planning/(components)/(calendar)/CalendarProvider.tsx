@@ -36,6 +36,7 @@ interface CalendarHoverStore {
   popupMenu: RefObject<HTMLUListElement> | null;
   anchor: HTMLElement | null;
   focus: ModuleEvent | null;
+  tempFocus: ModuleEvent[];
   overlapToggle: RefObject<HTMLInputElement> | null;
   openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) => void;
   openPopUpMenu: (mod: ModuleEvent, ref: HTMLElement) => void;
@@ -45,6 +46,7 @@ interface CalendarHoverStore {
 const initialHoverProps = {
   anchor: null,
   focus: null,
+  tempFocus: [],
 };
 
 const calendarHoverStore = create<CalendarHoverStore>((set, get) => ({
@@ -57,7 +59,11 @@ const calendarHoverStore = create<CalendarHoverStore>((set, get) => ({
   },
   openPopUpMenu: (mod: ModuleEvent, ref: HTMLElement) => {
     get().popupMenu!.current!.classList.remove("hidden");
-    return set({ anchor: ref, focus: mod });
+    return set({
+      anchor: ref,
+      focus: mod,
+      tempFocus: [{ ...mod }, { ...mod }],
+    });
   },
   closePopUpMenu: () => {
     get().popupMenu!.current!.classList.add("hidden");
@@ -78,7 +84,17 @@ export const usePopUpMenu = () =>
     anchor: state.anchor,
   }));
 
-export const useFocusModule = () => calendarHoverStore((state) => state.focus);
+export const useFocusModule = () =>
+  calendarHoverStore((state) => ({
+    focus: state.focus,
+    temps: state.tempFocus,
+    setTempModule: (mod: ModuleEvent) =>
+      calendarHoverStore.setState({ tempFocus: [mod, mod] }),
+    setTempModules: (mods: ModuleEvent[]) => {
+      console.log(mods);
+      calendarHoverStore.setState({ tempFocus: mods });
+    },
+  }));
 
 export const setOverlapToggle = (ref: RefObject<HTMLInputElement>) =>
   calendarHoverStore.setState({ overlapToggle: ref });

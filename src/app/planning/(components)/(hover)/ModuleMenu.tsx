@@ -6,15 +6,7 @@ import { setPopUpMenu, usePopUpMenu } from "../(calendar)/CalendarProvider";
 import { SplitModuleModalId } from "./SplitModuleModal";
 import { SwitchFormateurModalId } from "./SwitchFormateurModal";
 
-type ModuleMenuProps = {
-  switchFormateur: () => void;
-  splitModule: () => void;
-};
-
-export default function ModuleMenu({
-  switchFormateur,
-  splitModule,
-}: ModuleMenuProps) {
+export default function ModuleMenu() {
   const { anchor, close } = usePopUpMenu();
   const menuRef = useRef<HTMLUListElement>(null);
   const initilized = useRef(false);
@@ -23,11 +15,6 @@ export default function ModuleMenu({
     initilized.current = true;
   }
   useOnClickOutside(menuRef, close);
-
-  const closeAndAct = (act: () => void) => {
-    close();
-    act();
-  };
 
   return (
     <ul
@@ -39,19 +26,13 @@ export default function ModuleMenu({
       ref={menuRef}
     >
       <li>
-        <label
-          htmlFor={SwitchFormateurModalId}
-          onClick={() => closeAndAct(switchFormateur)}
-        >
+        <label htmlFor={SwitchFormateurModalId} onClick={close}>
           <User className="mr-1" />
           Modifier le formateur
         </label>
       </li>
-      <li onClick={splitModule}>
-        <label
-          htmlFor={SplitModuleModalId}
-          onClick={() => closeAndAct(splitModule)}
-        >
+      <li>
+        <label htmlFor={SplitModuleModalId} onClick={close}>
           <Users className="mr-1" />
           Scinder le module
         </label>
