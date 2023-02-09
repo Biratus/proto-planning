@@ -8,13 +8,16 @@ import { formatISO, startOfMonth, startOfToday } from "date-fns";
 import CommonCalendar from "./(components)/(calendar)/Calendar";
 import ViewDropdown from "./(components)/ViewDropdown";
 
+export const dynamic = "force-dynamic"; // To get searchParams in prod
+
 const monthStart = startOfMonth(startOfToday());
 
-export default function page({ searchParams: { date, view } }: any) {
-  if (date) date = parseMonthAndYear(date);
+export default function PlanningPage({ searchParams }: { searchParams?: any }) {
+  const { date, view } = searchParams;
+  let focusDate = date ? parseMonthAndYear(date) : monthStart;
 
   return (
-    <MonthNavigationProvider focus={formatISO(date || monthStart)}>
+    <MonthNavigationProvider focus={formatISO(focusDate)}>
       <ViewDropdown view={view} />
       <MonthNavigationUI />
       <ZoomProvider zoomKey={zoom_calendar_full}>

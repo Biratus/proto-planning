@@ -101,13 +101,8 @@ export const setOverlapToggle = (ref: RefObject<HTMLInputElement>) =>
 
 export const useOverlapModuleUI = () =>
   calendarHoverStore((state) => ({
-    // isOpen:
-    //   state.overlapToggle &&
-    //   state.overlapToggle.current &&
-    //   state.overlapToggle.current.checked,
     focus: state.focus,
     anchor: state.anchor,
-    // setDraggedModule,
   }));
 
 export const openOverlapUI = calendarHoverStore.getState().openOverlapUI;

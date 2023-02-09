@@ -9,6 +9,8 @@ import { addMonths, formatISO, startOfMonth, startOfToday } from "date-fns";
 import { notFound } from "next/navigation";
 import CalendarFormateur from "./CalendarFormateur";
 
+export const dynamic = "force-dynamic"; // To get searchParams in prod
+
 const monthStart = startOfMonth(startOfToday());
 const monthLength = 3;
 
