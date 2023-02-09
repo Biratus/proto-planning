@@ -3,7 +3,7 @@
 import { formatDayDate } from "@/lib/date";
 import { isSameDay } from "date-fns";
 import { Style } from "../styles";
-import { CalendarEvent, CalendarItem } from "../types";
+import { CalendarItem, DayAndEvent } from "../types";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
 
@@ -11,7 +11,7 @@ export default function CalendarCell<T extends CalendarItem>({
   day: { date, event },
   forceEventLabel,
 }: {
-  day: CalendarEvent<T>;
+  day: DayAndEvent<T>;
   forceEventLabel: boolean;
 }) {
   const {
@@ -21,7 +21,6 @@ export default function CalendarCell<T extends CalendarItem>({
   } = useSimpleCalendar();
 
   const { hover, hoverMe, unHoverMe } = useHover(event?.id);
-  //   const EventTooltip = eventProps.EventTooltip;
 
   const gridColumnStart = () => {
     if (date.getDate() != 1) return "auto";

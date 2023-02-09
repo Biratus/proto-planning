@@ -3,11 +3,11 @@
 import { formatMonthYear } from "@/lib/date";
 import { useMemo } from "react";
 import { monthLabel } from "../styles";
-import { CalendarEvent, CalendarItem } from "../types";
+import { CalendarItem, DayAndEvent } from "../types";
 import CalendarCell from "./CalendarCell";
 
 export type CalendarMonthProp<T extends CalendarItem> = {
-  days: CalendarEvent<T>[];
+  days: DayAndEvent<T>[];
   isFirstMonth: boolean;
 };
 

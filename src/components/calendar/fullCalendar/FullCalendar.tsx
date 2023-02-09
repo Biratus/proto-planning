@@ -23,7 +23,6 @@ const minCellSize = 20;
 export default function FullCalendar<K, T extends CalendarItem>({
   data: originalData,
   LabelComponent,
-  EventTooltip,
   time: { start, monthLength },
   event: eventProps,
   day,
@@ -97,7 +96,6 @@ export default function FullCalendar<K, T extends CalendarItem>({
           <CalendarRow
             key={i}
             events={d.events}
-            // EventTooltip={EventTooltip}
             labelProps={{
               key: d.key,
               title: d.labelTitle,
