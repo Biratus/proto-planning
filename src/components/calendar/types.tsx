@@ -1,5 +1,6 @@
 import { DragEvent, ReactNode } from "react";
 import { Style } from "./styles";
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 export type Interval = {
   start: Date;
@@ -36,7 +37,6 @@ export type CalendarData<K, T extends Interval> = {
 };
 
 export type CommonCalendarProps<T> = {
-  EventTooltip?: React.FC;
   time: TimeProps;
   day: DayProps;
   zoom: number;
@@ -59,14 +59,18 @@ export type CalendarRowProps<K, T extends CalendarItem> = {
     title: string;
     LabelComponent: CalendarRowLabel<K>;
   };
-  EventTooltip?: React.FC;
 };
 
-export type CalendarEvent<T> = {
+export type CalendarEvent<T extends CalendarItem> = {
   date: Date;
-  event?: T;
+  event: T;
   span: number;
 };
+
+export type DayAndEvent<T extends CalendarItem> = Optional<
+  CalendarEvent<T>,
+  "event"
+>;
 
 export type DragEvents<K, T extends CalendarItem> = {
   drag: (
@@ -75,22 +79,22 @@ export type DragEvents<K, T extends CalendarItem> = {
     evt: DragEvent<HTMLElement>
   ) => void;
   enter: (
-    dayAndEvent: CalendarEvent<T>,
+    dayAndEvent: DayAndEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
   leave: (
-    dayAndEvent: CalendarEvent<T>,
+    dayAndEvent: DayAndEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
   drop: (
-    dayAndEvent: CalendarEvent<T>,
+    dayAndEvent: DayAndEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;
   move: (
-    dayAndEvent: CalendarEvent<T>,
+    dayAndEvent: DayAndEvent<T>,
     key: K,
     evt: DragEvent<HTMLElement>
   ) => void;

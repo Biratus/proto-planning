@@ -5,7 +5,7 @@ import { CalendarEvent as CalendarEventType, CalendarItem } from "../types";
 import { useFullCalendarEvent } from "./FullCalendarProvider";
 
 export default function CalendarEvent<T extends CalendarItem>({
-  day: { date, event, span },
+  day: { event, span },
   ...props
 }: {
   day: CalendarEventType<T>;

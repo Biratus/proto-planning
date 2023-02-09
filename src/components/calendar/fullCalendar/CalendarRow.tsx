@@ -6,6 +6,7 @@ import {
   CalendarEvent as CalendarEventType,
   CalendarItem,
   CalendarRowProps,
+  DayAndEvent,
 } from "../types";
 import CalendarEvent from "./CalendarEvent";
 import { useFullCalendarRow } from "./FullCalendarProvider";
@@ -13,7 +14,6 @@ import { useFullCalendarRow } from "./FullCalendarProvider";
 export default function CalendarRow<K, T extends CalendarItem>({
   events,
   labelProps: { key: labelKey, title: labelTitle, LabelComponent },
-  EventTooltip,
 }: CalendarRowProps<K, T>) {
   const {
     days,
@@ -37,7 +37,8 @@ export default function CalendarRow<K, T extends CalendarItem>({
       </div>
       {daysAndEvents.map((day, id) => {
         const dragEvents = {
-          onDrag: (evt: DragEvent<HTMLElement>) => drag(day, labelKey, evt),
+          onDrag: (evt: DragEvent<HTMLElement>) =>
+            drag(day as CalendarEventType<T>, labelKey, evt),
           onDragOver: (evt: DragEvent<HTMLElement>) => move(day, labelKey, evt),
           onDragEnter: (evt: DragEvent<HTMLElement>) =>
             enter(day, labelKey, evt),
@@ -45,8 +46,12 @@ export default function CalendarRow<K, T extends CalendarItem>({
             leave(day, labelKey, evt),
           onDrop: (evt: DragEvent<HTMLElement>) => drop(day, labelKey, evt),
         };
-        return "event" in day ? (
-          <CalendarEvent key={id} day={day} {...dragEvents} />
+        return day.event ? (
+          <CalendarEvent
+            key={id}
+            day={day as CalendarEventType<T>}
+            {...dragEvents}
+          />
         ) : (
           <div
             key={id}
@@ -64,7 +69,7 @@ function mergeDaysAndEvent<T extends CalendarItem>(
   days: Date[],
   events: T[],
   limit: Date
-): CalendarEventType<T>[] {
+): DayAndEvent<T>[] {
   function eventOf(d: Date) {
     for (let evt of events) {
       let { start, end } = evt;

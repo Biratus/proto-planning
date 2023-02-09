@@ -3,6 +3,7 @@ import { dropTargetStyle, mergeStyle } from "@/components/calendar/styles";
 import {
   CalendarEvent,
   CommonCalendarProps,
+  DayAndEvent,
 } from "@/components/calendar/types";
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
@@ -41,7 +42,7 @@ export default function CalendarFormateur({
 
   const changeDropTarget = useCallback(
     (
-      dayAndEvent: CalendarEvent<ModuleEvent>,
+      dayAndEvent: DayAndEvent<ModuleEvent>,
       formateur: Formateur,
       evt: DragEvent<HTMLElement>
     ) => {
@@ -54,7 +55,7 @@ export default function CalendarFormateur({
         // Calculate on which day it was droped
         let rect = evt.currentTarget.getBoundingClientRect();
         targetDay = getTargetDay(
-          dayAndEvent,
+          dayAndEvent as CalendarEvent<ModuleEvent>,
           {
             targetWidth: evt.currentTarget.clientWidth,
             mouseOffsetX: evt.clientX - rect.x,
@@ -98,7 +99,6 @@ export default function CalendarFormateur({
       <FullCalendar
         {...props}
         data={calendarData}
-        //   EventTooltip={FormateurView.EventTooltip}
         LabelComponent={FormateurView.LabelComponent}
         day={{
           ...day,

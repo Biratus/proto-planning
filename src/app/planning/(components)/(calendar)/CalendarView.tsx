@@ -1,18 +1,6 @@
 import { CalendarView, Formateur } from "@/lib/types";
 import Link from "next/link";
 
-// const FormateurLabel = React.forwardRef(
-//   ({ labelKey: { nom, prenom, mail }, ...props }, ref) => {
-//     return (
-//       <RowLabel
-//         label={formateurSimple({ nom, prenom, mail })}
-//         href={`formateur/${mail}`}
-//         ref={ref}
-//         {...props}
-//       />
-//     );
-//   }
-// );
 const formateurSimple = ({ nom, prenom, mail }: Formateur) =>
   `${nom} ${prenom} - ${mail}`;
 
@@ -22,7 +10,6 @@ export const FiliereView: CalendarView<string> = {
   keyObject: ({ filiere }) => filiere,
   labelTitle: (f) => f,
   LabelComponent: FiliereLabel,
-  //   EventTooltip: FormateurTooltip,
 };
 
 export const FormateurView: CalendarView<Formateur> = {
@@ -31,7 +18,6 @@ export const FormateurView: CalendarView<Formateur> = {
   keyObject: ({ formateur }) => formateur,
   labelTitle: ({ nom, prenom, mail }) => `${nom} ${prenom} [${mail}]`,
   LabelComponent: FormateurLabel,
-  //   EventTooltip: FiliereTooltip,
 };
 function FiliereLabel({ labelKey: filiere }: { labelKey: string }) {
   return <RowLabel label={filiere} href={`filiere/${filiere}`} />;

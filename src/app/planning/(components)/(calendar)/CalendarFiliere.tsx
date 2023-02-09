@@ -4,6 +4,7 @@ import { dropTargetStyle, mergeStyle } from "@/components/calendar/styles";
 import {
   CalendarEvent,
   CommonCalendarProps,
+  DayAndEvent,
 } from "@/components/calendar/types";
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
@@ -34,7 +35,7 @@ export default function CalendarFiliere({
   } = useDropTarget();
 
   const changeDropTarget = useCallback(
-    (dayAndEvent: CalendarEvent<ModuleEvent>, evt: DragEvent<HTMLElement>) => {
+    (dayAndEvent: DayAndEvent<ModuleEvent>, evt: DragEvent<HTMLElement>) => {
       let targetDay;
       if (!dayAndEvent.event || dayAndEvent.event.duration == 1) {
         // Simple day or single day event
@@ -44,7 +45,7 @@ export default function CalendarFiliere({
         // Calculate on which day it was droped
         let rect = evt.currentTarget.getBoundingClientRect();
         targetDay = getTargetDay(
-          dayAndEvent,
+          dayAndEvent as CalendarEvent<ModuleEvent>,
           {
             targetWidth: evt.currentTarget.clientWidth,
             mouseOffsetX: evt.clientX - rect.x,
@@ -79,7 +80,6 @@ export default function CalendarFiliere({
     <FullCalendar
       {...props}
       data={calendarData}
-      //   EventTooltip={FiliereView.EventTooltip}
       LabelComponent={FiliereView.LabelComponent}
       day={{
         ...day,
