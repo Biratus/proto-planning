@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { ChevronDown } from "react-feather";
 
 type DropdownAction = {
@@ -16,7 +16,8 @@ export default function Dropdown({
   actions: DropdownAction[];
   compact?: boolean;
 }) {
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLLIElement>(null);
+
   const itemClick = useCallback(
     (key: string, onClick: (key: string) => void) => {
       onClick(key);
@@ -25,23 +26,43 @@ export default function Dropdown({
     },
     []
   );
+
+  useEffect(() => {
+    activeRef.current?.scrollIntoView();
+  }, [actions]);
+
   return (
-    <div className="dropdown" ref={dropdownRef}>
+    <div className="dropdown">
       <label tabIndex={0} className="btn-outline btn m-1">
         <span className="mx-1">{label}</span>
         <ChevronDown />
       </label>
       <ul
         tabIndex={0}
-        className={`dropdown-content menu rounded-box max-h-96 flex-nowrap overflow-y-scroll bg-base-100 p-2 shadow ${
+        className={`dropdown-content menu rounded-box max-h-96 w-full snap-y flex-nowrap overflow-y-scroll bg-base-100 p-2 shadow ${
           compact ? "menu-compact" : ""
         }`}
       >
-        {actions.map(({ label, onClick, selected }, i) => (
-          <li onClick={(evt) => itemClick(label, onClick)} key={i}>
-            <a className={selected ? `active` : ``}>{label}</a>
-          </li>
-        ))}
+        {actions.map(({ label, onClick, selected }, i) =>
+          selected ? (
+            <li
+              onClick={(evt) => itemClick(label, onClick)}
+              key={i}
+              ref={activeRef}
+              className="snap-start"
+            >
+              <a className={`active`}>{label}</a>
+            </li>
+          ) : (
+            <li
+              onClick={(evt) => itemClick(label, onClick)}
+              key={i}
+              className="snap-start"
+            >
+              <a>{label}</a>
+            </li>
+          )
+        )}
       </ul>
     </div>
   );
