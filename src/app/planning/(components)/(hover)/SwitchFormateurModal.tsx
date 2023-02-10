@@ -48,7 +48,7 @@ export default function SwitchFormateurModal<T extends Module>({
     <CommonModal inputId={SwitchFormateurModalId} modalRef={modalRef}>
       {module && (
         <>
-          <h3 className="font-bold text-lg text-center">{module.name}</h3>
+          <h3 className="text-center text-lg font-bold">{module.name}</h3>
           <div>Filière :{module.filiere}</div>
           <div>Début : {formatFullPrettyDate(module.start)}</div>
           <div>Fin : {formatFullPrettyDate(module.end)}</div>
@@ -59,7 +59,7 @@ export default function SwitchFormateurModal<T extends Module>({
             setFormateur={onSelectFormateur}
           />
           <div className="modal-action w-full">
-            <button className="btn btn-success" onClick={submitForm}>
+            <button className="btn-success btn" onClick={submitForm}>
               Modifier
             </button>
           </div>

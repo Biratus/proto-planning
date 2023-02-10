@@ -18,7 +18,7 @@ export default function ModuleMenu() {
 
   return (
     <ul
-      className={`menu bg-base-100 w-56 rounded-box shadow-2xl absolute ml-2 border border-gray-600 p-1 hidden`}
+      className={`menu rounded-box absolute z-10 ml-2 hidden w-56 border border-gray-600 bg-base-100 p-1 shadow-2xl`}
       style={{
         top: anchor ? anchor.offsetTop + anchor.clientHeight : 0,
         left: anchor ? `${anchor.offsetLeft + 4}px` : 0,

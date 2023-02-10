@@ -49,7 +49,7 @@ export default function CalendarCell<T extends CalendarItem>({
 
       {event && (
         <div
-          className={`pl-2 flex-grow cursor-pointer flex items-center ${styleProps.className}`}
+          className={`flex flex-grow cursor-pointer items-center pl-2 ${styleProps.className}`}
           style={{
             ...styleProps.props,
           }}
@@ -60,7 +60,7 @@ export default function CalendarCell<T extends CalendarItem>({
           <span
             className={`${
               isSameDay(event.start, date)
-                ? "whitespace-nowrap z-10"
+                ? "z-10 whitespace-nowrap"
                 : "truncate"
             }`}
           >

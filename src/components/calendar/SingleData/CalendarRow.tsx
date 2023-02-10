@@ -26,13 +26,13 @@ export default function CalendarRow<T extends Interval>({
   return (
     <>
       <div
-        className="border-b dark:border-white border-gray-500 pl-3"
+        className="border-b border-gray-500 pl-3 dark:border-white"
         style={{ gridRowEnd: "span " + dayNb }}
       >
         {moduleDayLabel(event)}
       </div>
       <div
-        className={`border-b dark:border-white border-gray-500 pl-3 cursor-pointer truncate hover:opacity-60 ${styleProps.className}`}
+        className={`cursor-pointer truncate border-b border-gray-500 pl-3 hover:opacity-60 dark:border-white ${styleProps.className}`}
         style={{
           gridRowEnd: "span " + dayNb,
           ...styleProps.props,
@@ -42,7 +42,7 @@ export default function CalendarRow<T extends Interval>({
         {label(event)}
       </div>
       <div
-        className="border-b dark:border-white border-gray-500 pl-3"
+        className="border-b border-gray-500 pl-3 dark:border-white"
         style={{ gridRowEnd: "span " + dayNb }}
       >
         <AdditionalInfo event={event} />

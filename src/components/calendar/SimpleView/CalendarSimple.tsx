@@ -78,7 +78,7 @@ function Week() {
 }
 
 const Day = ({ day }: { day: string }) => (
-  <div className="bg-white border-l-2 border-blue-900 sticky top-0 p-4">
+  <div className="sticky top-0 border-l-2 border-blue-900 bg-white p-4">
     {day}
   </div>
 );

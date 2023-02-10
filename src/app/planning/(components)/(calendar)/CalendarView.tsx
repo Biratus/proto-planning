@@ -36,7 +36,7 @@ function FormateurLabel({
 }
 function RowLabel({ href, label }: { href: string; label: string }) {
   return (
-    <div className="flex items-center  bg-blue-600 pl-1  hover:bg-blue-900 h-full  border-b border-blue-900">
+    <div className="flex h-full  items-center border-b  border-blue-900 bg-blue-600  pl-1 hover:bg-blue-900">
       <span className="truncate">
         <Link
           href={`planning/${href}`}

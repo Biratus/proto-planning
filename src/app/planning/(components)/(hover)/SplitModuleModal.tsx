@@ -71,51 +71,51 @@ export default function SplitModuleModal<T extends Module>({
     <CommonModal inputId={SplitModuleModalId} modalRef={modalRef}>
       {modules?.length && (
         <>
-          <h3 className="font-bold text-lg text-center">{modules[0].name}</h3>
+          <h3 className="text-center text-lg font-bold">{modules[0].name}</h3>
           <div className="grid grid-cols-2 grid-rows-6 gap-2">
-            <div className="form-control columns-1 row-start-1 row-end-3">
+            <div className="form-control row-start-1 row-end-3 columns-1">
               <label className="label">
                 <span className="label-text">Date de début</span>
               </label>
               <input
                 type="date"
-                className="input input-bordered"
+                className="input-bordered input"
                 disabled
                 value={formatDateValue(modules[0].start)}
               />
             </div>
-            <div className="form-control columns-1 row-start-3 row-end-5">
+            <div className="form-control row-start-3 row-end-5 columns-1">
               <label className="label">
                 <span className="label-text">Date de coupure</span>
               </label>
               <input
                 type="date"
-                className="input input-bordered"
+                className="input-bordered input"
                 ref={splitDate}
                 defaultValue={formatDateValue(modules[0].start)}
                 min={formatDateValue(modules[0].start)}
                 max={formatDateValue(modules[1].end)}
               />
             </div>
-            <div className="form-control columns-1 row-start-5 row-end-7">
+            <div className="form-control row-start-5 row-end-7 columns-1">
               <label className="label">
                 <span className="label-text">Date de fin</span>
               </label>
               <input
                 type="date"
-                className="input input-bordered"
+                className="input-bordered input"
                 disabled
                 value={formatDateValue(modules[1].end)}
               />
             </div>
-            <div className="columns-2 flex px-4 items-start row-start-1 row-end-4 pt-9">
+            <div className="row-start-1 row-end-4 flex columns-2 items-start px-4 pt-9">
               <FormateurSelect
                 formateur={modules[0].formateur}
                 forModule={modules[0]}
                 setFormateur={onSelectFirstFormateur}
               />
             </div>
-            <div className="columns-2 flex px-4 items-end row-start-4 row-end-7">
+            <div className="row-start-4 row-end-7 flex columns-2 items-end px-4">
               <FormateurSelect
                 formateur={modules[1].formateur}
                 forModule={modules[1]}
@@ -124,7 +124,7 @@ export default function SplitModuleModal<T extends Module>({
             </div>
           </div>
           <div className="modal-action w-full items-start">
-            <button className="btn btn-success" onClick={submitForm}>
+            <button className="btn-success btn" onClick={submitForm}>
               Modifier
             </button>
           </div>

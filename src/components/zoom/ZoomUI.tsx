@@ -11,14 +11,14 @@ export default function ZoomUI({ range }: { range: number }) {
   return (
     <div className="btn-group">
       <button
-        className="btn btn-lg btn-outline"
+        className="btn-outline btn btn-lg"
         onClick={incZoom}
         disabled={zoom >= range}
       >
         <ZoomIn size={32} />
       </button>
       <button
-        className="btn btn-lg btn-outline"
+        className="btn-outline btn btn-lg"
         onClick={decZoom}
         disabled={zoom <= 0}
       >

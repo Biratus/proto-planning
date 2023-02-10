@@ -30,12 +30,12 @@ export default function CalendarFiliere({
   //   const { openMenu } = useCalendar();
 
   return (
-    <div className="flex flex-col justify-center items-center gap-4">
+    <div className="flex flex-col items-center justify-center gap-4">
       <h2 className="text-center">{name}</h2>
-      <div className="flex flex-row justify-between w-2/4">
+      <div className="flex w-2/4 flex-row justify-between">
         <GlobalViewLink />
         <ZoomUI range={5} />
-        <button className="btn btn-link">
+        <button className="btn-link btn">
           <Link href={`/api/filiere/${name}/pdf`}>Export to PDF</Link>
         </button>
       </div>
@@ -68,7 +68,7 @@ export default function CalendarFiliere({
 
 function FormateurSimple({ event: { formateur } }: { event: Module }) {
   return (
-    <div className="flex flex-row items-center gap-3 h-full">
+    <div className="flex h-full flex-row items-center gap-3">
       <User /> <span>{formateur.nom + " " + formateur.prenom}</span>
     </div>
   );

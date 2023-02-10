@@ -9,7 +9,7 @@ export default function MonthNavigationUI({
 }) {
   const [month, prevMonth, nextMonth, setMonth] = useMonthNavigation();
   return (
-    <div className="flex flex-row gap-2 m-1 justify-center items-center">
+    <div className="m-1 flex flex-row items-center justify-center gap-2">
       <FastSelectMonth
         focusedMonth={month}
         onChange={setMonth}

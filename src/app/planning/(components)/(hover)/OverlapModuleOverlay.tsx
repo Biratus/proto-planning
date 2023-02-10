@@ -49,13 +49,13 @@ export default function OverlapModuleOverlay() {
         ref={toggleRef}
         className="modal-toggle"
       />
-      <label htmlFor={overlayID} className="modal text-white items-start">
-        <h3 className="text-bold text-center mt-5 text-2xl">
+      <label htmlFor={overlayID} className="modal items-start text-white">
+        <h3 className="text-bold mt-5 text-center text-2xl">
           Déplacer le module souhaité
         </h3>
         {toggleRef.current && toggleRef.current.checked && focus && (
           <div
-            className="flex flex-col gap-2 absolute"
+            className="absolute flex flex-col gap-2"
             style={{
               top: `${position!.top}px`,
               left: `${position!.left}px`,
@@ -65,7 +65,7 @@ export default function OverlapModuleOverlay() {
             {focus.overlappedModules!.map((mod: ModuleEvent, i: number) => (
               <div
                 key={i}
-                className="cursor-grab flex items-center px-2 hover:opacity-80 font-bold"
+                className="flex cursor-grab items-center px-2 font-bold hover:opacity-80"
                 style={{
                   height: `${anchor!.clientHeight}px`,
                   width: `${(mod.duration * cellWidth!).toFixed(2)}px`,

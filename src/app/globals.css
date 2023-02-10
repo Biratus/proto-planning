@@ -26,3 +26,26 @@ body {
 .drawer-toggle:checked ~ .drawer-side {
   position: absolute;
 }
+
+.modal-toggle + .modal.modal-drawer.drawer-right .modal-box {
+  --tw-translate-x: 100%;
+}
+.modal-toggle + .modal.modal-drawer.drawer-left .modal-box {
+  --tw-translate-x: -100%;
+}
+.modal-toggle + .modal.modal-drawer.drawer-right {
+  justify-content: flex-end;
+}
+.modal-toggle + .modal.modal-drawer.drawer-left {
+  justify-content: flex-start;
+}
+.modal-toggle:checked + .modal.modal-drawer .modal-box {
+  --tw-translate-x: 0%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.modal-toggle + .modal.modal-drawer .modal-box {
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+}

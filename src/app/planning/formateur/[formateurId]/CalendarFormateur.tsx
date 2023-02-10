@@ -38,9 +38,9 @@ export default function CalendarFormateur({
   const { zoom } = useZoom();
 
   return (
-    <div className="flex flex-col gap-2 items-center">
+    <div className="flex flex-col items-center gap-2">
       <h2 className="text-center">{`${nom} ${prenom} - [${mail}]`}</h2>
-      <div className="flex flex-row justify-between w-1/2">
+      <div className="flex w-1/2 flex-row justify-between">
         <GlobalViewLink />
         <ZoomUI range={5} />
       </div>

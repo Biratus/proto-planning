@@ -10,7 +10,12 @@ export default function CommonModal({
   inputId,
   children,
   modalRef,
-}: { inputId: string; modalRef: RefObject<ModalRef> } & PropsWithChildren) {
+  side = "right",
+}: {
+  inputId: string;
+  side?: "left" | "right";
+  modalRef: RefObject<ModalRef>;
+} & PropsWithChildren) {
   const toggleRef = useRef<HTMLInputElement>(null);
 
   modalRef.current!.close = () => {
@@ -26,9 +31,9 @@ export default function CommonModal({
         id={inputId}
         className="modal-toggle"
       />
-      <label htmlFor={inputId} className="modal justify-end">
+      <label htmlFor={inputId} className={`modal-drawer modal drawer-${side}`}>
         <label
-          className="modal-box max-w-none w-2/5 h-full max-h-screen rounded-none"
+          className="modal-box h-full max-h-screen w-2/5 max-w-none rounded-none"
           htmlFor=""
         >
           {children}

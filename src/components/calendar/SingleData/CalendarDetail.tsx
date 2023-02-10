@@ -75,13 +75,13 @@ export default function CalendarDetail<T extends Interval>({
   return (
     <div className={style?.className} style={{ ...style?.props }}>
       <div
-        className="grid px-5 py-2 rounded-lg border border-gray-600"
+        className="grid rounded-lg border border-gray-600 px-5 py-2"
         style={{
           gridTemplateColumns: "7% 1fr 3fr 2fr",
           gridTemplateRows: `2em repeat(${dayNb},${cellHeight})`,
         }}
       >
-        <div className="flex items-center justify-center bg-slate-400 font-bold col-start-3">
+        <div className="col-start-3 flex items-center justify-center bg-slate-400 font-bold">
           Évenement
         </div>
         <div className="flex items-center justify-center bg-slate-400 font-bold">
@@ -96,7 +96,7 @@ export default function CalendarDetail<T extends Interval>({
 function Month({ name, span }: { name: string; span: number }) {
   return (
     <div
-      className="pt-4 px-2 font-bold align-middle"
+      className="px-2 pt-4 align-middle font-bold"
       style={{
         gridRow: "span " + span,
         writingMode: "vertical-rl",

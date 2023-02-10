@@ -79,7 +79,7 @@ export default function FullCalendar<K, T extends CalendarItem>({
       }}
     >
       <div
-        className={`grid pb-5 overflow-x-auto`}
+        className={`grid overflow-x-auto pb-5`}
         style={{
           gridTemplateColumns: `${10 + zoom}% repeat(${days.length},${
             minCellSize + zoom * 5
@@ -117,7 +117,7 @@ function Month({
 }) {
   return (
     <div
-      className={`${monthLabel.className} pl-5 flex items-center ${
+      className={`${monthLabel.className} flex items-center pl-5 ${
         first ? "col-start-2" : "col-start-auto"
       }`}
       style={{ ...monthLabel.props, gridColumnEnd: `span ${nbOfDays}` }}
