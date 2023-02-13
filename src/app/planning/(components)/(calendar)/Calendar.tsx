@@ -10,7 +10,6 @@ import { CommonCalendarProps } from "@/components/calendar/types";
 import { useLegendStore } from "@/components/legend/Legend";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
-import ZoomUI from "@/components/zoom/ZoomUI";
 import { isFormateurMissing } from "@/lib/realData";
 import { ModuleEvent, RawModule } from "@/lib/types";
 import { useMemo } from "react";
@@ -103,7 +102,6 @@ export default function CommonCalendar({
 
   return (
     <>
-      <ZoomUI range={5} />
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
     </>
