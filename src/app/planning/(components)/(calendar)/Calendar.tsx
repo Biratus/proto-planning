@@ -26,11 +26,11 @@ import { FiliereView, FormateurView } from "./CalendarView";
 
 export default function CommonCalendar({
   modules,
-  view,
+  view = FiliereView.key,
   monthLength = 3,
 }: {
   modules: RawModule[];
-  view: string;
+  view?: string;
   monthLength?: number;
 }) {
   const { isJoursFeries, getJourFerie } = useJoursFeries();
@@ -104,7 +104,7 @@ export default function CommonCalendar({
   return (
     <>
       <ZoomUI range={5} />
-      {(!view || view === FiliereView.key) && calendarFiliere}
+      {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
     </>
   );

@@ -6,11 +6,11 @@ import {
   isAfter,
   isBefore,
   isSameDay,
-  isWithinInterval,
   parseISO,
   startOfMonth,
 } from "date-fns";
 import { formatDayDate } from "./date";
+import { moduleOverlap } from "./realData";
 import { CalendarView, Module, ModuleEvent, RawModule } from "./types";
 
 export function toCalendarData<K>(
@@ -54,10 +54,6 @@ function getDataField(object: any, field: string) {
   let target = object;
   for (let subField of field.split(".")) target = target[subField];
   return target;
-}
-
-export function moduleOverlap(m1: Interval, m2: Interval) {
-  return isWithinInterval(m1.start, m2) || isWithinInterval(m1.end, m2);
 }
 
 export function mergeModule(dest: ModuleEvent, mod: ModuleEvent): ModuleEvent {

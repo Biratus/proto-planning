@@ -1,5 +1,12 @@
 import { Interval } from "@/components/calendar/types";
-import { areIntervalsOverlapping, formatISO, parseISO } from "date-fns";
+import {
+  areIntervalsOverlapping,
+  formatISO,
+  isAfter,
+  isBefore,
+  isWithinInterval,
+  parseISO,
+} from "date-fns";
 import { parse } from "./date";
 import { includesIgnoreCase } from "./strings";
 import { Formateur, Module, RawModule } from "./types";
@@ -697,3 +704,54 @@ export const themes = [
   "FRAMEWORKS",
   "PROJET",
 ];
+
+/*
+  --------
+    UTILS
+  --------
+*/
+
+export function getOverlapModules(
+  modules: Module[]
+): (Interval & { overlappedModules: Module[] })[] {
+  let overlappedModules: Module[][] = [];
+
+  for (let mod1 of modules) {
+    for (let mod2 of modules) {
+      if (mod1.id !== mod2.id && moduleOverlap(mod1, mod2)) {
+        if (
+          !overlappedModules.some((overlapped) => overlapped.includes(mod1))
+        ) {
+          overlappedModules.push([mod1, mod2]);
+        } else {
+          const overlappIndex = overlappedModules.findIndex((overlapped) =>
+            overlapped.includes(mod1)
+          );
+          overlappedModules[overlappIndex].push(mod2);
+        }
+      }
+    }
+  }
+
+  return overlappedModules.map((mods) => ({
+    start: mods.reduce(
+      (acc: Date | null, m) =>
+        (acc = acc == null || isBefore(m.start, acc) ? m.start : acc),
+      null
+    )!,
+    end: mods.reduce(
+      (acc: Date, m) =>
+        (acc = acc == null || isAfter(m.end, acc) ? m.end : acc),
+      new Date()
+    ),
+    overlappedModules: sortModules(mods),
+  }));
+}
+
+export function moduleOverlap(m1: Module, m2: Module) {
+  return isWithinInterval(m1.start, m2) || isWithinInterval(m1.end, m2);
+}
+
+export function sortModules(modules: Module[]) {
+  return modules.sort((m1, m2) => m1.start.getTime() - m2.start.getTime());
+}

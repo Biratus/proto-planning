@@ -74,6 +74,12 @@ export function startOfWeek(d: Date) {
   return dateFns.startOfWeek(d, locale);
 }
 
+/*
+  --------
+    UTILS
+  --------
+*/
+
 export function nbOfDaysBetween(start: Date, end: Date) {
   return dateFns.isSameMonth(start, end)
     ? end.getDate() - start.getDate() + 1

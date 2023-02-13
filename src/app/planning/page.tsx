@@ -6,6 +6,7 @@ import { parseMonthAndYear } from "@/lib/date";
 import { modules } from "@/lib/realData";
 import { formatISO, startOfMonth, startOfToday } from "date-fns";
 import CommonCalendar from "./(components)/(calendar)/Calendar";
+import FiliereModal from "./(components)/(modals)/filiere";
 import ViewDropdown from "./(components)/ViewDropdown";
 
 export const dynamic = "force-dynamic"; // To get searchParams in prod
@@ -17,12 +18,15 @@ export default function PlanningPage({ searchParams }: { searchParams?: any }) {
   let focusDate = date ? parseMonthAndYear(date) : monthStart;
 
   return (
-    <MonthNavigationProvider focus={formatISO(focusDate)}>
-      <ViewDropdown view={view} />
-      <MonthNavigationUI />
-      <ZoomProvider zoomKey={zoom_calendar_full}>
-        <CommonCalendar modules={modules} view={view} />
-      </ZoomProvider>
-    </MonthNavigationProvider>
+    <>
+      <MonthNavigationProvider focus={formatISO(focusDate)}>
+        <ViewDropdown view={view} />
+        <MonthNavigationUI />
+        <ZoomProvider zoomKey={zoom_calendar_full}>
+          <CommonCalendar modules={modules} view={view} />
+        </ZoomProvider>
+      </MonthNavigationProvider>
+      <FiliereModal />
+    </>
   );
 }

@@ -41,12 +41,14 @@ interface CalendarHoverStore {
   openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) => void;
   openPopUpMenu: (mod: ModuleEvent, ref: HTMLElement) => void;
   closePopUpMenu: () => void;
+  filiereFocus: string;
 }
 
 const initialHoverProps = {
   anchor: null,
   focus: null,
   tempFocus: [],
+  filiereFocus: "",
 };
 
 const calendarHoverStore = create<CalendarHoverStore>((set, get) => ({
@@ -106,6 +108,12 @@ export const useOverlapModuleUI = () =>
   }));
 
 export const openOverlapUI = calendarHoverStore.getState().openOverlapUI;
+
+export const useFocusedFiliere = () =>
+  calendarHoverStore((state) => state.filiereFocus);
+
+export const setFocusedFiliere = (filiere: string) =>
+  calendarHoverStore.setState({ filiereFocus: filiere });
 
 /*
   ------ Drag

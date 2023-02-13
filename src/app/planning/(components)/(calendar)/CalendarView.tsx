@@ -1,5 +1,8 @@
 import { CalendarView, Formateur } from "@/lib/types";
 import Link from "next/link";
+import { useCallback } from "react";
+import { FiliereDetailModalId } from "../(modals)/filiere";
+import { setFocusedFiliere } from "./CalendarProvider";
 
 const formateurSimple = ({ nom, prenom, mail }: Formateur) =>
   `${nom} ${prenom} - ${mail}`;
@@ -20,7 +23,18 @@ export const FormateurView: CalendarView<Formateur> = {
   LabelComponent: FormateurLabel,
 };
 function FiliereLabel({ labelKey: filiere }: { labelKey: string }) {
-  return <RowLabel label={filiere} href={`filiere/${filiere}`} />;
+  const setFocus = useCallback(() => {
+    setFocusedFiliere(filiere);
+  }, [filiere]);
+  return (
+    <label
+      className="flex h-full  cursor-pointer items-center  border-b border-blue-900  bg-blue-600 pl-1 hover:bg-blue-900"
+      htmlFor={FiliereDetailModalId}
+      onClick={setFocus}
+    >
+      <span className="truncate">{filiere}</span>
+    </label>
+  );
 }
 function FormateurLabel({
   labelKey: { nom, prenom, mail },
