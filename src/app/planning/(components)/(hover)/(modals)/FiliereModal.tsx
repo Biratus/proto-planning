@@ -6,7 +6,7 @@ import { Module } from "@/lib/types";
 import Link from "next/link";
 import { useMemo, useRef } from "react";
 import { AlertTriangle, Download, Info, User } from "react-feather";
-import { useFocusedFiliere } from "../(calendar)/CalendarProvider";
+import { useFocusedFiliere } from "../../(calendar)/CalendarProvider";
 
 export const FiliereDetailModalId = "filiereDetailModalId";
 

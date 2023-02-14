@@ -7,7 +7,9 @@ import { parseMonthAndYear } from "@/lib/date";
 import { modules } from "@/lib/realData";
 import { formatISO, startOfMonth, startOfToday } from "date-fns";
 import CommonCalendar from "./(components)/(calendar)/Calendar";
-import FiliereModal from "./(components)/(modals)/filiere";
+import FiliereModal from "./(components)/(hover)/(modals)/FiliereModal";
+import ModuleModal from "./(components)/(hover)/(modals)/ModuleModal";
+import HoverElements from "./(components)/(hover)/HoverElements";
 import SwitchView from "./(components)/SwitchView";
 
 export const dynamic = "force-dynamic"; // To get searchParams in prod
@@ -31,6 +33,8 @@ export default function PlanningPage({ searchParams }: { searchParams?: any }) {
         </ZoomProvider>
       </MonthNavigationProvider>
       <FiliereModal />
+      <ModuleModal />
+      <HoverElements />
     </>
   );
 }

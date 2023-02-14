@@ -1,7 +1,7 @@
 import { CalendarView, Formateur } from "@/lib/types";
 import Link from "next/link";
 import { useCallback } from "react";
-import { FiliereDetailModalId } from "../(modals)/filiere";
+import { FiliereDetailModalId } from "../(hover)/(modals)/FiliereModal";
 import { setFocusedFiliere } from "./CalendarProvider";
 
 const formateurSimple = ({ nom, prenom, mail }: Formateur) =>

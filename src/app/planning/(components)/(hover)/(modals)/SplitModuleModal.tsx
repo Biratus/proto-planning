@@ -5,6 +5,7 @@ import { formatDateValue, parseDateValue } from "@/lib/date";
 import { Formateur, Module } from "@/lib/types";
 import { addDays } from "date-fns";
 import { useCallback, useRef } from "react";
+import ModuleTitle from "./ModuleTitle";
 export const SplitModuleModalId = "splitModuleModal";
 
 type SplitModuleModalProps<T extends Module> = {
@@ -71,7 +72,12 @@ export default function SplitModuleModal<T extends Module>({
     <CommonModal inputId={SplitModuleModalId} modalRef={modalRef}>
       {modules?.length && (
         <>
-          <h3 className="text-center text-lg font-bold">{modules[0].name}</h3>
+          <ModuleTitle
+            name={modules[0].name}
+            filiere={modules[0].filiere}
+            backButton={SplitModuleModalId}
+          />
+
           <div className="grid grid-cols-2 grid-rows-6 gap-2">
             <div className="form-control row-start-1 row-end-3 columns-1">
               <label className="label">

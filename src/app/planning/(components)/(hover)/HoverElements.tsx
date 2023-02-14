@@ -6,10 +6,9 @@ import {
   resetHoverProps,
   useFocusModule,
 } from "../(calendar)/CalendarProvider";
-import ModuleMenu from "./ModuleMenu";
+import SplitModuleModal from "./(modals)/SplitModuleModal";
+import SwitchFormateurModal from "./(modals)/SwitchFormateurModal";
 import OverlapModuleOverlay from "./OverlapModuleOverlay";
-import SplitModuleModal from "./SplitModuleModal";
-import SwitchFormateurModal from "./SwitchFormateurModal";
 
 export default function HoverElements() {
   const {
@@ -40,7 +39,6 @@ export default function HoverElements() {
   }, [tempModules]);
   return (
     <>
-      <ModuleMenu />
       <SwitchFormateurModal
         onClose={resetHoverProps}
         module={tempModules[0]}

@@ -16,7 +16,7 @@ export default function CalendarEvent<T extends CalendarItem>({
 
   return (
     <div
-      className={`flex cursor-pointer items-center px-1 hover:opacity-60 ${styleProps.className}`}
+      className={`flex cursor-pointer items-center hover:opacity-60 ${styleProps.className}`}
       style={{
         gridColumnEnd: `span ${span}`,
         ...styleProps.props,

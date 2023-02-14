@@ -1,9 +1,9 @@
 "use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
-import { formatFullPrettyDate } from "@/lib/date";
 import { Formateur, Module } from "@/lib/types";
 import { useCallback, useRef } from "react";
+import ModuleTitle from "./ModuleTitle";
 export const SwitchFormateurModalId = "switchFormateurModal";
 
 type SwitchFormateurModalProps<T extends Module> = {
@@ -48,11 +48,14 @@ export default function SwitchFormateurModal<T extends Module>({
     <CommonModal inputId={SwitchFormateurModalId} modalRef={modalRef}>
       {module && (
         <>
-          <h3 className="text-center text-lg font-bold">{module.name}</h3>
-          <div>Filière :{module.filiere}</div>
-          <div>Début : {formatFullPrettyDate(module.start)}</div>
+          <ModuleTitle
+            name={module.name}
+            filiere={module.filiere}
+            backButton={SwitchFormateurModalId}
+          />
+          {/* <div>Début : {formatFullPrettyDate(module.start)}</div>
           <div>Fin : {formatFullPrettyDate(module.end)}</div>
-          <div>{JSON.stringify(module.formateur)}</div>
+          <div>{JSON.stringify(module.formateur)}</div> */}
           <FormateurSelect
             formateur={module.formateur}
             forModule={module}

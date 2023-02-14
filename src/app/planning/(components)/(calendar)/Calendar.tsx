@@ -14,12 +14,13 @@ import { isFormateurMissing } from "@/lib/realData";
 import { ModuleEvent, RawModule } from "@/lib/types";
 import { useMemo } from "react";
 import { AlertTriangle } from "react-feather";
+import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
 import {
   openOverlapUI,
+  setFocusModule,
   useJoursFeries,
-  usePopUpMenu,
 } from "./CalendarProvider";
 import { FiliereView, FormateurView } from "./CalendarView";
 
@@ -37,7 +38,6 @@ export default function CommonCalendar({
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
-  const { open: openPopupMenu } = usePopUpMenu();
 
   // Props passed to Calendar
   const commonProps: CommonCalendarProps<ModuleEvent> = useMemo(
@@ -46,19 +46,25 @@ export default function CommonCalendar({
       time: { start: month, monthLength },
       event: {
         label: (mod: ModuleEvent) => {
-          if (mod.overlap)
-            return (
-              <AlertTriangle
-                color="red"
-                className={mod.duration != 1 ? "ml-2" : ""}
-              />
-            );
-          else return mod.duration == 1 ? "" : mod.name;
+          return (
+            <label htmlFor={ModuleDetailModalId} className="px-1">
+              {mod.overlap ? (
+                <AlertTriangle
+                  color="red"
+                  className={mod.duration != 1 ? "ml-2" : ""}
+                />
+              ) : mod.duration == 1 ? (
+                ""
+              ) : (
+                mod.name
+              )}
+            </label>
+          );
         },
         onClick: (mod, ref) => {
           if (mod.overlap) {
             openOverlapUI(mod, ref);
-          } else openPopupMenu(mod, ref);
+          } else setFocusModule(mod);
         },
         style: (mod: ModuleEvent) => {
           let style = eventStyle(colorOf(mod.theme));
