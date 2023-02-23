@@ -1,6 +1,10 @@
 import { DragEvent, ReactNode } from "react";
-import { Style } from "./styles";
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+export interface Style {
+  className: string;
+  props?: any;
+}
 
 export type Interval = {
   start: Date;
@@ -41,6 +45,7 @@ export type CommonCalendarProps<T> = {
   day: DayProps;
   zoom: number;
   event: EventProps<T>; // eventProps
+  monthLabelStyle: Style;
 };
 
 export type CalendarProps<
@@ -144,4 +149,5 @@ export type CalendarSimpleProps<T extends CalendarItem> = {
   eventProps: SimpleEventProps<T>;
   dayProps: DayProps;
   style?: Style;
+  monthLabelStyle?: Style;
 };

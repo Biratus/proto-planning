@@ -1,4 +1,4 @@
-import { CalendarData, Interval, Month } from "@/components/calendar/types";
+import { CalendarData, Interval, Month } from "@/packages/calendar/types";
 import {
   addMonths,
   eachDayOfInterval,

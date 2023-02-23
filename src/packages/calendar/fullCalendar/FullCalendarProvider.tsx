@@ -1,8 +1,7 @@
 "use client";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
-import { Style } from "../styles";
-import { CalendarItem, DragEvents, EventProps } from "../types";
+import { CalendarItem, DragEvents, EventProps, Style } from "../types";
 
 type FullCalendarProps<K, T extends CalendarItem> = {
   days: Date[];

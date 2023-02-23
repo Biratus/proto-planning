@@ -1,26 +1,7 @@
+import { createStyle, mergeStyle } from "@/lib/style";
 import { isSameDay, isWeekend } from "date-fns";
+import { Style } from "../../../../packages/calendar/types";
 
-export type Style = {
-  className: string;
-  props: any;
-};
-
-export function createStyle(className: string, props = {}): Style {
-  return { className, props };
-}
-
-export function emptyStyle() {
-  return createStyle("");
-}
-export function mergeStyle(style1: Style, style2: Style) {
-  return {
-    className: style1.className + " " + style2.className,
-    props: {
-      ...style1.props,
-      ...style2.props,
-    },
-  };
-}
 export const monthLabel = createStyle("font-bold", {
   background:
     "linear-gradient(170deg, hsl(47, 49%, 61%) 0%, hsl(47, 49%, 61%) 9%, rgba(0,0,0,0) 50%)",
@@ -84,4 +65,14 @@ export const dayEventStyle = (date: Date, event: Interval, color: string) => {
     background = `radial-gradient(circle at 0%, ${color} 50%, rgba(0,0,0,0) 100%)`;
   }
   return { className: "", props: { background } };
+};
+
+export const missingFormateurLegend = {
+  label: "Formateur non défini",
+  style: missingFormateurStyle("grey"),
+};
+
+export const overlapModuleLegend = {
+  label: "Modules superposés",
+  style: overlapModuleStyle,
 };

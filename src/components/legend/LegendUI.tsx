@@ -1,4 +1,4 @@
-import { Style } from "../calendar/styles";
+import { Style } from "@/lib/style";
 import { LegendItem } from "./Legend";
 
 export default function LegendUI({ legendList }: { legendList: LegendItem[] }) {

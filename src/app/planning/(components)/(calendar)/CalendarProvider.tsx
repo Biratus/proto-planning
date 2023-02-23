@@ -1,7 +1,7 @@
-import { Interval } from "@/components/calendar/types";
 import { JoursFeries } from "@/lib/calendar";
 import { format } from "@/lib/date";
 import { ModuleEvent } from "@/lib/types";
+import { Interval } from "@/packages/calendar/types";
 import { isWithinInterval } from "date-fns";
 import { RefObject } from "react";
 import { create } from "zustand";

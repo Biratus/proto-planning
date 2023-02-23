@@ -8,7 +8,7 @@ const monthStart = startOfMonth(startOfToday());
 
 export default async function layout({ children }: PropsWithChildren) {
   const joursFeries = await getAllJoursFeries(monthStart);
-  setJoursFeries(joursFeries);
+  setJoursFeries(joursFeries);// For server side
 
   return (
     <>

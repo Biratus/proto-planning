@@ -1,7 +1,7 @@
-import { formatMonthYear, nbOfDaysBetween } from "@/lib/date";
 import { isSameMonth } from "date-fns";
 import { useMemo } from "react";
 import { CalendarDetailProps, Interval } from "../types";
+import { formatMonthYear, nbOfDaysBetween } from "../utils";
 import CalendarRow from "./CalendarRow";
 
 export default function CalendarDetail<T extends Interval>({

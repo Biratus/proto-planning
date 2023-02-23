@@ -1,4 +1,4 @@
-import { CalendarEvent, TimeProps } from "@/components/calendar/types";
+import { CalendarEvent, TimeProps } from "@/packages/calendar/types";
 import { addDays, isBefore } from "date-fns";
 import { ModuleEvent } from "./types";
 

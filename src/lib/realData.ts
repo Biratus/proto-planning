@@ -1,4 +1,4 @@
-import { Interval } from "@/components/calendar/types";
+import { Interval } from "@/packages/calendar/types";
 import {
   areIntervalsOverlapping,
   formatISO,

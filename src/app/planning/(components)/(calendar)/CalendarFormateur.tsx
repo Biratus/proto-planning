@@ -1,18 +1,19 @@
-import FullCalendar from "@/components/calendar/fullCalendar/FullCalendar";
-import { dropTargetStyle, mergeStyle } from "@/components/calendar/styles";
+import { checkOverlapModules, toCalendarData } from "@/lib/calendar";
+import { getTargetDay } from "@/lib/mouseEvent";
+import { isFormateurMissing } from "@/lib/realData";
+import { mergeStyle } from "@/lib/style";
+import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
   CommonCalendarProps,
   DayAndEvent,
-} from "@/components/calendar/types";
-import { checkOverlapModules, toCalendarData } from "@/lib/calendar";
-import { getTargetDay } from "@/lib/mouseEvent";
-import { isFormateurMissing } from "@/lib/realData";
-import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+} from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
 import { formatISO } from "date-fns/esm";
 import { DragEvent, useCallback, useMemo, useState } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
+import { dropTargetStyle } from "./CalendarStyle";
 import { FormateurView } from "./CalendarView";
 
 export default function CalendarFormateur({

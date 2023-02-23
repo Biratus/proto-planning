@@ -1,5 +1,4 @@
 "use client";
-import { makeMonths } from "@/lib/calendar";
 import {
   eachDayOfInterval,
   endOfMonth,
@@ -13,6 +12,7 @@ import {
   DayAndEvent,
   Month,
 } from "../types";
+import { makeMonths } from "../utils";
 import CalendarMonth from "./CalendarMonth";
 import HoverProvider from "./HoverProvider";
 import SimpleCalendarProvider from "./SimpleCalendarProvider";
@@ -26,6 +26,7 @@ export default function CalendarSimple<T extends CalendarItem>({
   eventProps,
   dayProps,
   style,
+  monthLabelStyle = { className: "" },
   zoom,
 }: CalendarSimpleProps<T>) {
   const months = useMemo(
@@ -59,6 +60,7 @@ export default function CalendarSimple<T extends CalendarItem>({
               key={id}
               days={daysAndEventsOf(m)}
               isFirstMonth={id == 0}
+              monthLabelStyle={monthLabelStyle}
             />
           ))}
         </HoverProvider>

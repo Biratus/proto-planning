@@ -1,7 +1,7 @@
 import {
   CalendarRowLabel,
   IntervalWithDuration,
-} from "@/components/calendar/types";
+} from "@/packages/calendar/types";
 
 export interface Formateur {
   mail: string;

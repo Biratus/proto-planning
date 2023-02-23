@@ -4,7 +4,7 @@ import { filterFormateur } from "@/lib/realData";
 import { Formateur, Module } from "@/lib/types";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { User } from "react-feather";
-import { Interval } from "../calendar/types";
+import { Interval } from "../../packages/calendar/types";
 
 type SearchProps = {
   search?: string;

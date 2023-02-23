@@ -1,15 +1,15 @@
 "use client";
 
-import CalendarDetail from "@/components/calendar/SingleData/CalendarDetail";
-import { missingFormateurStyle } from "@/components/calendar/styles";
 import { useLegendStore } from "@/components/legend/Legend";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { mapISO } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
 import { Module, RawModule } from "@/lib/types";
+import CalendarDetail from "@/packages/calendar/SingleData/CalendarDetail";
 import Link from "next/link";
 import { User } from "react-feather";
+import { missingFormateurStyle } from "../../(components)/(calendar)/CalendarStyle";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
 const viewWidth = 50;

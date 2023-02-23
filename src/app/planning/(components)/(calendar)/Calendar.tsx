@@ -1,17 +1,11 @@
 "use client";
-import {
-  calendarDayStyle,
-  eventStyle,
-  mergeStyle,
-  missingFormateurStyle,
-  overlapModuleStyle,
-} from "@/components/calendar/styles";
-import { CommonCalendarProps } from "@/components/calendar/types";
 import { useLegendStore } from "@/components/legend/Legend";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import { isFormateurMissing } from "@/lib/realData";
+import { mergeStyle } from "@/lib/style";
 import { ModuleEvent, RawModule } from "@/lib/types";
+import { CommonCalendarProps } from "@/packages/calendar/types";
 import { useMemo } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
@@ -22,6 +16,13 @@ import {
   setFocusModule,
   useJoursFeries,
 } from "./CalendarProvider";
+import {
+  calendarDayStyle,
+  eventStyle,
+  missingFormateurStyle,
+  monthLabel,
+  overlapModuleStyle,
+} from "./CalendarStyle";
 import { FiliereView, FormateurView } from "./CalendarView";
 
 export default function CommonCalendar({
@@ -92,6 +93,7 @@ export default function CommonCalendar({
           return style;
         },
       },
+      monthLabelStyle: monthLabel,
     }),
     [zoom, month, monthLength]
   );

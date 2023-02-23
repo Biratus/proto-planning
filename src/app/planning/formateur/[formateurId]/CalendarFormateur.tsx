@@ -1,21 +1,21 @@
 "use client";
 
-import CalendarSimple from "@/components/calendar/SimpleView/CalendarSimple";
-import {
-  calendarDayStyle,
-  dayEventStyle,
-  emptyStyle,
-} from "@/components/calendar/styles";
 import { useLegendStore } from "@/components/legend/Legend";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { mapISO } from "@/lib/date";
+import { emptyStyle } from "@/lib/style";
 import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
 import { isWeekend } from "date-fns";
 import { useMemo } from "react";
 import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
+import {
+  calendarDayStyle,
+  dayEventStyle,
+} from "../../(components)/(calendar)/CalendarStyle";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
 type CalendarFormateurProps = {

@@ -1,8 +1,7 @@
-import { moduleDayLabel } from "@/lib/calendar";
 import { eachDayOfInterval } from "date-fns";
 import { MouseEvent, useCallback } from "react";
-import { Style } from "../styles";
-import { CalendarDetailRowProps, Interval } from "../types";
+import { CalendarDetailRowProps, Interval, Style } from "../types";
+import { moduleDayLabel } from "../utils";
 
 export default function CalendarRow<T extends Interval>({
   event,

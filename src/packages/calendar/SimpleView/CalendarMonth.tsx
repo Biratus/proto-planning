@@ -1,26 +1,27 @@
 "use client";
 
-import { formatMonthYear } from "@/lib/date";
 import { useMemo } from "react";
-import { monthLabel } from "../styles";
-import { CalendarItem, DayAndEvent } from "../types";
+import { CalendarItem, DayAndEvent, Style } from "../types";
+import { formatMonthYear } from "../utils";
 import CalendarCell from "./CalendarCell";
 
 export type CalendarMonthProp<T extends CalendarItem> = {
   days: DayAndEvent<T>[];
   isFirstMonth: boolean;
+  monthLabelStyle: Style;
 };
 
 export default function CalendarMonth<T extends CalendarItem>({
   days,
   isFirstMonth,
+  monthLabelStyle,
 }: CalendarMonthProp<T>) {
   return useMemo(
     () => (
       <>
         <div
-          className={`col-span-7 p-4 ${monthLabel.className}`}
-          style={monthLabel.props}
+          className={`col-span-7 p-4 ${monthLabelStyle.className}`}
+          style={monthLabelStyle.props} // TODO REFACTO
         >
           {formatMonthYear(days[0].date)}
         </div>

@@ -1,9 +1,8 @@
 "use client";
 
-import { formatDayDate } from "@/lib/date";
 import { isSameDay } from "date-fns";
-import { Style } from "../styles";
-import { CalendarItem, DayAndEvent } from "../types";
+import { CalendarItem, DayAndEvent, Style } from "../types";
+import { formatDayDate } from "../utils";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
 

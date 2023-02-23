@@ -1,6 +1,5 @@
 "use client";
 
-import { Style } from "../styles";
 import { CalendarEvent as CalendarEventType, CalendarItem } from "../types";
 import { useFullCalendarEvent } from "./FullCalendarProvider";
 
@@ -12,7 +11,7 @@ export default function CalendarEvent<T extends CalendarItem>({
 }) {
   const { onClick, style, label } = useFullCalendarEvent<T>();
 
-  const styleProps: Style = style(event!);
+  const styleProps = style(event!);
 
   return (
     <div

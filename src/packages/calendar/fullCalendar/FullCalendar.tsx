@@ -1,11 +1,5 @@
 "use client";
 
-import { makeMonths } from "@/lib/calendar";
-import {
-  formatDayDate,
-  formatMonthYear,
-  formatSimpleDayLabel,
-} from "@/lib/date";
 import {
   areIntervalsOverlapping,
   eachDayOfInterval,
@@ -13,8 +7,13 @@ import {
   startOfMonth,
 } from "date-fns";
 import { useMemo } from "react";
-import { monthLabel, Style } from "../styles";
-import { CalendarItem, CalendarProps, Month } from "../types";
+import { CalendarItem, CalendarProps, Month, Style } from "../types";
+import {
+  formatDayDate,
+  formatMonthYear,
+  formatSimpleDayLabel,
+  makeMonths,
+} from "../utils";
 import CalendarRow from "./CalendarRow";
 import FullCalendarProvider from "./FullCalendarProvider";
 
@@ -27,6 +26,7 @@ export default function FullCalendar<K, T extends CalendarItem>({
   event: eventProps,
   day,
   zoom,
+  monthLabelStyle,
   drag,
 }: CalendarProps<K, T>) {
   const {
@@ -66,7 +66,9 @@ export default function FullCalendar<K, T extends CalendarItem>({
   }, [days, hasTooltip, tooltipInfo, styleProps]);
 
   const monthRow = useMemo(() => {
-    return months.map((m, i) => <Month month={m} key={i} first={i == 0} />);
+    return months.map((m, i) => (
+      <Month style={monthLabelStyle} month={m} key={i} first={i == 0} />
+    ));
   }, [months]);
 
   return (
@@ -111,16 +113,18 @@ export default function FullCalendar<K, T extends CalendarItem>({
 function Month({
   month: { nbOfDays, day },
   first,
+  style,
 }: {
   month: Month;
   first: boolean;
+  style: Style;
 }) {
   return (
     <div
-      className={`${monthLabel.className} flex items-center pl-5 ${
+      className={`${style.className} flex items-center pl-5 ${
         first ? "col-start-2" : "col-start-auto"
       }`}
-      style={{ ...monthLabel.props, gridColumnEnd: `span ${nbOfDays}` }}
+      style={{ ...style.props, gridColumnEnd: `span ${nbOfDays}` }}
     >
       {formatMonthYear(day)}
     </div>

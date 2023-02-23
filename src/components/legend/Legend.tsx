@@ -1,11 +1,11 @@
+import {
+  missingFormateurLegend,
+  overlapModuleLegend,
+} from "@/app/planning/(components)/(calendar)/CalendarStyle";
 import { Color, getColorsForLabels } from "@/lib/colors";
 import { themes } from "@/lib/realData";
+import { Style } from "@/lib/style";
 import { create } from "zustand";
-import {
-  missingFormateurStyle,
-  overlapModuleStyle,
-  Style,
-} from "../calendar/styles";
 import LegendUI from "./LegendUI";
 
 export type LegendItem = {
@@ -13,15 +13,6 @@ export type LegendItem = {
   style: Style;
 };
 
-const missingFormateurLegend = {
-  label: "Formateur non défini",
-  style: missingFormateurStyle("grey"),
-};
-
-const overlapModuleLegend = {
-  label: "Modules superposés",
-  style: overlapModuleStyle,
-};
 const colors = getColorsForLabels(themes);
 
 const fullLegend: LegendItem[] = [
