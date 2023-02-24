@@ -15,6 +15,7 @@ import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
 import {
   calendarDayStyle,
   dayEventStyle,
+  monthLabel,
 } from "../../(components)/(calendar)/CalendarStyle";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
@@ -75,6 +76,7 @@ export default function CalendarFormateur({
             return style;
           },
         }}
+        monthLabelStyle={monthLabel}
       />
     </div>
   );

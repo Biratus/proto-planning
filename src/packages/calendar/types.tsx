@@ -1,4 +1,7 @@
-import { DragEvent, ReactNode } from "react";
+import { DragEvent, PropsWithChildren, ReactNode } from "react";
+import { defaultEventElement } from "./fullCalendar/CalendarEvent";
+import { defaultSimpleEventElement } from "./SimpleView/CalendarCell";
+import { defaultSingleEventElement } from "./SingleData/CalendarRow";
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 export interface Style {
@@ -28,10 +31,24 @@ export type DayProps = {
   tooltip: { hasTooltip: (day: Date) => boolean; tooltipInfo: any };
   styleProps: (day: Date) => Style;
 };
-export type EventProps<T> = {
+
+export type CalendarEventComponentProps<T extends CalendarItem> = {
+  event?: T;
+} & PropsWithChildren &
+  React.HTMLAttributes<HTMLElement>;
+
+export type CalendarEventComponent<T extends CalendarItem> = React.FC<
+  CalendarEventComponentProps<T>
+>;
+
+export type EventProps<
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T>
+> = {
   onClick: (event: T, evt: HTMLElement) => void;
   label: (event: T) => ReactNode;
   style: (event: T) => Style;
+  as?: E;
 };
 
 export type CalendarData<K, T extends Interval> = {
@@ -40,18 +57,22 @@ export type CalendarData<K, T extends Interval> = {
   events: T[];
 };
 
-export type CommonCalendarProps<T> = {
+export type CommonCalendarProps<
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T> = typeof defaultEventElement
+> = {
   time: TimeProps;
   day: DayProps;
   zoom: number;
-  event: EventProps<T>; // eventProps
+  event: EventProps<T, E>; // eventProps
   monthLabelStyle: Style;
 };
 
 export type CalendarProps<
   K,
-  T extends CalendarItem
-> = CommonCalendarProps<T> & {
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T>
+> = CommonCalendarProps<T, E> & {
   data: CalendarData<K, T>[];
   LabelComponent: CalendarRowLabel<K>;
   drag: DragEvents<K, T>;
@@ -113,20 +134,43 @@ export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
   -----
  
 */
+export type SingleCalendarEventComponentProps<T extends Interval> = {
+  event?: T;
+} & PropsWithChildren &
+  React.HTMLAttributes<HTMLElement>;
 
-export type CalendarDetailProps<T extends Interval> = {
+export type SingleCalendarEventComponent<T extends Interval> = React.FC<
+  SingleCalendarEventComponentProps<T>
+>;
+export type SingleEventProps<
+  T extends Interval,
+  E extends SingleCalendarEventComponent<T>
+> = {
+  onClick: (event: T, evt: HTMLElement) => void;
+  label: (event: T) => String;
+  style: (event: T) => Style;
+  as?: E;
+};
+
+export type CalendarDetailProps<
+  T extends Interval,
+  E extends SingleCalendarEventComponent<T>
+> = {
   style?: Style;
   additionalLabel: string;
   AdditionalInfo: React.FC<{ event: T }>;
   cellHeight: string;
   events: T[];
-  eventProps: EventProps<T>;
+  eventProps: SingleEventProps<T, E>;
 };
 
-export type CalendarDetailRowProps<T extends Interval> = {
+export type CalendarDetailRowProps<
+  T extends Interval,
+  E extends SingleCalendarEventComponent<T> = typeof defaultSingleEventElement
+> = {
   event: T;
   AdditionalInfo: React.FC<{ event: T }>;
-  eventProps: EventProps<T>;
+  eventProps: SingleEventProps<T, E>;
 };
 
 /*
@@ -136,17 +180,24 @@ SIMPLE VIEW
 
 */
 
-export type SimpleEventProps<T> = {
+export type SimpleEventProps<
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T>
+> = {
   onClick: (event: T, evt: HTMLElement) => void;
-  label: (event: T) => ReactNode;
+  label: (event: T) => String;
   style: (date: Date, event?: T) => Style;
+  as?: E;
 };
 
-export type CalendarSimpleProps<T extends CalendarItem> = {
+export type CalendarSimpleProps<
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T> = typeof defaultSimpleEventElement
+> = {
   time: TimeProps;
   events: T[];
   zoom: number;
-  eventProps: SimpleEventProps<T>;
+  eventProps: SimpleEventProps<T, E>;
   dayProps: DayProps;
   style?: Style;
   monthLabelStyle?: Style;

@@ -1,16 +1,26 @@
 import { eachDayOfInterval } from "date-fns";
 import { MouseEvent, useCallback } from "react";
-import { CalendarDetailRowProps, Interval, Style } from "../types";
+import {
+  CalendarDetailRowProps,
+  Interval,
+  SingleCalendarEventComponent,
+  SingleCalendarEventComponentProps,
+  Style,
+} from "../types";
 import { moduleDayLabel } from "../utils";
-
-export default function CalendarRow<T extends Interval>({
-  event,
-  AdditionalInfo,
-  eventProps,
-}: CalendarDetailRowProps<T>) {
+export const defaultSingleEventElement = ({
+  children,
+  ...props
+}: SingleCalendarEventComponentProps<Interval>) => (
+  <div {...props}>{children}</div>
+);
+export default function CalendarRow<
+  T extends Interval,
+  E extends SingleCalendarEventComponent<T>
+>({ event, AdditionalInfo, eventProps }: CalendarDetailRowProps<T, E>) {
   const { start, end } = event;
 
-  const { style, onClick, label } = eventProps;
+  const { style, onClick, label, as } = eventProps;
 
   let dayNb = eachDayOfInterval({ start, end }).length;
 
@@ -22,6 +32,9 @@ export default function CalendarRow<T extends Interval>({
     },
     [onClick, event]
   );
+
+  const Component = as ?? defaultSingleEventElement;
+
   return (
     <>
       <div
@@ -30,7 +43,7 @@ export default function CalendarRow<T extends Interval>({
       >
         {moduleDayLabel(event)}
       </div>
-      <div
+      <Component
         className={`cursor-pointer truncate border-b border-gray-500 pl-3 hover:opacity-60 dark:border-white ${styleProps.className}`}
         style={{
           gridRowEnd: "span " + dayNb,
@@ -39,7 +52,7 @@ export default function CalendarRow<T extends Interval>({
         onClick={eventClick}
       >
         {label(event)}
-      </div>
+      </Component>
       <div
         className="border-b border-gray-500 pl-3 dark:border-white"
         style={{ gridRowEnd: "span " + dayNb }}

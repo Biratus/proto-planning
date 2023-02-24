@@ -10,16 +10,16 @@ import {
   DayAndEvent,
 } from "@/packages/calendar/types";
 import { addDays, formatISO, isSameDay } from "date-fns";
-import { DragEvent, useCallback, useMemo, useState } from "react";
+import { DragEvent, ElementType, useCallback, useMemo, useState } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FiliereView } from "./CalendarView";
 
-export default function CalendarFiliere({
+export default function CalendarFiliere<E extends ElementType>({
   modules: originalModules,
   day,
   ...props
-}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent>) {
+}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent, E>) {
   const [modules, setModules] = useState(originalModules);
   const calendarData = useMemo(() => {
     const data = toCalendarData(modules, "filiere", FiliereView);

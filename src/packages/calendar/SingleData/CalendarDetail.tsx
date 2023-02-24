@@ -1,17 +1,24 @@
 import { isSameMonth } from "date-fns";
 import { useMemo } from "react";
-import { CalendarDetailProps, Interval } from "../types";
+import {
+  CalendarDetailProps,
+  Interval,
+  SingleCalendarEventComponent,
+} from "../types";
 import { formatMonthYear, nbOfDaysBetween } from "../utils";
 import CalendarRow from "./CalendarRow";
 
-export default function CalendarDetail<T extends Interval>({
+export default function CalendarDetail<
+  T extends Interval,
+  E extends SingleCalendarEventComponent<T>
+>({
   style,
   eventProps,
   events,
   cellHeight,
   additionalLabel,
   AdditionalInfo,
-}: CalendarDetailProps<T>) {
+}: CalendarDetailProps<T, E>) {
   const dayNb = events.reduce(
     (acc, { start, end }) => acc + nbOfDaysBetween(start, end),
     0
