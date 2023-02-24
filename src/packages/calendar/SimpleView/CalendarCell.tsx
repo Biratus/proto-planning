@@ -1,10 +1,23 @@
 "use client";
 
 import { isSameDay } from "date-fns";
-import { CalendarItem, DayAndEvent, Style } from "../types";
+import {
+  CalendarEventComponentProps,
+  CalendarItem,
+  DayAndEvent,
+  Style,
+} from "../types";
 import { formatDayDate } from "../utils";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
+
+export const defaultSimpleEventElement = ({
+  event,
+  children,
+  ...props
+}: CalendarEventComponentProps<CalendarItem>) => (
+  <div {...props}>{children}</div>
+);
 
 export default function CalendarCell<T extends CalendarItem>({
   day: { date, event },

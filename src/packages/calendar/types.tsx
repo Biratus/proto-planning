@@ -132,19 +132,25 @@ export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
  
 */
 
+export type SingleEventProps<T> = {
+  onClick: (event: T, evt: HTMLElement) => void;
+  label: (event: T) => ReactNode;
+  style: (event: T) => Style;
+};
+
 export type CalendarDetailProps<T extends Interval> = {
   style?: Style;
   additionalLabel: string;
   AdditionalInfo: React.FC<{ event: T }>;
   cellHeight: string;
   events: T[];
-  eventProps: EventProps<T>;
+  eventProps: SingleEventProps<T>;
 };
 
 export type CalendarDetailRowProps<T extends Interval> = {
   event: T;
   AdditionalInfo: React.FC<{ event: T }>;
-  eventProps: EventProps<T>;
+  eventProps: SingleEventProps<T>;
 };
 
 /*
