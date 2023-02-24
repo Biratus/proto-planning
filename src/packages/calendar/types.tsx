@@ -1,4 +1,4 @@
-import { DragEvent, PropsWithChildren, ReactNode } from "react";
+import { DragEvent, PropsWithChildren } from "react";
 import { defaultEventElement } from "./fullCalendar/CalendarEvent";
 import { defaultSimpleEventElement } from "./SimpleView/CalendarCell";
 import { defaultSingleEventElement } from "./SingleData/CalendarRow";
@@ -27,36 +27,48 @@ export type Month = {
 
 export type TimeProps = { start: Date; monthLength: number };
 
+/*
+  -----
+  FULL DATA
+  -----
+*/
+
+// Object pour stocker les information d'une ligne du calendrier
+export type CalendarData<K, T extends Interval> = {
+  key: K; // L'objet de cette ligne
+  labelTitle: string; // Libellé de la la ligne
+  events: T[]; // Les évenements de cette ligne
+};
+
+// Propriété spéciales pour l'affichage des jours
 export type DayProps = {
   tooltip: { hasTooltip: (day: Date) => boolean; tooltipInfo: any };
   styleProps: (day: Date) => Style;
 };
 
+// Props du component spécial pour FullCalendar
 export type CalendarEventComponentProps<T extends CalendarItem> = {
   event?: T;
 } & PropsWithChildren &
   React.HTMLAttributes<HTMLElement>;
 
+// Component spécial pour FullCalendar
 export type CalendarEventComponent<T extends CalendarItem> = React.FC<
   CalendarEventComponentProps<T>
 >;
 
+// Propritété des évenements
 export type EventProps<
   T extends CalendarItem,
   E extends CalendarEventComponent<T>
 > = {
   onClick: (event: T, evt: HTMLElement) => void;
-  label: (event: T) => ReactNode;
+  label: (event: T) => String;
   style: (event: T) => Style;
-  as?: E;
+  as?: E; //Component spécial
 };
 
-export type CalendarData<K, T extends Interval> = {
-  key: K;
-  labelTitle: string;
-  events: T[];
-};
-
+// Props globale du calendrier
 export type CommonCalendarProps<
   T extends CalendarItem,
   E extends CalendarEventComponent<T> = typeof defaultEventElement
@@ -68,6 +80,7 @@ export type CommonCalendarProps<
   monthLabelStyle: Style;
 };
 
+// Props spécifique à un calendrier
 export type CalendarProps<
   K,
   T extends CalendarItem,
@@ -78,52 +91,49 @@ export type CalendarProps<
   drag: DragEvents<K, T>;
 };
 
+// Props spécifique à une ligne
 export type CalendarRowProps<K, T extends CalendarItem> = {
   events: T[];
   labelProps: {
-    key: K;
-    title: string;
-    LabelComponent: CalendarRowLabel<K>;
+    // Props de la première colonne de la ligne
+    key: K; // Objet auquel on fait référence
+    title: string; // Libellé
+    LabelComponent: CalendarRowLabel<K>; // Component d'affichage
   };
 };
 
+// Props spécifique à un évenement
 export type CalendarEvent<T extends CalendarItem> = {
   date: Date;
   event: T;
   span: number;
 };
 
+// Donnée d'un jour ou évenement
 export type DayAndEvent<T extends CalendarItem> = Optional<
   CalendarEvent<T>,
   "event"
 >;
 
+//DragFunctions
+type DragFunction<K, T extends CalendarItem> = (
+  dayAndEvent: DayAndEvent<T>, // Jour qui est target
+  key: K, // Objet de la ligne
+  evt: DragEvent<HTMLElement>
+) => void;
+
+type DragEventFunction<K, T extends CalendarItem> = (
+  dayAndEvent: CalendarEvent<T>, //Evenement qui est drag
+  key: K, // Objet de la ligne
+  evt: DragEvent<HTMLElement>
+) => void;
+
 export type DragEvents<K, T extends CalendarItem> = {
-  drag: (
-    dayAndEvent: CalendarEvent<T>,
-    key: K,
-    evt: DragEvent<HTMLElement>
-  ) => void;
-  enter: (
-    dayAndEvent: DayAndEvent<T>,
-    key: K,
-    evt: DragEvent<HTMLElement>
-  ) => void;
-  leave: (
-    dayAndEvent: DayAndEvent<T>,
-    key: K,
-    evt: DragEvent<HTMLElement>
-  ) => void;
-  drop: (
-    dayAndEvent: DayAndEvent<T>,
-    key: K,
-    evt: DragEvent<HTMLElement>
-  ) => void;
-  move: (
-    dayAndEvent: DayAndEvent<T>,
-    key: K,
-    evt: DragEvent<HTMLElement>
-  ) => void;
+  drag: DragEventFunction<K, T>;
+  enter: DragFunction<K, T>;
+  leave: DragFunction<K, T>;
+  drop: DragFunction<K, T>;
+  move: DragFunction<K, T>;
 };
 
 export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
@@ -132,7 +142,6 @@ export type CalendarRowLabel<K> = React.FC<{ labelKey: K }>;
   -----
   SINGLE DATA
   -----
- 
 */
 export type SingleCalendarEventComponentProps<T extends Interval> = {
   event?: T;
