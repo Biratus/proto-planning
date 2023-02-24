@@ -1,4 +1,5 @@
-import { DragEvent, ReactNode } from "react";
+import { DragEvent, PropsWithChildren, ReactNode } from "react";
+import { defaultEventElement } from "./fullCalendar/CalendarEvent";
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 export interface Style {
@@ -28,10 +29,23 @@ export type DayProps = {
   tooltip: { hasTooltip: (day: Date) => boolean; tooltipInfo: any };
   styleProps: (day: Date) => Style;
 };
-export type EventProps<T> = {
+
+export type CalendarEventComponentProps<T extends CalendarItem> = {
+  event: T;
+} & PropsWithChildren &
+  React.HTMLAttributes<HTMLElement>;
+export type CalendarEventComponent<T extends CalendarItem> = React.FC<
+  CalendarEventComponentProps<T>
+>;
+
+export type EventProps<
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T> = typeof defaultEventElement
+> = {
   onClick: (event: T, evt: HTMLElement) => void;
   label: (event: T) => ReactNode;
   style: (event: T) => Style;
+  as?: E;
 };
 
 export type CalendarData<K, T extends Interval> = {
@@ -40,18 +54,22 @@ export type CalendarData<K, T extends Interval> = {
   events: T[];
 };
 
-export type CommonCalendarProps<T> = {
+export type CommonCalendarProps<
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T>
+> = {
   time: TimeProps;
   day: DayProps;
   zoom: number;
-  event: EventProps<T>; // eventProps
+  event: EventProps<T, E>; // eventProps
   monthLabelStyle: Style;
 };
 
 export type CalendarProps<
   K,
-  T extends CalendarItem
-> = CommonCalendarProps<T> & {
+  T extends CalendarItem,
+  E extends CalendarEventComponent<T>
+> = CommonCalendarProps<T, E> & {
   data: CalendarData<K, T>[];
   LabelComponent: CalendarRowLabel<K>;
   drag: DragEvents<K, T>;

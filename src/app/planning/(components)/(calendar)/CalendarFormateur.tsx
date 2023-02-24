@@ -11,16 +11,16 @@ import {
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
 import { formatISO } from "date-fns/esm";
-import { DragEvent, useCallback, useMemo, useState } from "react";
+import { DragEvent, ElementType, useCallback, useMemo, useState } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FormateurView } from "./CalendarView";
 
-export default function CalendarFormateur({
+export default function CalendarFormateur<E extends ElementType>({
   modules: originalModules,
   day,
   ...props
-}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent>) {
+}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent, E>) {
   const [modules, setModules] = useState(originalModules);
 
   const calendarData = useMemo(() => {

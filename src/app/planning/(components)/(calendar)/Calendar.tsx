@@ -5,7 +5,10 @@ import { useZoom } from "@/components/zoom/ZoomProvider";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
 import { ModuleEvent, RawModule } from "@/lib/types";
-import { CommonCalendarProps } from "@/packages/calendar/types";
+import {
+  CalendarEventComponentProps,
+  CommonCalendarProps,
+} from "@/packages/calendar/types";
 import { useMemo } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
@@ -41,62 +44,49 @@ export default function CommonCalendar({
   const { zoom } = useZoom();
 
   // Props passed to Calendar
-  const commonProps: CommonCalendarProps<ModuleEvent> = useMemo(
-    () => ({
-      zoom,
-      time: { start: month, monthLength },
-      event: {
-        label: (mod: ModuleEvent) => {
-          return (
-            <label htmlFor={ModuleDetailModalId} className="px-1">
-              {mod.overlap ? (
-                <AlertTriangle
-                  color="red"
-                  className={mod.duration != 1 ? "ml-2" : ""}
-                />
-              ) : mod.duration == 1 ? (
-                ""
-              ) : (
-                mod.name
-              )}
-            </label>
-          );
+  const commonProps: CommonCalendarProps<ModuleEvent, typeof EventComponent> =
+    useMemo(
+      () => ({
+        zoom,
+        time: { start: month, monthLength },
+        event: {
+          as: EventComponent,
+          label: (mod: ModuleEvent) => (mod.duration == 1 ? "" : mod.name),
+          onClick: (mod, ref) => {
+            if (mod.overlap) {
+              openOverlapUI(mod, ref);
+            } else setFocusModule(mod);
+          },
+          style: (mod: ModuleEvent) => {
+            let style = eventStyle(colorOf(mod.theme));
+            if (mod.overlap) {
+              style = mergeStyle(style, overlapModuleStyle);
+            } else if (isFormateurMissing(mod)) {
+              style = mergeStyle(
+                style,
+                missingFormateurStyle(colorOf(mod.theme))
+              );
+            }
+            return style;
+          },
         },
-        onClick: (mod, ref) => {
-          if (mod.overlap) {
-            openOverlapUI(mod, ref);
-          } else setFocusModule(mod);
+        day: {
+          tooltip: {
+            hasTooltip: isJoursFeries,
+            tooltipInfo: getJourFerie,
+          },
+          styleProps: (date: Date) => {
+            let style = {
+              ...calendarDayStyle(date),
+            };
+            if (isJoursFeries(date)) style.className = "text-red-600";
+            return style;
+          },
         },
-        style: (mod: ModuleEvent) => {
-          let style = eventStyle(colorOf(mod.theme));
-          if (mod.overlap) {
-            style = mergeStyle(style, overlapModuleStyle);
-          } else if (isFormateurMissing(mod)) {
-            style = mergeStyle(
-              style,
-              missingFormateurStyle(colorOf(mod.theme))
-            );
-          }
-          return style;
-        },
-      },
-      day: {
-        tooltip: {
-          hasTooltip: isJoursFeries,
-          tooltipInfo: getJourFerie,
-        },
-        styleProps: (date: Date) => {
-          let style = {
-            ...calendarDayStyle(date),
-          };
-          if (isJoursFeries(date)) style.className = "text-red-600";
-          return style;
-        },
-      },
-      monthLabelStyle: monthLabel,
-    }),
-    [zoom, month, monthLength]
-  );
+        monthLabelStyle: monthLabel,
+      }),
+      [zoom, month, monthLength]
+    );
 
   const calendarFiliere = useMemo(
     () => <CalendarFiliere modules={modules} {...commonProps} />,
@@ -113,5 +103,24 @@ export default function CommonCalendar({
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
     </>
+  );
+}
+
+function EventComponent({
+  event: mod,
+  children,
+  ...props
+}: CalendarEventComponentProps<ModuleEvent>) {
+  return (
+    <label htmlFor={ModuleDetailModalId} className="px-1" {...props}>
+      {mod.overlap ? (
+        <AlertTriangle
+          color="red"
+          className={mod.duration != 1 ? "ml-2" : ""}
+        />
+      ) : (
+        children
+      )}
+    </label>
   );
 }
