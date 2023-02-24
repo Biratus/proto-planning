@@ -113,10 +113,10 @@ function EventComponent({
 }: CalendarEventComponentProps<ModuleEvent>) {
   return (
     <label htmlFor={ModuleDetailModalId} className="px-1" {...props}>
-      {mod.overlap ? (
+      {mod!.overlap ? (
         <AlertTriangle
           color="red"
-          className={mod.duration != 1 ? "ml-2" : ""}
+          className={mod!.duration != 1 ? "ml-2" : ""}
         />
       ) : (
         children
