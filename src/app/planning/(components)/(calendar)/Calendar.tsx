@@ -9,7 +9,7 @@ import {
   CalendarEventComponentProps,
   CommonCalendarProps,
 } from "@/packages/calendar/types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
 import CalendarFiliere from "./CalendarFiliere";
@@ -28,6 +28,26 @@ import {
 } from "./CalendarStyle";
 import { FiliereView, FormateurView } from "./CalendarView";
 
+type DisplayView = {
+  label: string;
+  print: (mod: ModuleEvent) => string;
+  for?: string;
+};
+
+const displayViews: DisplayView[] = [
+  { label: "Module", print: (mod: ModuleEvent) => mod.name },
+  {
+    label: "Filière",
+    print: (mod: ModuleEvent) => mod.filiere,
+    for: FormateurView.key,
+  },
+  {
+    label: "Formateur",
+    print: (mod: ModuleEvent) => mod.formateur.nom + " " + mod.formateur.prenom,
+    for: FiliereView.key,
+  },
+];
+
 export default function CommonCalendar({
   modules,
   view = FiliereView.key,
@@ -42,6 +62,7 @@ export default function CommonCalendar({
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
+  const [eventLabel, setEventLabel] = useState<DisplayView>(displayViews[0]);
 
   // Props passed to Calendar
   const commonProps: CommonCalendarProps<ModuleEvent, typeof EventComponent> =
@@ -51,7 +72,8 @@ export default function CommonCalendar({
         time: { start: month, monthLength },
         event: {
           as: EventComponent,
-          label: (mod: ModuleEvent) => (mod.duration == 1 ? "" : mod.name),
+          label: (mod: ModuleEvent) =>
+            mod.duration == 1 ? "" : eventLabel.print(mod),
           onClick: (mod, ref) => {
             if (mod.overlap) {
               openOverlapUI(mod, ref);
@@ -85,7 +107,7 @@ export default function CommonCalendar({
         },
         monthLabelStyle: monthLabel,
       }),
-      [zoom, month, monthLength]
+      [zoom, month, monthLength, eventLabel]
     );
 
   const calendarFiliere = useMemo(
@@ -100,6 +122,20 @@ export default function CommonCalendar({
 
   return (
     <>
+      <div className="flex gap-2">
+        <span>Affichage: </span>
+        {displayViews
+          .filter((v) => !v.for || v.for == view)
+          .map((v) => (
+            <button
+              key={v.label}
+              className={`btn-xs btn ${v == eventLabel ? `btn-primary` : ""}`}
+              onClick={() => setEventLabel(v)}
+            >
+              {v.label}
+            </button>
+          ))}
+      </div>
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
     </>

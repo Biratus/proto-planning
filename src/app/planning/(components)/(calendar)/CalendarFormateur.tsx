@@ -6,17 +6,20 @@ import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
+  CalendarEventComponent,
   CommonCalendarProps,
   DayAndEvent,
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
 import { formatISO } from "date-fns/esm";
-import { DragEvent, ElementType, useCallback, useMemo, useState } from "react";
+import { DragEvent, useCallback, useMemo, useState } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FormateurView } from "./CalendarView";
 
-export default function CalendarFormateur<E extends ElementType>({
+export default function CalendarFormateur<
+  E extends CalendarEventComponent<ModuleEvent>
+>({
   modules: originalModules,
   day,
   ...props
