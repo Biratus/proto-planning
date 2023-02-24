@@ -122,19 +122,27 @@ export default function CommonCalendar({
 
   return (
     <>
-      <div className="flex gap-2">
-        <span>Affichage: </span>
-        {displayViews
-          .filter((v) => !v.for || v.for == view)
-          .map((v) => (
-            <button
-              key={v.label}
-              className={`btn-xs btn ${v == eventLabel ? `btn-primary` : ""}`}
-              onClick={() => setEventLabel(v)}
-            >
-              {v.label}
-            </button>
-          ))}
+      <div>
+        <div className="mb-3 border-b border-primary text-xl text-primary">
+          Affichage
+        </div>
+        <div className="flex gap-2 pl-3">
+          {displayViews.map((v) => {
+            let dis = Boolean(v.for) && v.for != view;
+            return (
+              <button
+                key={v.label}
+                className={`btn-xs btn ${
+                  v == eventLabel ? `btn-primary` : ""
+                } ${dis ? "btn-disabled" : ""}`}
+                onClick={() => setEventLabel(v)}
+                disabled={dis}
+              >
+                {v.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
