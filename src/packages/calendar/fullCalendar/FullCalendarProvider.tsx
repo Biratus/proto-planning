@@ -30,7 +30,7 @@ type FullCalendarStore<
   E extends CalendarEventComponent<T>
 > = UseBoundStore<StoreApi<FullCalendarProps<K, T, E>>>;
 
-type CreateFullCalendarStoreFuction = <
+type CreateFullCalendarStoreFunction = <
   K,
   T extends CalendarItem,
   E extends CalendarEventComponent<T>
@@ -41,7 +41,7 @@ type CreateFullCalendarStoreFuction = <
   drag: DragEvents<K, T>
 ) => FullCalendarStore<K, T, E>;
 
-const calendarStore: CreateFullCalendarStoreFuction = <
+const calendarStore: CreateFullCalendarStoreFunction = <
   K,
   T extends CalendarItem,
   E extends CalendarEventComponent<T>

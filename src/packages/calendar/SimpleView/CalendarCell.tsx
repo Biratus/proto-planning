@@ -5,7 +5,6 @@ import {
   CalendarEventComponentProps,
   CalendarItem,
   DayAndEvent,
-  Style,
 } from "../types";
 import { formatDayDate } from "../utils";
 import { useHover } from "./HoverProvider";
@@ -41,7 +40,10 @@ export default function CalendarCell<T extends CalendarItem>({
 
   const Day = <div className="p-2">{formatDayDate(date)}</div>;
 
-  const styleProps: Style = eventProps.style(date, event);
+  const styleProps = eventProps.style(date, event);
+
+  const Component = eventProps.as ?? defaultSimpleEventElement;
+
   return (
     <div
       className={`flex flex-col ${dayStyleProps(date).className}`}
@@ -49,7 +51,6 @@ export default function CalendarCell<T extends CalendarItem>({
         ...dayStyleProps(date).props,
         gridColumnStart: gridColumnStart(),
         height,
-        opacity: hover ? 0.6 : 1,
       }}
     >
       <div
@@ -60,14 +61,16 @@ export default function CalendarCell<T extends CalendarItem>({
       </div>
 
       {event && (
-        <div
+        <Component
           className={`flex flex-grow cursor-pointer items-center pl-2 ${styleProps.className}`}
           style={{
             ...styleProps.props,
+            opacity: hover ? 0.6 : 1,
           }}
           onMouseEnter={hoverMe!}
           onMouseLeave={unHoverMe!}
           onClick={(evt) => eventProps.onClick(event, evt.currentTarget)}
+          event={event}
         >
           <span
             className={`${
@@ -79,7 +82,7 @@ export default function CalendarCell<T extends CalendarItem>({
             {(forceEventLabel || isSameDay(event.start, date)) &&
               eventProps.label(event)}
           </span>
-        </div>
+        </Component>
       )}
     </div>
   );
