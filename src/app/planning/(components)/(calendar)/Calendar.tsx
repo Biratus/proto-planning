@@ -12,6 +12,7 @@ import {
 import { useMemo, useState } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
+import { overlayID } from "../(hover)/OverlapModuleOverlay";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
 import {
@@ -156,7 +157,11 @@ function EventComponent({
   ...props
 }: CalendarEventComponentProps<ModuleEvent>) {
   return (
-    <label htmlFor={ModuleDetailModalId} className="px-1" {...props}>
+    <label
+      htmlFor={mod!.overlap ? overlayID : ModuleDetailModalId}
+      className="pl-1"
+      {...props}
+    >
       {mod!.overlap ? (
         <AlertTriangle
           color="red"
