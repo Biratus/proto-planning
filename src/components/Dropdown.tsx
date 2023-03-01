@@ -1,4 +1,5 @@
 "use client";
+import cn from "classnames";
 import { useCallback, useEffect, useRef } from "react";
 import { ChevronDown } from "react-feather";
 
@@ -39,9 +40,11 @@ export default function Dropdown({
       </label>
       <ul
         tabIndex={0}
-        className={`dropdown-content menu rounded-box max-h-96 w-full snap-y flex-nowrap overflow-y-scroll bg-base-100 p-2 shadow ${
-          compact ? "menu-compact" : ""
-        }`}
+        className={cn({
+          "dropdown-content menu rounded-box max-h-96 w-full snap-y flex-nowrap overflow-y-scroll bg-base-100 p-2 shadow":
+            true,
+          "menu-compact": compact,
+        })}
       >
         {actions.map(({ label, onClick, selected }, i) =>
           selected ? (
@@ -51,7 +54,7 @@ export default function Dropdown({
               ref={activeRef}
               className="snap-start"
             >
-              <a className={`active`}>{label}</a>
+              <a className="active">{label}</a>
             </li>
           ) : (
             <li

@@ -1,5 +1,6 @@
 "use client";
 
+import cn from "classnames";
 import { isSameDay } from "date-fns";
 import {
   CalendarEventComponentProps,
@@ -54,7 +55,7 @@ export default function CalendarCell<T extends CalendarItem>({
       }}
     >
       <div
-        className={`${dayTooltip.hasTooltip(date) ? "tooltip text-left" : ""}`}
+        className={cn({ "tooltip text-left": dayTooltip.hasTooltip(date) })}
         data-tip={dayTooltip.tooltipInfo(date)}
       >
         {Day}
@@ -73,11 +74,11 @@ export default function CalendarCell<T extends CalendarItem>({
           event={event}
         >
           <span
-            className={`${
+            className={
               isSameDay(event.start, date)
                 ? "z-10 whitespace-nowrap"
                 : "truncate"
-            }`}
+            }
           >
             {(forceEventLabel || isSameDay(event.start, date)) &&
               eventProps.label(event)}

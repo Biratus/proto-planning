@@ -30,7 +30,7 @@ export default function CalendarRow<K, T extends CalendarItem>({
   return (
     <>
       <div
-        className={`tooltip tooltip-right sticky left-0 z-10 self-auto`}
+        className="tooltip tooltip-right sticky left-0 z-10 self-auto"
         data-tip={labelTitle}
       >
         <LabelComponent labelKey={labelKey} />

@@ -2,6 +2,7 @@
 
 import { filterFormateur } from "@/lib/realData";
 import { Formateur, Module } from "@/lib/types";
+import cn from "classnames";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { User } from "react-feather";
 import { Interval } from "../../packages/calendar/types";
@@ -92,7 +93,7 @@ export default function FormateurSelect({
           {filterFormateur(searchProps).map((f) => (
             <li key={f.mail}>
               <a
-                className={`${f.mail == formateur.mail ? "active" : ""}`}
+                className={cn({ active: f.mail == formateur.mail })}
                 onClick={() => setFormateur(f)}
               >
                 {f.prenom} {f.nom}

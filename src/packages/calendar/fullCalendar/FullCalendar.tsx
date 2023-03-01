@@ -1,5 +1,6 @@
 "use client";
 
+import cn from "classnames";
 import {
   areIntervalsOverlapping,
   eachDayOfInterval,
@@ -91,7 +92,7 @@ export default function FullCalendar<
       }}
     >
       <div
-        className={`grid overflow-x-auto pb-5`}
+        className="grid overflow-x-auto pb-5"
         style={{
           gridTemplateColumns: `${10 + zoom}% repeat(${days.length},${
             minCellSize + zoom * 5
@@ -131,9 +132,11 @@ function Month({
 }) {
   return (
     <div
-      className={`${style.className} flex items-center pl-5 ${
-        first ? "col-start-2" : "col-start-auto"
-      }`}
+      className={cn({
+        [`${style.className} flex items-center pl-5`]: true,
+        "col-start-2": first,
+        "col-start-auto": !first,
+      })}
       style={{ ...style.props, gridColumnEnd: `span ${nbOfDays}` }}
     >
       {formatMonthYear(day)}
@@ -154,11 +157,12 @@ function Day({
 }) {
   return (
     <div
-      className={`text-center ${first ? "col-start-2" : "col-start-auto"} ${
-        style.className
-      }
-      ${specialInfo ? "tooltip" : ""}
-      `}
+      className={cn({
+        [`text-center ${style.className}`]: true,
+        "col-start-2": first,
+        "col-start-auto": !first,
+        tooltip: specialInfo,
+      })}
       style={style.props}
       data-tip={specialInfo}
     >

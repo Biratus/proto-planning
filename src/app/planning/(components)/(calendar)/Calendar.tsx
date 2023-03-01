@@ -9,6 +9,7 @@ import {
   CalendarEventComponentProps,
   CommonCalendarProps,
 } from "@/packages/calendar/types";
+import cn from "classnames";
 import { useMemo, useState } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
@@ -133,9 +134,11 @@ export default function CommonCalendar({
             return (
               <button
                 key={v.label}
-                className={`btn-xs btn ${
-                  v == eventLabel ? `btn-primary` : ""
-                } ${dis ? "btn-disabled" : ""}`}
+                className={cn({
+                  "btn-xs btn": true,
+                  "btn-primary": v == eventLabel,
+                  "btn-disabled": dis,
+                })}
                 onClick={() => setEventLabel(v)}
                 disabled={dis}
               >
@@ -159,13 +162,13 @@ function EventComponent({
   return (
     <label
       htmlFor={mod!.overlap ? overlayID : ModuleDetailModalId}
-      className="pl-1"
       {...props}
+      className={`pl-1 ${props.className}`}
     >
       {mod!.overlap ? (
         <AlertTriangle
           color="red"
-          className={mod!.duration != 1 ? "ml-2" : ""}
+          className={cn({ "ml-2": mod!.duration != 1 })}
         />
       ) : (
         children

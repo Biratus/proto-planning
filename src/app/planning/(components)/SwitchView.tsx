@@ -1,6 +1,7 @@
 "use client";
 
 import { changeURLParam } from "@/lib/navigation";
+import cn from "classnames";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { FiliereView, FormateurView } from "./(calendar)/CalendarView";
@@ -24,17 +25,19 @@ export default function SwitchView({ view: viewParam = FiliereView.key }) {
       </div>
       <div className="flex gap-2 pl-3">
         <div
-          className={`btn-xs btn ${
-            viewParam == FiliereView.key ? "btn-primary" : ""
-          }`}
+          className={cn({
+            "btn-xs btn": true,
+            "btn-primary": viewParam == FiliereView.key,
+          })}
           onClick={() => setView(FiliereView.key)}
         >
           Filières
         </div>
         <div
-          className={`btn-xs btn ${
-            viewParam == FormateurView.key ? "btn-primary" : ""
-          }`}
+          className={cn({
+            "btn-xs btn": true,
+            "btn-primary": viewParam == FormateurView.key,
+          })}
           onClick={() => setView(FormateurView.key)}
         >
           Formateurs
