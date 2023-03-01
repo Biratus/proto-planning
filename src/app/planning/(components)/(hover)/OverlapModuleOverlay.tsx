@@ -16,10 +16,12 @@ export default function OverlapModuleOverlay() {
   const { focus, anchor } = useOverlapModuleUI();
 
   const position = useMemo(
-    () => anchor && anchor.getBoundingClientRect(),
+    () =>
+      anchor ? anchor.getBoundingClientRect() : { top: 0, left: 0, height: 0 },
     [anchor]
   );
-  const cellWidth = anchor && focus && anchor.clientWidth / focus.duration;
+  const cellWidth = anchor && focus ? anchor.clientWidth / focus.duration : 0;
+
   const dayOffset = useCallback(
     (mod: Module) => {
       return (
@@ -49,24 +51,24 @@ export default function OverlapModuleOverlay() {
         <h3 className="text-bold mt-5 text-center text-2xl">
           Déplacer le module souhaité
         </h3>
-        {focus && (
+        {focus && focus.overlappedModules && (
           <div
             className="absolute flex flex-col gap-2"
             style={{
-              top: `${position!.top}px`,
-              left: `${position!.left}px`,
-              transform: `translateY(${anchor!.clientHeight}px)`,
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+              transform: `translateY(${position.height}px)`,
             }}
           >
-            {focus.overlappedModules!.map((mod: ModuleEvent, i: number) => (
+            {focus.overlappedModules.map((mod: ModuleEvent, i: number) => (
               <div
                 key={i}
                 className="flex cursor-grab items-center px-2 font-bold hover:opacity-80"
                 style={{
-                  height: `${anchor!.clientHeight}px`,
-                  width: `${(mod.duration * cellWidth!).toFixed(2)}px`,
+                  height: `${position.height}px`,
+                  width: `${(mod.duration * cellWidth).toFixed(2)}px`,
                   backgroundColor: colorOf(mod.theme),
-                  marginLeft: `${dayOffset(mod) * cellWidth!}px`,
+                  marginLeft: `${dayOffset(mod) * cellWidth}px`,
                 }}
                 draggable
                 onDragStart={() => dragStart(mod)}
