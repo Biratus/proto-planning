@@ -65,6 +65,17 @@ export function mergeModule(dest: ModuleEvent, mod: ModuleEvent): ModuleEvent {
     : (newModule.overlappedModules = [dest, mod]);
   return newModule;
 }
+export const makeMonths: (month: Date, length: number) => Month[] = (
+  month: Date,
+  length: number
+) => {
+  let months = [];
+  for (let i = 0; i <= length; i++) {
+    let m = addMonths(month, i);
+    months.push({ day: startOfMonth(m), nbOfDays: endOfMonth(m).getDate() });
+  }
+  return months;
+};
 
 export async function getJoursFeries(year: number) {
   try {
@@ -77,18 +88,6 @@ export async function getJoursFeries(year: number) {
     throw e;
   }
 }
-
-export const makeMonths: (month: Date, length: number) => Month[] = (
-  month: Date,
-  length: number
-) => {
-  let months = [];
-  for (let i = 0; i <= length; i++) {
-    let m = addMonths(month, i);
-    months.push({ day: startOfMonth(m), nbOfDays: endOfMonth(m).getDate() });
-  }
-  return months;
-};
 
 export type JoursFeries = { [key: string]: string };
 
@@ -106,6 +105,41 @@ export async function getAllJoursFeries(
     console.error(e);
     console.error("Could not load jours-feries");
     return {};
+  }
+}
+
+export type VacanceScolaire = Interval & {
+  label: string;
+  zone: string;
+};
+type VacanceScolaireData = {
+  description: string;
+  start_date: string;
+  end_date: string;
+  zones: string;
+};
+export async function getVacancesScolaire() {
+  try {
+    const resp = await fetch(
+      `https://data.education.gouv.fr/api/v2/catalog/datasets/fr-en-calendrier-scolaire/records?select=description,start_date,end_date,zones&where=start_date>'2021-01-01T00:00:00' and end_date<'2024-01-01T00:00:00'&offset=0&timezone=UTC&limit=100`
+    );
+    const data = (await resp.json()).records.map(
+      ({
+        record: {
+          fields: { description, start_date, end_date, zones },
+        },
+      }: {
+        record: { fields: VacanceScolaireData };
+      }) => ({
+        label: description,
+        start: parseISO(start_date),
+        end: parseISO(end_date),
+        zone: zones,
+      })
+    );
+    return data;
+  } catch (e) {
+    throw e;
   }
 }
 

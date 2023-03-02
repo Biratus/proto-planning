@@ -19,7 +19,7 @@ import CalendarFormateur from "./CalendarFormateur";
 import {
   openOverlapUI,
   setFocusModule,
-  useJoursFeries,
+  useSpecialDays,
 } from "./CalendarProvider";
 import {
   calendarDayStyle,
@@ -59,8 +59,8 @@ export default function CommonCalendar({
   view?: string;
   monthLength?: number;
 }) {
-  const { isJoursFeries, getJourFerie } = useJoursFeries();
-
+  const { isJoursFeries, getJourFerie, isVacances } = useSpecialDays();
+  console.log("isVacances", isVacances(new Date(2023, 1, 24)));
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
@@ -104,6 +104,7 @@ export default function CommonCalendar({
               ...calendarDayStyle(date),
             };
             if (isJoursFeries(date)) style.className = "text-red-600";
+            if (isVacances(date)) style.className += " bg-purple-600";
             return style;
           },
         },

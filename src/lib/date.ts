@@ -95,3 +95,11 @@ export function mapISO<OUT>(list: any[], fields: string[]): Array<OUT> {
     return newItem;
   });
 }
+
+export function serializeDate<OUT>(list: any[], fields: string[]): Array<OUT> {
+  return list.map((item) => {
+    let newItem = { ...item };
+    fields.forEach((f) => (newItem[f] = dateFns.formatISO(item[f])));
+    return newItem;
+  });
+}

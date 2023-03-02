@@ -1,4 +1,4 @@
-import { JoursFeries } from "@/lib/calendar";
+import { JoursFeries, VacanceScolaire } from "@/lib/calendar";
 import { format } from "@/lib/date";
 import { ModuleEvent } from "@/lib/types";
 import { Interval } from "@/packages/calendar/types";
@@ -6,21 +6,27 @@ import { isWithinInterval } from "date-fns";
 import { RefObject } from "react";
 import { create } from "zustand";
 
-type CalendarStore = {
+export type SpecialDaysProps = {
   joursFeries: JoursFeries;
+  vacances: VacanceScolaire[];
+};
+type CalendarStore = SpecialDaysProps & {
   isJoursFeries: (date: Date) => boolean;
   getJourFerie: (date: Date) => string;
+  isVacances: (date: Date) => boolean;
 };
-
 export const calendarStore = create<CalendarStore>((set, get) => ({
   joursFeries: {},
+  vacances: [],
   isJoursFeries: (day: Date) =>
     get().joursFeries.hasOwnProperty(format(day, "yyyy-MM-dd")),
   getJourFerie: (day: Date) => get().joursFeries[format(day, "yyyy-MM-dd")],
+  isVacances: (date: Date) =>
+    get().vacances.some((v) => isWithinInterval(date, v)),
 }));
 
-export const setJoursFeries = (joursFeries: JoursFeries) =>
-  calendarStore.setState({ joursFeries });
+export const setSpecialDays = ({ joursFeries, vacances }: SpecialDaysProps) =>
+  calendarStore.setState({ vacances, joursFeries });
 
 export const useJoursFeries = () =>
   calendarStore((state) => ({
@@ -28,6 +34,12 @@ export const useJoursFeries = () =>
     getJourFerie: state.getJourFerie,
   }));
 
+export const useSpecialDays = () =>
+  calendarStore((s) => ({
+    isJoursFeries: s.isJoursFeries,
+    getJourFerie: s.getJourFerie,
+    isVacances: s.isVacances,
+  }));
 /*
   ------ Hover
 */

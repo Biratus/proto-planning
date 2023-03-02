@@ -13,6 +13,10 @@ export type Interval = {
   start: Date;
   end: Date;
 };
+export type SerializedInterval = {
+  start: string;
+  end: string;
+};
 
 export type IntervalWithDuration = Interval & {
   duration: number;
