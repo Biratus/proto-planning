@@ -17,9 +17,11 @@ export async function getAllJoursFeries(
 ): Promise<JoursFeries> {
   let currentYear = monthStart.getFullYear();
   try {
-    const prev = await getJoursFeries(currentYear - 1);
-    const curr = await getJoursFeries(currentYear);
-    const next = await getJoursFeries(currentYear + 1);
+    const [prev, curr, next] = await Promise.all([
+      getJoursFeries(currentYear - 1),
+      getJoursFeries(currentYear),
+      getJoursFeries(currentYear + 1),
+    ]);
 
     return { ...prev, ...curr, ...next };
   } catch (e) {

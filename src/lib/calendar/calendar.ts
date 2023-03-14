@@ -9,9 +9,9 @@ import {
   parseISO,
   startOfMonth,
 } from "date-fns";
-import { formatDayDate } from "./date";
-import { moduleOverlap } from "./realData";
-import { CalendarView, Module, ModuleEvent, RawModule } from "./types";
+import { formatDayDate } from "../date";
+import { moduleOverlap } from "../realData";
+import { CalendarView, Module, ModuleEvent, RawModule } from "../types";
 
 export function toCalendarData<K>(
   data: RawModule[] | Module[],

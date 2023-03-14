@@ -1,5 +1,5 @@
 "use client";
-import { checkOverlapModules, toCalendarData } from "@/lib/calendar";
+import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
 import { mergeStyle } from "@/lib/style";
 import { ModuleEvent, RawModule } from "@/lib/types";

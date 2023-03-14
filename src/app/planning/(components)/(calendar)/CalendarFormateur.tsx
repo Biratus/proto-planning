@@ -1,4 +1,4 @@
-import { checkOverlapModules, toCalendarData } from "@/lib/calendar";
+import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";

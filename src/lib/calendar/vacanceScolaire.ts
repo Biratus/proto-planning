@@ -43,7 +43,8 @@ export async function getVacancesScolaire(
         start
       )}' and end_date<'${formatISO(
         end
-      )}'&sort=start_date&offset=0&timezone=UTC&limit=100`
+      )}'&sort=start_date&offset=0&timezone=UTC&limit=100`,
+      { next: { revalidate: 60 * 60 * 24 } }
     );
     // const resp = await fetch(
     //   `https://data.education.gouv.fr/api/v2/catalog/datasets/fr-en-calendrier-scolaire/records?select=description,start_date,end_date,zones&where=start_date>'2022-01-01T00:00:00' and end_date<'2022-03-03T00:00:00'&sort=start_date&offset=0&timezone=UTC&limit=100`

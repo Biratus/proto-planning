@@ -1,12 +1,12 @@
 import { Module } from "@/lib/types";
 import { eachDayOfInterval, isSameMonth } from "date-fns";
-import { moduleDayLabel } from "../lib/calendar";
+import { moduleDayLabel } from "../lib/calendar/calendar";
 import { allColorsForThemes } from "../lib/colors";
 import { formatMonthYear } from "../lib/date";
 import { objectToCSS } from "../lib/pdf";
 import { isFormateurMissing } from "../lib/realData";
 
-export default function htmlFromFiliere(filiereId:string, modules:Module[]) {
+export default function htmlFromFiliere(filiereId: string, modules: Module[]) {
   // Building table rows
   let currMonth = modules[0].start;
   let indexToAdd = 0;
@@ -91,7 +91,7 @@ export default function htmlFromFiliere(filiereId:string, modules:Module[]) {
     };
   }
 
-  function rowToHtml([month, day, mod, formateur]:any[]) {
+  function rowToHtml([month, day, mod, formateur]: any[]) {
     let { name, start, end, theme } = mod;
     let dayNb = eachDayOfInterval({ start, end }).length;
     return `<tr style="height:${dayNb * 1.5}em">
@@ -130,7 +130,7 @@ export default function htmlFromFiliere(filiereId:string, modules:Module[]) {
     `;
 }
 
-function rowFromModule(mod:Module, withMonth = false):any[] {
+function rowFromModule(mod: Module, withMonth = false): any[] {
   let {
     end,
     formateur: { nom, prenom },

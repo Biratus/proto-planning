@@ -1,5 +1,5 @@
 import { addDays } from "date-fns";
-import { mergeModule } from "./calendar";
+import { mergeModule } from "./calendar/calendar";
 import { ModuleEvent } from "./types";
 
 const rawModules = [
