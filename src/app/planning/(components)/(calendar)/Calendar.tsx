@@ -1,7 +1,9 @@
 "use client";
 import { useLegendStore } from "@/components/legend/Legend";
+import LegendUI from "@/components/legend/LegendUI";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
+import { colorFromZones, getColorsForLabels } from "@/lib/colors";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
 import { ModuleEvent, RawModule } from "@/lib/types";
@@ -9,7 +11,14 @@ import {
   CalendarEventComponentProps,
   CommonCalendarProps,
 } from "@/packages/calendar/types";
+import { nbOfDaysBetween } from "@/packages/calendar/utils";
 import cn from "classnames";
+import {
+  addMonths,
+  areIntervalsOverlapping,
+  compareAsc,
+  endOfMonth,
+} from "date-fns";
 import { useMemo, useState } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
@@ -59,8 +68,17 @@ export default function CommonCalendar({
   view?: string;
   monthLength?: number;
 }) {
-  const { isJoursFeries, getJourFerie, isVacances } = useSpecialDays();
-  console.log("isVacances", isVacances(new Date(2023, 1, 24)));
+  const {
+    isJoursFeries,
+    getJourFerie,
+    isVacances,
+    vacanceData,
+    zones: zonesVacances,
+  } = useSpecialDays();
+  vacanceData.sort((v1, v2) => compareAsc(v1.start, v2.start));
+
+  const zoneColors = getColorsForLabels([...zonesVacances]);
+
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
@@ -96,21 +114,44 @@ export default function CommonCalendar({
         },
         day: {
           tooltip: {
-            hasTooltip: isJoursFeries,
-            tooltipInfo: getJourFerie,
+            hasTooltip: (d: Date) => isJoursFeries(d) || isVacances(d),
+            tooltipInfo: (d: Date) => {
+              if (isJoursFeries(d)) return getJourFerie(d);
+            },
           },
           styleProps: (date: Date) => {
             let style = {
               ...calendarDayStyle(date),
             };
             if (isJoursFeries(date)) style.className = "text-red-600";
-            if (isVacances(date)) style.className += " bg-purple-600";
             return style;
           },
         },
         monthLabelStyle: monthLabel,
+        daysHeader: vacanceData
+          .filter((v) =>
+            areIntervalsOverlapping(
+              v,
+              {
+                start: month,
+                end: endOfMonth(addMonths(month, monthLength - 1)),
+              },
+              { inclusive: true }
+            )
+          )
+          .map((v) => {
+            let duration = nbOfDaysBetween(v.start, v.end);
+            return {
+              start: v.start,
+              end: v.end,
+              duration,
+              label: duration != 1 ? v.zones.join(" + ") : "",
+              info: v.labels.join("/") + " ⇒ " + v.zones.join(" + "),
+              color: colorFromZones(v.zones, zoneColors),
+            };
+          }),
       }),
-      [zoom, month, monthLength, eventLabel]
+      [zoom, month, monthLength, eventLabel, zoneColors]
     );
 
   const calendarFiliere = useMemo(
@@ -147,6 +188,19 @@ export default function CommonCalendar({
               </button>
             );
           })}
+        </div>
+        <div>
+          <LegendUI
+            legendList={Array.from(zoneColors.keys()).map((t) => ({
+              label: t,
+              style: {
+                className: "",
+                props: {
+                  backgroundColor: zoneColors.get(t)!.rgb,
+                },
+              },
+            }))}
+          />
         </div>
       </div>
       {view === FiliereView.key && calendarFiliere}

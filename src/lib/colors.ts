@@ -37,3 +37,19 @@ export function getColorsForLabels(labelList: string[]) {
   }
   return colors;
 }
+
+export function colorFromZones(zones: string[], colors: Map<string, Color>) {
+  if (zones.length == 1) return colors.get(zones[0])!.rgb;
+  else {
+    let gradient = `linear-gradient(30deg, `;
+    zones.forEach((zone, index) => {
+      // Add the color associated with the current zone to the gradient
+      gradient += `${colors.get(zone)!.rgb} ${
+        (100 / (zones.length - 1)) * index
+      }%, `;
+    });
+    // Remove the last comma and space, and add the closing parentheses
+    gradient = gradient.slice(0, -2) + ")";
+    return gradient;
+  }
+}

@@ -71,7 +71,11 @@ export type EventProps<
   style: (event: T) => Style;
   as?: E; //Component spécial
 };
-
+type DayHeaderData = IntervalWithDuration & {
+  label: string;
+  info: string;
+  color: string;
+};
 // Props globale du calendrier
 export type CommonCalendarProps<
   T extends CalendarItem,
@@ -82,6 +86,7 @@ export type CommonCalendarProps<
   zoom: number;
   event: EventProps<T, E>; // eventProps
   monthLabelStyle: Style;
+  daysHeader?: DayHeaderData[];
 };
 
 // Props spécifique à un calendrier

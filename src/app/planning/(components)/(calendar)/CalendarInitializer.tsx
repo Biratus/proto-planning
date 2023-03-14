@@ -1,5 +1,6 @@
 "use client";
-import { JoursFeries, VacanceScolaire } from "@/lib/calendar";
+import { JoursFeries } from "@/lib/calendar/joursFeries";
+import { VacanceScolaire } from "@/lib/calendar/vacanceScolaire";
 import { mapISO } from "@/lib/date";
 import { SerializedInterval } from "@/packages/calendar/types";
 import { useRef } from "react";
@@ -21,7 +22,6 @@ export default function CalendarInitializer({
       joursFeries,
       vacances: mapISO<VacanceScolaire>(vacances, ["start", "end"]),
     });
-    console.log(mapISO<VacanceScolaire>(vacances, ["start", "end"]));
     initilized.current = true;
   }
 

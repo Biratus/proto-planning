@@ -1,4 +1,9 @@
-import { JoursFeries, VacanceScolaire } from "@/lib/calendar";
+import { JoursFeries } from "@/lib/calendar/joursFeries";
+import {
+  makeVacancesData,
+  VacanceData,
+  VacanceScolaire,
+} from "@/lib/calendar/vacanceScolaire";
 import { format } from "@/lib/date";
 import { ModuleEvent } from "@/lib/types";
 import { Interval } from "@/packages/calendar/types";
@@ -14,10 +19,12 @@ type CalendarStore = SpecialDaysProps & {
   isJoursFeries: (date: Date) => boolean;
   getJourFerie: (date: Date) => string;
   isVacances: (date: Date) => boolean;
+  vacanceData: VacanceData[];
 };
 export const calendarStore = create<CalendarStore>((set, get) => ({
   joursFeries: {},
   vacances: [],
+  vacanceData: [],
   isJoursFeries: (day: Date) =>
     get().joursFeries.hasOwnProperty(format(day, "yyyy-MM-dd")),
   getJourFerie: (day: Date) => get().joursFeries[format(day, "yyyy-MM-dd")],
@@ -26,7 +33,11 @@ export const calendarStore = create<CalendarStore>((set, get) => ({
 }));
 
 export const setSpecialDays = ({ joursFeries, vacances }: SpecialDaysProps) =>
-  calendarStore.setState({ vacances, joursFeries });
+  calendarStore.setState({
+    vacances,
+    joursFeries,
+    vacanceData: makeVacancesData(vacances),
+  });
 
 export const useJoursFeries = () =>
   calendarStore((state) => ({
@@ -39,7 +50,17 @@ export const useSpecialDays = () =>
     isJoursFeries: s.isJoursFeries,
     getJourFerie: s.getJourFerie,
     isVacances: s.isVacances,
+    vacanceData: s.vacanceData,
+    getVacances: (d: Date) => {
+      const vacances = s.vacances.filter((v) => isWithinInterval(d, v));
+      return {
+        labels: [...new Set(vacances.map((v) => v.label))],
+        zones: [...new Set(vacances.map((v) => v.zone))],
+      };
+    },
+    zones: new Set(s.vacances.map((v) => v.zone)),
   }));
+
 /*
   ------ Hover
 */
