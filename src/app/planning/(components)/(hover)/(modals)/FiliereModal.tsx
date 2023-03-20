@@ -106,7 +106,7 @@ export default function FiliereModal() {
             >
               <input type="checkbox" className="peer" />
               <div className="collapse-title text-lg font-bold peer-checked:border peer-checked:border-b peer-checked:border-base-300">
-                Du {formatFullDate(overlap.start)} au
+                Du {formatFullDate(overlap.start)} au{" "}
                 {formatFullDate(overlap.end)} (
                 {overlap.overlappedModules.length} modules)
               </div>
@@ -118,7 +118,7 @@ export default function FiliereModal() {
                       <span className="font-bold">
                         {formatFullDate(mod.start)}
                       </span>{" "}
-                      au
+                      au{" "}
                       <span className="font-bold">
                         {formatFullDate(mod.end)}
                       </span>

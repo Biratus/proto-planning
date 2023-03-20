@@ -37,37 +37,53 @@ export async function getVacancesScolaire(
   start: Date,
   end: Date
 ): Promise<VacanceScolaire[]> {
+  return fetchVacanceScolaire(vacanceScolaireAPIURL(start, end));
+}
+
+async function fetchVacanceScolaire(url: string) {
   try {
     const resp = await fetch(
-      `https://data.education.gouv.fr/api/v2/catalog/datasets/fr-en-calendrier-scolaire/records?select=description,start_date,end_date,zones&where=start_date>'${formatISO(
-        start
-      )}' and end_date<'${formatISO(
-        end
-      )}'&sort=start_date&offset=0&timezone=UTC&limit=100&refine=zones:Zone A&refine=zones:Zone B&refine=zones:Zone C`,
-      { next: { revalidate: 60 * 60 * 24 } }
+      url
+      // { next: { revalidate: 60 * 60 * 24 } }
     );
     // const resp = await fetch(
     //   `https://data.education.gouv.fr/api/v2/catalog/datasets/fr-en-calendrier-scolaire/records?select=description,start_date,end_date,zones&where=start_date>'2022-01-01T00:00:00' and end_date<'2022-03-03T00:00:00'&sort=start_date&offset=0&timezone=UTC&limit=100`
     // );
-    const data = (await resp.json()).records.map(
-      ({
-        record: {
-          fields: { description, start_date, end_date, zones },
-        },
-      }: {
-        record: { fields: VacanceScolaireData };
-      }) => ({
-        label: description,
-        start: parseISO(start_date),
-        end: parseISO(end_date),
-        zone: zones,
-      })
-    );
-    return data;
+    return processVacanceScolaire(await resp.json());
   } catch (e) {
     throw e;
   }
 }
+
+function vacanceScolaireAPIURL(start: Date, end: Date) {
+  return `https://data.education.gouv.fr/api/v2/catalog/datasets/fr-en-calendrier-scolaire/records?select=description,start_date,end_date,zones&where=start_date>'${formatISO(
+    start
+  )}' and end_date<'${formatISO(
+    end
+  )}'&sort=start_date&offset=0&timezone=UTC&limit=100&refine=zones:Zone A&refine=zones:Zone B&refine=zones:Zone C`;
+}
+
+function processVacanceScolaire(jsonData: any) {
+  return jsonData.records.map(
+    ({
+      record: {
+        fields: { description, start_date, end_date, zones },
+      },
+    }: {
+      record: { fields: VacanceScolaireData };
+    }) => ({
+      label: description,
+      start: parseISO(start_date),
+      end: parseISO(end_date),
+      zone: zones,
+    })
+  );
+}
+
+export function getSWRVacancesScolaire(start: Date, end: Date) {
+  return [vacanceScolaireAPIURL(start, end), fetchVacanceScolaire];
+}
+
 export function makeVacancesData(
   vacanceInput: VacanceScolaire[]
 ): VacanceData[] {
@@ -148,8 +164,6 @@ function mergeIntervals(
   }
 
   dates.sort(intervalSort);
-
-  //console.log({dates})
 
   const newIntervals = makeIntervals(dates);
   for (let newInterval of newIntervals) {

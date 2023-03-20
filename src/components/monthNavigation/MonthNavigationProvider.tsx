@@ -42,7 +42,7 @@ export default function MonthNavigationProvider({
     for (let k in additionalParams) {
       newParams.set(k, additionalParams[k]);
     }
-    router.replace(path + "?" + newParams.toString());
+    router.push(path + "?" + newParams.toString());
   };
 
   return (

@@ -3,6 +3,7 @@ import { useLegendStore } from "@/components/legend/Legend";
 import LegendUI from "@/components/legend/LegendUI";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
+import { VacanceData } from "@/lib/calendar/vacanceScolaire";
 import { colorFromZones, getGrayscaleForLabels, isDark } from "@/lib/colors";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
@@ -59,28 +60,22 @@ const displayViews: DisplayView[] = [
   },
 ];
 
+const zonesVacances = ["Zone A", "Zone B", "Zone C"];
+const zoneColors = getGrayscaleForLabels([...zonesVacances]);
 export default function CommonCalendar({
   modules,
   view = FiliereView.key,
   monthLength = 3,
+  vacancesScolaire: vacanceData,
 }: {
   modules: RawModule[];
   view?: string;
   monthLength?: number;
+  vacancesScolaire: VacanceData[];
 }) {
-  const {
-    isJoursFeries,
-    getJourFerie,
-    isVacances,
-    vacanceData,
-    zones: zonesVacances,
-  } = useSpecialDays();
-  vacanceData.sort((v1, v2) => compareAsc(v1.start, v2.start));
+  const { isJoursFeries, getJourFerie } = useSpecialDays();
 
-  const zoneColors = useMemo(
-    () => getGrayscaleForLabels([...zonesVacances]),
-    [zonesVacances]
-  );
+  vacanceData.sort((v1, v2) => compareAsc(v1.start, v2.start));
 
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
@@ -117,7 +112,7 @@ export default function CommonCalendar({
         },
         day: {
           tooltip: {
-            hasTooltip: (d: Date) => isJoursFeries(d) || isVacances(d),
+            hasTooltip: (d: Date) => isJoursFeries(d),
             tooltipInfo: (d: Date) => {
               if (isJoursFeries(d)) return getJourFerie(d);
             },
