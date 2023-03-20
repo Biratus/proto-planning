@@ -43,7 +43,7 @@ export async function getVacancesScolaire(
         start
       )}' and end_date<'${formatISO(
         end
-      )}'&sort=start_date&offset=0&timezone=UTC&limit=100`,
+      )}'&sort=start_date&offset=0&timezone=UTC&limit=100&refine=zones:Zone A&refine=zones:Zone B&refine=zones:Zone C`,
       { next: { revalidate: 60 * 60 * 24 } }
     );
     // const resp = await fetch(

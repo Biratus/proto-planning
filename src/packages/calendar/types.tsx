@@ -75,6 +75,7 @@ type DayHeaderData = IntervalWithDuration & {
   label: string;
   info: string;
   color: string;
+  textColor: string;
 };
 // Props globale du calendrier
 export type CommonCalendarProps<

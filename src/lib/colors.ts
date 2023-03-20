@@ -30,12 +30,25 @@ export function getColorsForLabels(labelList: string[]) {
     };
   });
 
-  let colors = new Map<string, Color>();
+  return new Map(labelList.map((label, i) => [label, arr[i]]));
+}
 
-  for (let i in labels) {
-    colors.set(labels[i], arr[i]);
-  }
-  return colors;
+export function getGrayscaleForLabels(labelList: string[]) {
+  let arr = distinctColors({
+    count: labelList.length,
+    chromaMin: 0,
+    chromaMax: 1,
+  }).map((color) => {
+    let [r, g, b] = color.rgb();
+    return {
+      r,
+      g,
+      b,
+      rgb: `rgb(${r.toFixed(2)},${g.toFixed(2)},${b.toFixed(2)})`,
+    };
+  });
+
+  return new Map(labelList.map((label, i) => [label, arr[i]]));
 }
 
 export function colorFromZones(zones: string[], colors: Map<string, Color>) {
@@ -52,4 +65,9 @@ export function colorFromZones(zones: string[], colors: Map<string, Color>) {
     gradient = gradient.slice(0, -2) + ")";
     return gradient;
   }
+}
+
+export function isDark({ r, g, b }: Color) {
+  const yiq = (r * 2126 + g * 7152 + b * 722) / 10000;
+  return yiq < 128;
 }

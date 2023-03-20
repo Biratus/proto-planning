@@ -240,22 +240,25 @@ function DayHeader({
   span,
   info,
   color,
+  textColor,
   label,
   first,
 }: {
   span: number;
   info: string;
   label: string;
+  textColor: string;
   color: string;
   first: boolean;
 }) {
   return (
     <div
-      className="tooltip tooltip-bottom hover:shadow-lg hover:shadow-slate-400"
+      className="tooltip tooltip-bottom hover:brightness-75"
       style={{
         gridColumnStart: first ? "2" : "auto",
         gridColumnEnd: "span " + span,
         background: color,
+        color: textColor,
       }}
       data-tip={info}
     >

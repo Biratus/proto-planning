@@ -3,7 +3,7 @@ import { useLegendStore } from "@/components/legend/Legend";
 import LegendUI from "@/components/legend/LegendUI";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
-import { colorFromZones, getColorsForLabels } from "@/lib/colors";
+import { colorFromZones, getGrayscaleForLabels, isDark } from "@/lib/colors";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
 import { ModuleEvent, RawModule } from "@/lib/types";
@@ -77,7 +77,10 @@ export default function CommonCalendar({
   } = useSpecialDays();
   vacanceData.sort((v1, v2) => compareAsc(v1.start, v2.start));
 
-  const zoneColors = getColorsForLabels([...zonesVacances]);
+  const zoneColors = useMemo(
+    () => getGrayscaleForLabels([...zonesVacances]),
+    [zonesVacances]
+  );
 
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
@@ -148,6 +151,9 @@ export default function CommonCalendar({
               label: duration != 1 ? v.zones.join(" + ") : "",
               info: v.labels.join("/") + " ⇒ " + v.zones.join(" + "),
               color: colorFromZones(v.zones, zoneColors),
+              textColor: isDark(zoneColors.get(v.zones[0])!)
+                ? "white"
+                : "black",
             };
           }),
       }),
