@@ -73,7 +73,7 @@ export default function SplitModuleModal<T extends Module>({
       {modules?.length && (
         <>
           <ModuleTitle
-            name={modules[0].name}
+            name={modules[0].nom}
             filiere={modules[0].filiere}
             backButton={SplitModuleModalId}
           />

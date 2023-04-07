@@ -12,7 +12,7 @@ export const ModuleDetailModalId = "moduleDetailModalId";
 
 const defaultModule: ModuleEvent = {
   id: "",
-  name: "",
+  nom: "",
   start: new Date(),
   end: new Date(),
   theme: "",
@@ -24,8 +24,14 @@ const defaultModule: ModuleEvent = {
 export default function ModuleModal() {
   const { focus, temps } = useFocusModule();
 
-  const { name, start, end, formateur, filiere, duration } =
-    focus || defaultModule;
+  const {
+    nom: name,
+    start,
+    end,
+    formateur,
+    filiere,
+    duration,
+  } = focus || defaultModule;
 
   const modalRef = useRef<ModalRef>({});
 

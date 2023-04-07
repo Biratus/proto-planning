@@ -49,7 +49,7 @@ export default function SwitchFormateurModal<T extends Module>({
       {module && (
         <>
           <ModuleTitle
-            name={module.name}
+            name={module.nom}
             filiere={module.filiere}
             backButton={SwitchFormateurModalId}
           />

@@ -8,6 +8,7 @@ const monthStart = startOfMonth(startOfToday());
 
 export default async function layout({ children }: PropsWithChildren) {
   const [joursFeries] = await Promise.all([getAllJoursFeries(monthStart)]);
+  console.log("PlanningLayout");
   setSpecialDays({
     joursFeries,
   }); // For server side

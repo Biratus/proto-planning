@@ -1,8 +1,7 @@
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
-import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
-import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+import { Formateur, FormateurWithModule, ModuleEvent } from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
@@ -11,8 +10,7 @@ import {
   DayAndEvent,
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
-import { formatISO } from "date-fns/esm";
-import { DragEvent, useCallback, useMemo, useState } from "react";
+import { DragEvent, useCallback, useMemo } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FormateurView } from "./CalendarView";
@@ -20,21 +18,24 @@ import { FormateurView } from "./CalendarView";
 export default function CalendarFormateur<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  modules: originalModules,
+  formateurs: originalFormateurs,
   day,
   ...props
-}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent, E>) {
-  const [modules, setModules] = useState(originalModules);
+}: { formateurs: FormateurWithModule[] } & CommonCalendarProps<
+  ModuleEvent,
+  E
+>) {
+  // const [formateurs, setFormateurs] = useState(originalFormateurs);
 
   const calendarData = useMemo(() => {
-    let data = toCalendarData(
-      modules.filter((m) => !isFormateurMissing(m)),
+    let data = toCalendarData<FormateurWithModule>(
+      originalFormateurs,
       "formateur.mail",
       FormateurView
     );
     checkOverlapModules(data);
     return data;
-  }, [modules]);
+  }, [originalFormateurs]);
 
   const {
     dropTarget,
@@ -83,20 +84,20 @@ export default function CalendarFormateur<
     },
     [draggedModule, dropTarget, props.time]
   );
-
-  const dropModule = useCallback(() => {
-    setModules((prevModules) => {
-      const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
-      newModules.push({
-        ...draggedModule!,
-        start: formatISO(dropTarget!.interval.start),
-        end: formatISO(dropTarget!.interval.end),
-        formateur: dropTarget!.row as Formateur,
-      });
-      return newModules;
-    });
-    cleanDropTarget();
-  }, [modules, dropTarget, draggedModule]);
+  const dropModule = () => console.log("TODO dropModule");
+  // const dropModule = useCallback(() => {
+  //   setModules((prevModules) => {
+  //     const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
+  //     newModules.push({
+  //       ...draggedModule!,
+  //       start: formatISO(dropTarget!.interval.start),
+  //       end: formatISO(dropTarget!.interval.end),
+  //       formateur: dropTarget!.row as Formateur,
+  //     });
+  //     return newModules;
+  //   });
+  //   cleanDropTarget();
+  // }, [modules, dropTarget, draggedModule]);
 
   return (
     <>

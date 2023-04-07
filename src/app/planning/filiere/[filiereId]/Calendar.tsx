@@ -5,7 +5,7 @@ import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { mapISO } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
-import { Module, RawModule } from "@/lib/types";
+import { Module, SerializedModule } from "@/lib/types";
 import CalendarDetail from "@/packages/calendar/SingleData/CalendarDetail";
 import Link from "next/link";
 import { User } from "react-feather";
@@ -21,7 +21,7 @@ export default function CalendarFiliere({
   modules,
 }: {
   name: string;
-  modules: RawModule[];
+  modules: SerializedModule[];
 }) {
   const filiereData = mapISO<Module>(modules, ["start", "end"]);
   const colorOf = useLegendStore((state) => state.colorOf);
@@ -56,7 +56,7 @@ export default function CalendarFiliere({
               console.log("TODO onClick", mod);
               //openMenu()
             },
-            label: (mod: Module) => mod.name,
+            label: (mod: Module) => mod.nom,
           }}
           additionalLabel="Formateur"
           AdditionalInfo={FormateurSimple}

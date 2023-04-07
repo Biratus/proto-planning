@@ -1,5 +1,4 @@
 import distinctColors from "distinct-colors";
-import { modules } from "./realData";
 
 export type Color = {
   r: number;
@@ -9,7 +8,15 @@ export type Color = {
 };
 
 export function allColorsForThemes() {
-  return getColorsForLabels(modules.map((m) => m.theme));
+  return getColorsForLabels([
+    "COMPORTEMENTAL",
+    "JAVA",
+    "FONDAMENTAUX ET BASE DE DONNEES",
+    "WEB",
+    "METHODES ET OUTILS",
+    "FRAMEWORKS",
+    "PROJET",
+  ]);
 }
 
 export function getColorsForLabels(labelList: string[]) {

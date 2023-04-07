@@ -2,7 +2,7 @@
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
 import { mergeStyle } from "@/lib/style";
-import { ModuleEvent, RawModule } from "@/lib/types";
+import { Filiere, ModuleEvent } from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
@@ -10,8 +10,8 @@ import {
   CommonCalendarProps,
   DayAndEvent,
 } from "@/packages/calendar/types";
-import { addDays, formatISO, isSameDay } from "date-fns";
-import { DragEvent, useCallback, useMemo, useState } from "react";
+import { addDays, isSameDay } from "date-fns";
+import { DragEvent, useCallback, useMemo } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FiliereView } from "./CalendarView";
@@ -19,17 +19,24 @@ import { FiliereView } from "./CalendarView";
 export default function CalendarFiliere<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  modules: originalModules,
+  filieres: originalFilieres,
   day,
   ...props
-}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent, E>) {
-  const [modules, setModules] = useState(originalModules);
+}: { filieres: Filiere[] } & CommonCalendarProps<ModuleEvent, E>) {
+  // console.log({ originalFilieres });
+  // const [filieres, setFilieres] = useState(originalFilieres);
+
   const calendarData = useMemo(() => {
-    const data = toCalendarData(modules, "filiere", FiliereView);
+    // console.log("make calendarData");
+    const data = toCalendarData<Filiere>(
+      originalFilieres,
+      "filiere",
+      FiliereView
+    );
     checkOverlapModules(data);
     return data;
-  }, [modules]);
-
+  }, [originalFilieres]);
+  // console.log({ filieres });
   const {
     dropTarget,
     draggedModule,
@@ -67,18 +74,20 @@ export default function CalendarFiliere<
     [draggedModule, dropTarget, props.time]
   );
 
-  const dropModule = useCallback(() => {
-    setModules((prevModules) => {
-      const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
-      newModules.push({
-        ...draggedModule!,
-        start: formatISO(dropTarget!.interval.start),
-        end: formatISO(dropTarget!.interval.end),
-      });
-      return newModules;
-    });
-    cleanDropTarget();
-  }, [draggedModule, modules, dropTarget]);
+  const dropModule = () => console.log("TODO dropModule");
+
+  // const dropModule = useCallback(() => {
+  //   setModules((prevModules) => {
+  //     const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
+  //     newModules.push({
+  //       ...draggedModule!,
+  //       start: formatISO(dropTarget!.interval.start),
+  //       end: formatISO(dropTarget!.interval.end),
+  //     });
+  //     return newModules;
+  //   });
+  //   cleanDropTarget();
+  // }, [draggedModule, modules, dropTarget]);
 
   return (
     <FullCalendar

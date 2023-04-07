@@ -1,4 +1,9 @@
-import { CalendarView, Formateur } from "@/lib/types";
+import {
+  CalendarView,
+  Filiere,
+  Formateur,
+  FormateurWithModule,
+} from "@/lib/types";
 import Link from "next/link";
 import { useCallback } from "react";
 import { FiliereDetailModalId } from "../(hover)/(modals)/FiliereModal";
@@ -7,22 +12,22 @@ import { setFocusedFiliere } from "./CalendarProvider";
 const formateurSimple = ({ nom, prenom, mail }: Formateur) =>
   `${nom} ${prenom} - ${mail}`;
 
-export const FiliereView: CalendarView<string> = {
+export const FiliereView: CalendarView<Filiere> = {
   key: "filiere",
   label: "Filière",
   keyObject: ({ filiere }) => filiere,
-  labelTitle: (f) => f,
+  labelTitle: (f: Filiere) => f.nom,
   LabelComponent: FiliereLabel,
 };
 
-export const FormateurView: CalendarView<Formateur> = {
+export const FormateurView: CalendarView<FormateurWithModule> = {
   key: "formateur",
   label: "Formateur",
   keyObject: ({ formateur }) => formateur,
   labelTitle: ({ nom, prenom, mail }) => `${nom} ${prenom} [${mail}]`,
   LabelComponent: FormateurLabel,
 };
-function FiliereLabel({ labelKey: filiere }: { labelKey: string }) {
+function FiliereLabel({ labelKey: filiere }: { labelKey: Filiere }) {
   const setFocus = useCallback(() => {
     setFocusedFiliere(filiere);
   }, [filiere]);
@@ -32,7 +37,7 @@ function FiliereLabel({ labelKey: filiere }: { labelKey: string }) {
       htmlFor={FiliereDetailModalId}
       onClick={setFocus}
     >
-      <span className="truncate">{filiere}</span>
+      <span className="truncate">{filiere.nom}</span>
     </label>
   );
 }

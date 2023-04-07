@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model filiere {
+  nom     String   @id @db.VarChar(255)
+  modules module[]
+}
+
+model formateur {
+  nom     String  @db.VarChar(255)
+  prenom  String  @db.VarChar(255)
+  mail    String   @id @db.VarChar(255)
+  modules module[]
+}
+
+model module {
+  id             Int        @id @default(autoincrement())
+  nom            String     @db.VarChar(255)
+  start          DateTime   @db.Date
+  end            DateTime   @db.Date
+  theme          String     @db.VarChar(255)
+  filiere_nom    String     @db.VarChar(255)
+  formateur_mail String?    @db.VarChar(255)
+  filiere        filiere    @relation(fields: [filiere_nom], references: [nom], onDelete: NoAction, onUpdate: NoAction, map: "module_ibfk_1")
+  formateur      formateur? @relation(fields: [formateur_mail], references: [mail], onDelete: NoAction, onUpdate: NoAction, map: "module_ibfk_2")
+
+  @@index([filiere_nom], map: "module_ibfk_1")
+  @@index([formateur_mail], map: "module_ibfk_2")
+}

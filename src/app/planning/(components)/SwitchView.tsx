@@ -3,7 +3,6 @@
 import { changeURLParam } from "@/lib/navigation";
 import cn from "classnames";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
 import { FiliereView, FormateurView } from "./(calendar)/CalendarView";
 
 export default function SwitchView({ view: viewParam = FiliereView.key }) {
@@ -11,12 +10,8 @@ export default function SwitchView({ view: viewParam = FiliereView.key }) {
   const params = useSearchParams();
   const path = usePathname() || "";
 
-  const setView = useCallback(
-    (view: string) => {
-      router.replace(changeURLParam({ params, path, newParams: { view } }));
-    },
-    [viewParam]
-  );
+  const setView = (view: string) =>
+    router.push(changeURLParam({ params, path, newParams: { view } }));
 
   return (
     <div>

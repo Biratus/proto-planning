@@ -7,7 +7,7 @@ import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { mapISO } from "@/lib/date";
 import { emptyStyle } from "@/lib/style";
-import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+import { Formateur, ModuleEvent, SerializedModule } from "@/lib/types";
 import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
 import { isWeekend } from "date-fns";
 import { useMemo } from "react";
@@ -21,7 +21,7 @@ import GlobalViewLink from "../../(components)/GlobalViewLink";
 
 type CalendarFormateurProps = {
   formateur: Formateur;
-  data: RawModule[];
+  data: SerializedModule[];
 };
 
 export default function CalendarFormateur({
@@ -51,7 +51,7 @@ export default function CalendarFormateur({
         events={formateurData}
         zoom={zoom}
         eventProps={{
-          label: (mod: ModuleEvent) => mod.name,
+          label: (mod: ModuleEvent) => mod.nom,
           style: (date: Date, mod?: ModuleEvent) => {
             return mod
               ? dayEventStyle(date, mod, colorOf(mod.theme))

@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import LoadingBar from "@/components/LoadingBar";
 import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigationProvider";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
@@ -6,12 +6,13 @@ import ZoomProvider from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { zoom_calendar_full } from "@/hooks/localStorageStore";
 import {
-  getSWRVacancesScolaire,
+  getVacancesScolaire,
   makeVacancesData,
-  VacanceScolaire,
+  SerializedVacanceData,
 } from "@/lib/calendar/vacanceScolaire";
-import { parseMonthAndYear } from "@/lib/date";
-import { modules } from "@/lib/realData";
+import { parseMonthAndYear, serializeDate } from "@/lib/date";
+import { getActiveFilieres, getActiveFormateurs } from "@/lib/db/dataAccess";
+import { Filiere, FormateurWithModule } from "@/lib/types";
 import {
   addMonths,
   endOfMonth,
@@ -19,9 +20,8 @@ import {
   startOfMonth,
   startOfToday,
 } from "date-fns";
-import { useSearchParams } from "next/navigation";
-import useSWR from "swr";
 import CommonCalendar from "./(components)/(calendar)/Calendar";
+import { FiliereView } from "./(components)/(calendar)/CalendarView";
 import FiliereModal from "./(components)/(hover)/(modals)/FiliereModal";
 import ModuleModal from "./(components)/(hover)/(modals)/ModuleModal";
 import HoverElements from "./(components)/(hover)/HoverElements";
@@ -31,21 +31,47 @@ export const dynamic = "force-dynamic"; // To get searchParams in prod
 
 const monthStart = startOfMonth(startOfToday());
 
-export default function PlanningPage({ searchParams }: { searchParams?: any }) {
-  const params = useSearchParams();
-  const dateQuery = params ? params.get("date") : null;
-  const view = params ? params.get("view") : null;
+type PlanningPageParams = {
+  date?: string;
+  view?: string;
+};
+
+export default async function PlanningPage({
+  searchParams = {},
+}: {
+  searchParams?: PlanningPageParams;
+}) {
+  const dateQuery = searchParams.date;
+  const view = searchParams.view || FiliereView.key;
   let focusDate = dateQuery ? parseMonthAndYear(dateQuery) : monthStart;
 
-  const [url, fetchData] = getSWRVacancesScolaire(
+  // const [url, fetchData] = getSWRVacancesScolaire(
+  //   startOfMonth(addMonths(focusDate, -1)),
+  //   endOfMonth(addMonths(focusDate, 4))
+  // );
+
+  const data = await getVacancesScolaire(
     startOfMonth(addMonths(focusDate, -1)),
     endOfMonth(addMonths(focusDate, 4))
   );
+  const isLoading = false;
 
-  const { data, isLoading } = useSWR(
-    url,
-    fetchData as (url: string) => Promise<VacanceScolaire[]>,
-    { revalidateOnFocus: false }
+  // const { data, isLoading } = useSWR(
+  //   url,
+  //   fetchData as (url: string) => Promise<VacanceScolaire[]>,
+  //   { revalidateOnFocus: false }
+  // );
+  const activInterval = {
+    start: startOfMonth(addMonths(focusDate, -1)),
+    end: endOfMonth(addMonths(focusDate, 4)),
+  };
+  const datas =
+    view == FiliereView.key
+      ? ((await getActiveFilieres(activInterval)) as Filiere[])
+      : ((await getActiveFormateurs(activInterval)) as FormateurWithModule[]);
+
+  datas.forEach(
+    (d) => (d.modules = serializeDate(d.modules, ["start", "end"]))
   );
   return (
     <>
@@ -58,9 +84,12 @@ export default function PlanningPage({ searchParams }: { searchParams?: any }) {
           </div>
           {!isLoading && data && (
             <CommonCalendar
-              modules={modules}
+              data={datas}
               view={view || undefined}
-              vacancesScolaire={makeVacancesData(data)}
+              vacancesScolaire={serializeDate<SerializedVacanceData>(
+                makeVacancesData(data),
+                ["start", "end"]
+              )}
             />
           )}
           {(isLoading || !data) && <LoadingBar />}

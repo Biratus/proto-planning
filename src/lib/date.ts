@@ -87,6 +87,7 @@ export function nbOfDaysBetween(start: Date, end: Date) {
 }
 
 export function mapISO<OUT>(list: any[], fields: string[]): Array<OUT> {
+  // debugger;
   return list.map((item) => {
     let newItem = { ...item };
 

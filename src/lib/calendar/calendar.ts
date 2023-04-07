@@ -6,44 +6,46 @@ import {
   isAfter,
   isBefore,
   isSameDay,
-  parseISO,
   startOfMonth,
 } from "date-fns";
-import { formatDayDate } from "../date";
+import { formatDayDate, nbOfDaysBetween } from "../date";
 import { moduleOverlap } from "../realData";
-import { CalendarView, Module, ModuleEvent, RawModule } from "../types";
+import { CalendarView, Module, ModuleEvent } from "../types";
 
-export function toCalendarData<K>(
-  data: RawModule[] | Module[],
+export function toCalendarData<K extends { modules: Module[] }>(
+  data: K[],
   groupingField: string, // for mapping
   view: CalendarView<K>
 ): CalendarData<K, ModuleEvent>[] {
-  let dataMap = new Map<K, ModuleEvent[]>();
-  for (let d of data) {
-    // modules list to map
-    let index = getDataField(d, groupingField);
+  // let dataMap = new Map<K, ModuleEvent[]>();
+  // for (let d of data) {
+  //   // modules list to map
+  //   let index = getDataField(d, groupingField);
 
-    if (!dataMap.has(index)) dataMap.set(index, []);
-    let start = typeof d.start === "string" ? parseISO(d.start) : d.start;
-    let end = typeof d.end === "string" ? parseISO(d.end) : d.end;
-    let duration = eachDayOfInterval({ start, end }).length;
-    dataMap.get(index)!.push({
-      ...d,
-      start,
-      end,
-      duration,
-    });
-  }
+  //   if (!dataMap.has(index)) dataMap.set(index, []);
+  //   let start = typeof d.start === "string" ? parseISO(d.start) : d.start;
+  //   let end = typeof d.end === "string" ? parseISO(d.end) : d.end;
+  //   let duration = eachDayOfInterval({ start, end }).length;
+  //   dataMap.get(index)!.push({
+  //     ...d,
+  //     start,
+  //     end,
+  //     duration,
+  //   });
+  // }
 
   let calendarData = [];
-  for (let key of dataMap.keys()) {
+  for (let object of data) {
     // Iterate over rows
-    let events = dataMap.get(key);
-    let keyObject = view.keyObject(events![0]);
+    let events = object.modules.map((m) => ({
+      ...m,
+      duration: nbOfDaysBetween(m.start, m.end),
+    }));
+    let keyObject = object;
     calendarData.push({
       key: keyObject,
       labelTitle: view.labelTitle(keyObject),
-      events: dataMap.get(key)!,
+      events,
     });
   }
   calendarData.sort((a, b) => a.labelTitle.localeCompare(b.labelTitle));

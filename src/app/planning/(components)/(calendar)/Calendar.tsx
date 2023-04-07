@@ -3,11 +3,22 @@ import { useLegendStore } from "@/components/legend/Legend";
 import LegendUI from "@/components/legend/LegendUI";
 import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
-import { VacanceData } from "@/lib/calendar/vacanceScolaire";
+import {
+  SerializedVacanceData,
+  VacanceData,
+} from "@/lib/calendar/vacanceScolaire";
 import { colorFromZones, getGrayscaleForLabels, isDark } from "@/lib/colors";
+import { mapISO } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
-import { ModuleEvent, RawModule } from "@/lib/types";
+import {
+  Filiere,
+  FormateurWithModule,
+  FormateurWithSerializedModule,
+  Module,
+  ModuleEvent,
+  SerializedFiliere,
+} from "@/lib/types";
 import {
   CalendarEventComponentProps,
   CommonCalendarProps,
@@ -47,10 +58,10 @@ type DisplayView = {
 };
 
 const displayViews: DisplayView[] = [
-  { label: "Module", print: (mod: ModuleEvent) => mod.name },
+  { label: "Module", print: (mod: ModuleEvent) => mod.nom },
   {
     label: "Filière",
-    print: (mod: ModuleEvent) => mod.filiere,
+    print: (mod: ModuleEvent) => mod.filiere.nom,
     for: FormateurView.key,
   },
   {
@@ -63,25 +74,33 @@ const displayViews: DisplayView[] = [
 const zonesVacances = ["Zone A", "Zone B", "Zone C"];
 const zoneColors = getGrayscaleForLabels([...zonesVacances]);
 export default function CommonCalendar({
-  modules,
+  data: serializedData,
   view = FiliereView.key,
   monthLength = 3,
-  vacancesScolaire: vacanceData,
+  vacancesScolaire,
 }: {
-  modules: RawModule[];
+  data: SerializedFiliere[] | FormateurWithSerializedModule[];
   view?: string;
   monthLength?: number;
-  vacancesScolaire: VacanceData[];
+  vacancesScolaire: SerializedVacanceData[];
 }) {
   const { isJoursFeries, getJourFerie } = useSpecialDays();
 
+  const vacanceData = mapISO<VacanceData>(vacancesScolaire, ["start", "end"]);
   vacanceData.sort((v1, v2) => compareAsc(v1.start, v2.start));
 
   const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
   const [eventLabel, setEventLabel] = useState<DisplayView>(displayViews[0]);
-
+  const data: Filiere[] | FormateurWithModule[] = useMemo(
+    () =>
+      serializedData.map((d) => ({
+        ...d,
+        modules: mapISO<Module>(d.modules, ["start", "end"]),
+      })),
+    [serializedData]
+  );
   // Props passed to Calendar
   const commonProps: CommonCalendarProps<ModuleEvent, typeof EventComponent> =
     useMemo(
@@ -156,13 +175,18 @@ export default function CommonCalendar({
     );
 
   const calendarFiliere = useMemo(
-    () => <CalendarFiliere modules={modules} {...commonProps} />,
-    [modules, month, zoom, commonProps]
+    () => <CalendarFiliere filieres={data as Filiere[]} {...commonProps} />,
+    [data, month, zoom, commonProps]
   );
 
   const calendarFormateur = useMemo(
-    () => <CalendarFormateur modules={modules} {...commonProps} />,
-    [modules, month, zoom, commonProps]
+    () => (
+      <CalendarFormateur
+        formateurs={data as FormateurWithModule[]}
+        {...commonProps}
+      />
+    ),
+    [data, month, zoom, commonProps]
   );
 
   return (

@@ -1,8 +1,8 @@
+import { notFound } from "@/lib/api";
+import { prisma } from "@/lib/db/prisma";
 import { Module } from "@/lib/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import { mapISO } from "../../../../../lib/date";
 import { makePDF } from "../../../../../lib/pdf";
-import { fetchFiliere } from "../../../../../lib/realData";
 import htmlFromFiliere from "../../../../../pdfMakers/filiereSimple";
 
 export default async function handler(
@@ -10,8 +10,20 @@ export default async function handler(
   res: NextApiResponse
 ) {
   let fId = req.query.id as string;
-  let modules = mapISO<Module>(fetchFiliere(fId), ["start", "end"]);
+  const filiere = await prisma.filiere.findUnique({
+    where: {
+      nom: fId,
+    },
+    include: {
+      modules: {
+        include: { filiere: true, formateur: true },
+      },
+    },
+  });
 
+  if (!filiere) return notFound(res, "Filière");
+
+  const modules = filiere.modules as Module[];
   const [pdfBuffer, finished] = await makePDF(htmlFromFiliere(fId, modules));
   // writeFileSync("table.html", tableHTML); // saving the pdf locally - DEBUG PURPOSE /!\
   res.setHeader("Content-Type", "application/pdf");

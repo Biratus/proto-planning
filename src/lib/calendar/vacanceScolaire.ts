@@ -22,6 +22,12 @@ export type VacanceData = {
   labels: string[];
   zones: string[];
 };
+export type SerializedVacanceData = {
+  start: string;
+  end: string;
+  labels: string[];
+  zones: string[];
+};
 type Moment = {
   date: Date;
   prop: "start" | "end";

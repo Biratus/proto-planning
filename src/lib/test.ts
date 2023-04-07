@@ -2,7 +2,7 @@ import { addDays } from "date-fns";
 import { mergeModule } from "./calendar/calendar";
 import { ModuleEvent } from "./types";
 
-const rawModules = [
+const SerializedModules = [
   {
     id: "1",
     name: "JAVA AVANCEE",
@@ -31,7 +31,7 @@ const excpectedEvent = {
   ],
 };
 export function mergeModuleTest() {
-  let [m1, m2] = rawModules;
+  let [m1, m2] = SerializedModules;
 
   let newEvent = mergeModule(m1 as ModuleEvent, m2 as ModuleEvent);
 
@@ -54,7 +54,7 @@ export function mergeModuleTest() {
 }
 
 export function doubleMergeModuleTest() {
-  let [m1, m2] = rawModules;
+  let [m1, m2] = SerializedModules;
 
   let m3 = { ...m2, id: "3" };
   m3.end = addDays(m2.end, 5);
