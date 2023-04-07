@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
 import { Formateur, Module } from "@/lib/types";

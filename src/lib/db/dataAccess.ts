@@ -62,7 +62,9 @@ export async function getAllFormateurs() {
     },
   });
 }
-
+export async function getAllFormateursSimple() {
+  return prisma.formateur.findMany();
+}
 const includesOfModule = { formateur: true, filiere: true };
 
 export async function getModulesOfPeriod({

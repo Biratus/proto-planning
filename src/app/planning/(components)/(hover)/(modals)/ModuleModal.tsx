@@ -23,7 +23,6 @@ const defaultModule: ModuleEvent = {
 
 export default function ModuleModal() {
   const { focus, temps } = useFocusModule();
-  console.log({ focus });
   const {
     nom: name,
     start,
@@ -69,6 +68,9 @@ export default function ModuleModal() {
     <CommonModal inputId={ModuleDetailModalId} modalRef={modalRef}>
       {/* Info basiques */}
       <ModuleTitle name={name} filiere={filiere.nom} />
+      <button className="btn" onClick={() => console.log(focus)}>
+        Log focus
+      </button>
       {/* Dates */}
       <div className="flex flex-row items-center gap-4">
         <span>

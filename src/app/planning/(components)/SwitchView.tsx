@@ -1,17 +1,17 @@
 "use client";
 
-import { changeURLParam } from "@/lib/navigation";
 import cn from "classnames";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FiliereView, FormateurView } from "./(calendar)/CalendarView";
 
 export default function SwitchView({ view: viewParam = FiliereView.key }) {
   const router = useRouter();
   const params = useSearchParams();
-  const path = usePathname() || "";
 
-  const setView = (view: string) =>
-    router.push(changeURLParam({ params, path, newParams: { view } }));
+  const setView = (view: string) => {
+    router.push("planning/" + view + (params ? "?" + params.toString() : ""));
+    // router.refresh();
+  };
 
   return (
     <div>

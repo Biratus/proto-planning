@@ -86,12 +86,24 @@ export function nbOfDaysBetween(start: Date, end: Date) {
     : dateFns.eachDayOfInterval({ start, end }).length;
 }
 
-export function mapISO<OUT>(list: any[], fields: string[]): Array<OUT> {
-  // debugger;
+function defaultParseFunction(str: string) {
+  return dateFns.parseISO(str);
+}
+export function mapISO<OUT>(
+  list: any[],
+  fields: string[],
+  parseFunction: (raw: string, parsed: Date) => Date = (r, p) => p
+): Array<OUT> {
   return list.map((item) => {
     let newItem = { ...item };
 
-    fields.forEach((f) => (newItem[f] = dateFns.parseISO(newItem[f])));
+    fields.forEach(
+      (f) =>
+        (newItem[f] = parseFunction(
+          newItem[f],
+          defaultParseFunction(newItem[f])
+        ))
+    );
 
     return newItem;
   });

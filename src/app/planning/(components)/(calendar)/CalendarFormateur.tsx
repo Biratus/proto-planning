@@ -14,28 +14,27 @@ import { DragEvent, useCallback, useMemo } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FormateurView } from "./CalendarView";
-
+type CalendarFormateurProps = {
+  formateurs: FormateurWithModule[];
+  dataRefresh: () => void;
+};
 export default function CalendarFormateur<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  formateurs: originalFormateurs,
+  formateurs,
+  dataRefresh,
   day,
   ...props
-}: { formateurs: FormateurWithModule[] } & CommonCalendarProps<
-  ModuleEvent,
-  E
->) {
-  // const [formateurs, setFormateurs] = useState(originalFormateurs);
-
+}: CalendarFormateurProps & CommonCalendarProps<ModuleEvent, E>) {
   const calendarData = useMemo(() => {
     let data = toCalendarData<FormateurWithModule>(
-      originalFormateurs,
+      formateurs,
       "formateur.mail",
       FormateurView
     );
     checkOverlapModules(data);
     return data;
-  }, [originalFormateurs]);
+  }, [formateurs]);
 
   const {
     dropTarget,

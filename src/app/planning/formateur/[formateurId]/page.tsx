@@ -1,10 +1,13 @@
-"use client";
 import { useLegendStore } from "@/components/legend/Legend";
 import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigationProvider";
 import ZoomProvider from "@/components/zoom/ZoomProvider";
 import { zoom_calendar_formateur } from "@/hooks/localStorageStore";
-import { parseMonthAndYear } from "@/lib/date";
-import { formateurs, getModulesOfFormateur } from "@/lib/realData";
+import { parseMonthAndYear, serializeDate } from "@/lib/date";
+import {
+  getAllFormateursSimple,
+  getModulesOfFormateur,
+} from "@/lib/db/dataAccess";
+import { Formateur } from "@/lib/types";
 import { addMonths, formatISO, startOfMonth, startOfToday } from "date-fns";
 import { notFound } from "next/navigation";
 import CalendarFormateur from "./CalendarFormateur";
@@ -19,10 +22,13 @@ type FormateurPageProps = {
   searchParams?: { date: string };
 };
 
-export default function FormateurPage({
+export default async function FormateurPage({
   params,
   searchParams,
 }: FormateurPageProps) {
+  const formateurs = new Map<string, Formateur>(
+    (await getAllFormateursSimple()).map((f) => [f.mail, f as Formateur])
+  );
   if (!params || !formateurs.has(decodeURIComponent(params.formateurId))) {
     notFound();
   }
@@ -33,17 +39,20 @@ export default function FormateurPage({
       ? parseMonthAndYear(searchParams.date)
       : monthStart;
 
-  const modules = getModulesOfFormateur(formateur.mail, {
+  const modules = await getModulesOfFormateur(formateur.mail, {
     start: month,
     end: addMonths(month, monthLength),
   });
-  const showLegend = useLegendStore((s) => s.showLegend);
+  const showLegend = useLegendStore.getState().showLegend;
   showLegend([...new Set(modules.map(({ theme }) => theme))]);
 
   return (
     <MonthNavigationProvider focus={formatISO(month || monthStart)}>
       <ZoomProvider zoomKey={zoom_calendar_formateur}>
-        <CalendarFormateur data={modules} formateur={formateur} />
+        <CalendarFormateur
+          data={serializeDate(modules, ["start", "end"])}
+          formateur={formateur}
+        />
       </ZoomProvider>
     </MonthNavigationProvider>
   );

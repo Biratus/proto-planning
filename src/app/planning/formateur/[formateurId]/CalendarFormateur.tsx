@@ -5,11 +5,11 @@ import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigation
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
-import { mapISO } from "@/lib/date";
+import { mapISO, nbOfDaysBetween } from "@/lib/date";
 import { emptyStyle } from "@/lib/style";
-import { Formateur, ModuleEvent, SerializedModule } from "@/lib/types";
+import { Formateur, Module, ModuleEvent, SerializedModule } from "@/lib/types";
 import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
-import { isWeekend } from "date-fns";
+import { isWeekend, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
 import {
@@ -17,19 +17,29 @@ import {
   dayEventStyle,
   monthLabel,
 } from "../../(components)/(calendar)/CalendarStyle";
+import { FormateurView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
 type CalendarFormateurProps = {
   formateur: Formateur;
   data: SerializedModule[];
 };
+function fromSerializedData(serializedData: SerializedModule[]) {
+  return mapISO<Module>(serializedData, ["start", "end"], (raw, parsed) =>
+    startOfDay(parsed)
+  );
+}
 
 export default function CalendarFormateur({
   formateur: { nom, prenom, mail },
   data,
 }: CalendarFormateurProps) {
   const formateurData = useMemo(
-    () => mapISO<ModuleEvent>(data, ["start", "end"]),
+    () =>
+      fromSerializedData(data).map((d) => ({
+        ...d,
+        duration: nbOfDaysBetween(d.start, d.end),
+      })),
     [data]
   );
   const { isJoursFeries, getJourFerie } = useJoursFeries();
@@ -42,7 +52,7 @@ export default function CalendarFormateur({
     <div className="flex flex-col items-center gap-2">
       <h2 className="text-center">{`${nom} ${prenom} - [${mail}]`}</h2>
       <div className="flex w-1/2 flex-row justify-between">
-        <GlobalViewLink />
+        <GlobalViewLink view={FormateurView.key} />
         <ZoomUI range={5} />
       </div>
       <MonthNavigationUI />

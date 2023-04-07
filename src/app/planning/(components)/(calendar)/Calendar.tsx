@@ -30,8 +30,9 @@ import {
   areIntervalsOverlapping,
   compareAsc,
   endOfMonth,
+  startOfDay,
 } from "date-fns";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
 import { overlayID } from "../(hover)/OverlapModuleOverlay";
@@ -61,18 +62,33 @@ const displayViews: DisplayView[] = [
   { label: "Module", print: (mod: ModuleEvent) => mod.nom },
   {
     label: "Filière",
-    print: (mod: ModuleEvent) => mod.filiere.nom,
+    print: (mod: ModuleEvent) => mod.filiere!.nom,
     for: FormateurView.key,
   },
   {
     label: "Formateur",
-    print: (mod: ModuleEvent) => mod.formateur.nom + " " + mod.formateur.prenom,
+    print: (mod: ModuleEvent) =>
+      mod.formateur!.nom + " " + mod.formateur!.prenom,
     for: FiliereView.key,
   },
 ];
 
 const zonesVacances = ["Zone A", "Zone B", "Zone C"];
 const zoneColors = getGrayscaleForLabels([...zonesVacances]);
+
+function fromSerializedData(
+  serializedData: SerializedFiliere[] | FormateurWithSerializedModule[]
+) {
+  return serializedData.map((d) => ({
+    ...d,
+    modules: d.modules
+      ? mapISO<Module>(d.modules, ["start", "end"], (raw, parsed) =>
+          startOfDay(parsed)
+        )
+      : [],
+  }));
+}
+
 export default function CommonCalendar({
   data: serializedData,
   view = FiliereView.key,
@@ -93,14 +109,21 @@ export default function CommonCalendar({
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
   const [eventLabel, setEventLabel] = useState<DisplayView>(displayViews[0]);
-  const data: Filiere[] | FormateurWithModule[] = useMemo(
-    () =>
-      serializedData.map((d) => ({
-        ...d,
-        modules: mapISO<Module>(d.modules, ["start", "end"]),
-      })),
-    [serializedData]
-  );
+  const [calendarData, setCalendarData] = useState<
+    Filiere[] | FormateurWithModule[]
+  >(fromSerializedData(serializedData));
+
+  console.log("CommonCalendar", { calendarData, serializedData });
+
+  const isModifying = useRef(false);
+  // const data: Filiere[] | FormateurWithModule[] = useMemo(
+  //   () =>
+  //     serializedData.map((d) => ({
+  //       ...d,
+  //       modules: mapISO<Module>(d.modules, ["start", "end"]),
+  //     })),
+  //   [serializedData]
+  // );
   // Props passed to Calendar
   const commonProps: CommonCalendarProps<ModuleEvent, typeof EventComponent> =
     useMemo(
@@ -111,11 +134,7 @@ export default function CommonCalendar({
           as: EventComponent,
           label: (mod: ModuleEvent) =>
             mod.duration == 1 ? "" : eventLabel.print(mod),
-          onClick: (mod, ref) => {
-            if (mod.overlap) {
-              openOverlapUI(mod, ref);
-            } else setFocusModule(mod);
-          },
+          onClick: eventOnClick,
           style: (mod: ModuleEvent) => {
             let style = eventStyle(colorOf(mod.theme));
             if (mod.overlap) {
@@ -174,20 +193,44 @@ export default function CommonCalendar({
       [zoom, month, monthLength, eventLabel, zoneColors]
     );
 
+  const dataRefresh = useCallback(() => {
+    isModifying.current = true;
+    setCalendarData([...calendarData]);
+  }, [calendarData]);
+
   const calendarFiliere = useMemo(
-    () => <CalendarFiliere filieres={data as Filiere[]} {...commonProps} />,
-    [data, month, zoom, commonProps]
+    () => (
+      <CalendarFiliere
+        filieres={calendarData as Filiere[]}
+        dataRefresh={dataRefresh}
+        {...commonProps}
+      />
+    ),
+    [calendarData, commonProps]
   );
 
   const calendarFormateur = useMemo(
     () => (
       <CalendarFormateur
-        formateurs={data as FormateurWithModule[]}
+        formateurs={calendarData as FormateurWithModule[]}
+        dataRefresh={dataRefresh}
         {...commonProps}
       />
     ),
-    [data, month, zoom, commonProps]
+    [calendarData, commonProps]
   );
+
+  const updateData = useCallback(() => {
+    console.log("updateData");
+    isModifying.current = false;
+    // Test update
+    // if true
+  }, [calendarData]);
+
+  const cancelModification = useCallback(() => {
+    isModifying.current = false;
+    setCalendarData(fromSerializedData(serializedData));
+  }, []);
 
   return (
     <>
@@ -228,6 +271,9 @@ export default function CommonCalendar({
           />
         </div>
       </div>
+      {isModifying.current && (
+        <UpdateDataUI modify={updateData} abort={cancelModification} />
+      )}
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
     </>
@@ -255,4 +301,30 @@ function EventComponent({
       )}
     </label>
   );
+}
+
+function UpdateDataUI({
+  modify,
+  abort,
+}: {
+  modify: () => void;
+  abort: () => void;
+}) {
+  return (
+    <div className="space-x-4">
+      <button className="btn-success btn" onClick={modify}>
+        Enregistrer les modifications
+      </button>
+      <button className="btn-error btn" onClick={abort}>
+        Annuler
+      </button>
+    </div>
+  );
+}
+
+// Utils for common props
+function eventOnClick(mod: ModuleEvent, ref: HTMLElement) {
+  if (mod.overlap) {
+    openOverlapUI(mod, ref);
+  } else setFocusModule(mod);
 }

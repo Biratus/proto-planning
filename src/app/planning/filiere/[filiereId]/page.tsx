@@ -18,7 +18,7 @@ export default async function FilierePage({
     where: {
       nom: filiereId,
     },
-    include: { modules: true },
+    include: { modules: { include: { formateur: true } } },
   });
   if (!filiereData) {
     notFound();

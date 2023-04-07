@@ -1,4 +1,3 @@
-// "use client";
 import LoadingBar from "@/components/LoadingBar";
 import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigationProvider";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
@@ -20,29 +19,34 @@ import {
   startOfMonth,
   startOfToday,
 } from "date-fns";
-import CommonCalendar from "./(components)/(calendar)/Calendar";
-import { FiliereView } from "./(components)/(calendar)/CalendarView";
-import FiliereModal from "./(components)/(hover)/(modals)/FiliereModal";
-import ModuleModal from "./(components)/(hover)/(modals)/ModuleModal";
-import HoverElements from "./(components)/(hover)/HoverElements";
-import SwitchView from "./(components)/SwitchView";
+import CommonCalendar from "../(components)/(calendar)/Calendar";
+import { FiliereView } from "../(components)/(calendar)/CalendarView";
+import FiliereModal from "../(components)/(hover)/(modals)/FiliereModal";
+import ModuleModal from "../(components)/(hover)/(modals)/ModuleModal";
+import HoverElements from "../(components)/(hover)/HoverElements";
+import SwitchView from "../(components)/SwitchView";
 
 export const dynamic = "force-dynamic"; // To get searchParams in prod
 
 const monthStart = startOfMonth(startOfToday());
 
-type PlanningPageParams = {
+type PlanningPageSearchParams = {
   date?: string;
-  view?: string;
+};
+
+type PlanningPageParams = {
+  view: string;
 };
 
 export default async function PlanningPage({
   searchParams = {},
+  params,
 }: {
-  searchParams?: PlanningPageParams;
+  searchParams?: PlanningPageSearchParams;
+  params: PlanningPageParams;
 }) {
   const dateQuery = searchParams.date;
-  const view = searchParams.view || FiliereView.key;
+  const view = params.view;
   let focusDate = dateQuery ? parseMonthAndYear(dateQuery) : monthStart;
 
   // const [url, fetchData] = getSWRVacancesScolaire(
@@ -71,7 +75,8 @@ export default async function PlanningPage({
       : ((await getActiveFormateurs(activInterval)) as FormateurWithModule[]);
 
   datas.forEach(
-    (d) => (d.modules = serializeDate(d.modules, ["start", "end"]))
+    (d) =>
+      (d.modules = d.modules ? serializeDate(d.modules, ["start", "end"]) : [])
   );
   return (
     <>

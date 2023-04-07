@@ -1,13 +1,15 @@
 "use client";
 
-import { eachDayOfInterval, isWithinInterval } from "date-fns";
+import { isWithinInterval } from "date-fns";
 import { DragEvent } from "react";
 import {
   CalendarEvent as CalendarEventType,
   CalendarItem,
   CalendarRowProps,
   DayAndEvent,
+  Interval,
 } from "../types";
+import { nbOfDaysBetween } from "../utils";
 import CalendarEvent from "./CalendarEvent";
 import { useFullCalendarRow } from "./FullCalendarProvider";
 
@@ -21,11 +23,10 @@ export default function CalendarRow<K, T extends CalendarItem>({
     drag: { enter, leave, move, drop, drag },
   } = useFullCalendarRow<K, T>();
 
-  const daysAndEvents = mergeDaysAndEvent(
-    days!,
-    events,
-    days![days!.length - 1]
-  );
+  const daysAndEvents = mergeDaysAndEvent(days!, events, {
+    start: days[0],
+    end: days[days.length - 1],
+  });
 
   return (
     <>
@@ -68,7 +69,7 @@ export default function CalendarRow<K, T extends CalendarItem>({
 function mergeDaysAndEvent<T extends CalendarItem>(
   days: Date[],
   events: T[],
-  limit: Date
+  timeSpan: Interval
 ): DayAndEvent<T>[] {
   function eventOf(d: Date) {
     for (let evt of events) {
@@ -79,7 +80,6 @@ function mergeDaysAndEvent<T extends CalendarItem>(
 
   let newDays = [];
   let currSkip = 0;
-
   for (let d of days) {
     if (currSkip > 0) {
       currSkip--;
@@ -89,13 +89,12 @@ function mergeDaysAndEvent<T extends CalendarItem>(
     let evt = eventOf(d);
     if (evt) {
       // Make cell span for duration of event if within time interval
-      let span =
-        evt.end.getTime() > limit.getTime()
-          ? eachDayOfInterval({
-              start: evt.start,
-              end: limit,
-            }).length
-          : evt.duration;
+      let span = evt.duration;
+      if (evt.end.getTime() > timeSpan.end.getTime()) {
+        span = nbOfDaysBetween(evt.start, timeSpan.end);
+      } else if (evt.start.getTime() < timeSpan.start.getTime()) {
+        span = nbOfDaysBetween(timeSpan.start, evt.end);
+      }
       currSkip = span - 1;
       newDays.push({ date: d, event: evt, span });
     } else newDays.push({ date: d, span: 1 });

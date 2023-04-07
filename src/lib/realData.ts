@@ -643,7 +643,7 @@ export const formateurs = formateurMap;
 const MISSING_FORMATEUR = "na@na.na";
 
 export const isFormateurMissing = (mod: Module | SerializedModule) => {
-  return mod.formateur.mail == MISSING_FORMATEUR;
+  return mod.formateur == undefined; //mod.formateur.mail == MISSING_FORMATEUR;
 };
 
 export function filterFormateur({

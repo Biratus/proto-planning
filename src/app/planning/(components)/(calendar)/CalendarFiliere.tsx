@@ -1,8 +1,8 @@
-"use client";
+// "use client";
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
 import { mergeStyle } from "@/lib/style";
-import { Filiere, ModuleEvent } from "@/lib/types";
+import { Filiere, Module, ModuleEvent } from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
@@ -15,27 +15,29 @@ import { DragEvent, useCallback, useMemo } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FiliereView } from "./CalendarView";
-
+type CalendarFiliereProps = {
+  filieres: Filiere[];
+  dataRefresh: () => void;
+};
 export default function CalendarFiliere<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  filieres: originalFilieres,
+  filieres,
+  dataRefresh,
   day,
   ...props
-}: { filieres: Filiere[] } & CommonCalendarProps<ModuleEvent, E>) {
-  // console.log({ originalFilieres });
-  // const [filieres, setFilieres] = useState(originalFilieres);
-
+}: CalendarFiliereProps & CommonCalendarProps<ModuleEvent, E>) {
   const calendarData = useMemo(() => {
     // console.log("make calendarData");
-    const data = toCalendarData<Filiere>(
-      originalFilieres,
+    filieres.forEach((f) => (f.modules = f.modules || []));
+    const data = toCalendarData<Filiere & { modules: Module[] }>(
+      filieres as (Filiere & { modules: Module[] })[],
       "filiere",
       FiliereView
     );
     checkOverlapModules(data);
     return data;
-  }, [originalFilieres]);
+  }, [filieres]);
   // console.log({ filieres });
   const {
     dropTarget,
@@ -74,20 +76,26 @@ export default function CalendarFiliere<
     [draggedModule, dropTarget, props.time]
   );
 
-  const dropModule = () => console.log("TODO dropModule");
+  const dropModule = useCallback(() => {
+    // filieres.find(f => f.nom==draggedModule?.filiere.nom)?.modules.find(m => m.id == draggedModule!.id);
 
-  // const dropModule = useCallback(() => {
-  //   setModules((prevModules) => {
-  //     const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
-  //     newModules.push({
-  //       ...draggedModule!,
-  //       start: formatISO(dropTarget!.interval.start),
-  //       end: formatISO(dropTarget!.interval.end),
-  //     });
-  //     return newModules;
-  //   });
-  //   cleanDropTarget();
-  // }, [draggedModule, modules, dropTarget]);
+    const targetModule = filieres
+      .find((f) => f.nom == draggedModule?.filiere!.nom)!
+      .modules!.find((m) => m.id == draggedModule!.id);
+    targetModule!.start = dropTarget!.interval.start;
+    targetModule!.end = dropTarget!.interval.end;
+    // setModules((prevModules) => {
+    //   const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
+    //   newModules.push({
+    //     ...draggedModule!,
+    //     start: formatISO(dropTarget!.interval.start),
+    //     end: formatISO(dropTarget!.interval.end),
+    //   });
+    //   return newModules;
+    // });
+    dataRefresh();
+    cleanDropTarget();
+  }, [draggedModule, dropTarget]);
 
   return (
     <FullCalendar
@@ -108,17 +116,17 @@ export default function CalendarFiliere<
           else evt.preventDefault();
         },
         enter: (dayAndEvent, row, evt) => {
-          if (draggedModule!.filiere !== row) {
+          if (draggedModule!.filiere!.nom !== row.nom) {
             cleanDropTarget();
             return;
           }
           changeDropTarget(dayAndEvent, evt);
         },
         leave: (_, row, __) => {
-          if (draggedModule!.filiere !== row) cleanDropTarget();
+          if (draggedModule!.filiere!.nom !== row.nom) cleanDropTarget();
         },
         drop: (_, row, __) => {
-          if (draggedModule!.filiere !== row) {
+          if (draggedModule!.filiere!.nom !== row.nom) {
             cleanDropTarget();
             return;
           }
@@ -126,7 +134,7 @@ export default function CalendarFiliere<
         },
         move: (dayAndEvent, row, evt) => {
           evt.preventDefault();
-          if (draggedModule!.filiere !== row) {
+          if (draggedModule!.filiere!.nom !== row.nom) {
             cleanDropTarget();
             return;
           }

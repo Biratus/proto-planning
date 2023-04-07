@@ -5,12 +5,12 @@ import {
 
 export interface Filiere {
   nom: string;
-  modules: Module[];
+  modules?: Module[];
 }
 
 export interface SerializedFiliere {
   nom: string;
-  modules: SerializedModule[];
+  modules?: SerializedModule[];
 }
 
 export interface Formateur {
@@ -20,7 +20,9 @@ export interface Formateur {
   modules?: Module[];
 }
 
-export type FormateurWithModule = Formateur & { modules: Module[] };
+export type FormateurWithModule = Formateur & {
+  modules: Module[];
+};
 export type FormateurWithSerializedModule = Formateur & {
   modules: SerializedModule[];
 };
@@ -31,8 +33,8 @@ export interface SerializedModule {
   start: string | Date;
   end: string | Date;
   theme: string;
-  filiere: { nom: string };
-  formateur: Formateur;
+  filiere?: Filiere;
+  formateur?: Formateur;
 }
 export interface Module extends SerializedModule {
   start: Date;

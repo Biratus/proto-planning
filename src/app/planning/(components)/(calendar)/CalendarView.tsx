@@ -3,6 +3,7 @@ import {
   Filiere,
   Formateur,
   FormateurWithModule,
+  Module,
 } from "@/lib/types";
 import Link from "next/link";
 import { useCallback } from "react";
@@ -12,7 +13,7 @@ import { setFocusedFiliere } from "./CalendarProvider";
 const formateurSimple = ({ nom, prenom, mail }: Formateur) =>
   `${nom} ${prenom} - ${mail}`;
 
-export const FiliereView: CalendarView<Filiere> = {
+export const FiliereView: CalendarView<Filiere & { modules: Module[] }> = {
   key: "filiere",
   label: "Filière",
   keyObject: ({ filiere }) => filiere,

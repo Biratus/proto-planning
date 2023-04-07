@@ -10,6 +10,7 @@ import CalendarDetail from "@/packages/calendar/SingleData/CalendarDetail";
 import Link from "next/link";
 import { User } from "react-feather";
 import { missingFormateurStyle } from "../../(components)/(calendar)/CalendarStyle";
+import { FiliereView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
 const viewWidth = 50;
@@ -33,7 +34,7 @@ export default function CalendarFiliere({
     <div className="flex flex-col items-center justify-center gap-4">
       <h2 className="text-center">{name}</h2>
       <div className="flex w-2/4 flex-row justify-between">
-        <GlobalViewLink />
+        <GlobalViewLink view={FiliereView.key} />
         <ZoomUI range={5} />
         <button className="btn-link btn">
           <Link href={`/api/filiere/${name}/pdf`}>Export to PDF</Link>
@@ -66,7 +67,13 @@ export default function CalendarFiliere({
   );
 }
 
-function FormateurSimple({ event: { formateur } }: { event: Module }) {
+function FormateurSimple({
+  event: {
+    formateur = { nom: "NA", prenom: "NA", mail: "NA.NA@ajc-formation.fr" },
+  },
+}: {
+  event: Module;
+}) {
   return (
     <div className="flex h-full flex-row items-center gap-3">
       <User /> <span>{formateur.nom + " " + formateur.prenom}</span>
