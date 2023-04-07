@@ -77,22 +77,11 @@ export default function CalendarFiliere<
   );
 
   const dropModule = useCallback(() => {
-    // filieres.find(f => f.nom==draggedModule?.filiere.nom)?.modules.find(m => m.id == draggedModule!.id);
-
     const targetModule = filieres
       .find((f) => f.nom == draggedModule?.filiere!.nom)!
       .modules!.find((m) => m.id == draggedModule!.id);
     targetModule!.start = dropTarget!.interval.start;
     targetModule!.end = dropTarget!.interval.end;
-    // setModules((prevModules) => {
-    //   const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
-    //   newModules.push({
-    //     ...draggedModule!,
-    //     start: formatISO(dropTarget!.interval.start),
-    //     end: formatISO(dropTarget!.interval.end),
-    //   });
-    //   return newModules;
-    // });
     dataRefresh();
     cleanDropTarget();
   }, [draggedModule, dropTarget]);
