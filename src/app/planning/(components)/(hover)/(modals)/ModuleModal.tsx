@@ -11,19 +11,19 @@ import { SwitchFormateurModalId } from "./SwitchFormateurModal";
 export const ModuleDetailModalId = "moduleDetailModalId";
 
 const defaultModule: ModuleEvent = {
-  id: "",
+  id: 0,
   nom: "",
   start: new Date(),
   end: new Date(),
   theme: "",
-  filiere: "",
+  filiere: { nom: "" },
   formateur: { nom: "", prenom: "", mail: "" },
   duration: 0,
 };
 
 export default function ModuleModal() {
   const { focus, temps } = useFocusModule();
-
+  console.log({ focus });
   const {
     nom: name,
     start,
@@ -68,7 +68,7 @@ export default function ModuleModal() {
   return (
     <CommonModal inputId={ModuleDetailModalId} modalRef={modalRef}>
       {/* Info basiques */}
-      <ModuleTitle name={name} filiere={filiere} />
+      <ModuleTitle name={name} filiere={filiere.nom} />
       {/* Dates */}
       <div className="flex flex-row items-center gap-4">
         <span>

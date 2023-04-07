@@ -63,7 +63,7 @@ export default function FullCalendar<
       end: endOfMonth(months[months.length - 1].day),
     })
   );
-  // console.log({ data });
+
   const days = eachDayOfInterval({
     start: startOfMonth(months[0].day),
     end: dayLimit,
@@ -145,7 +145,6 @@ export default function FullCalendar<
         drag,
       }}
     >
-      <span>Length:{data.length}</span>
       <div
         className="grid overflow-x-auto pb-5"
         style={{

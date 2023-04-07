@@ -50,7 +50,7 @@ export default function SwitchFormateurModal<T extends Module>({
         <>
           <ModuleTitle
             name={module.nom}
-            filiere={module.filiere}
+            filiere={module.filiere.nom}
             backButton={SwitchFormateurModalId}
           />
           {/* <div>Début : {formatFullPrettyDate(module.start)}</div>
