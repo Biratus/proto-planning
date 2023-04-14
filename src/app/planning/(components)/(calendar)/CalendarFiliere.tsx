@@ -16,28 +16,29 @@ import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FiliereView } from "./CalendarView";
 type CalendarFiliereProps = {
-  filieres: Filiere[];
-  dataRefresh: () => void;
+  modules: Module[];
+  updateModules: (modules: Module[]) => void;
+  // dataRefresh: () => void;
 };
 export default function CalendarFiliere<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  filieres,
-  dataRefresh,
+  modules,
+  updateModules,
   day,
   ...props
 }: CalendarFiliereProps & CommonCalendarProps<ModuleEvent, E>) {
   const calendarData = useMemo(() => {
     // console.log("make calendarData");
-    filieres.forEach((f) => (f.modules = f.modules || []));
+    // filieres.forEach((f) => (f.modules = f.modules || []));
     const data = toCalendarData<Filiere & { modules: Module[] }>(
-      filieres as (Filiere & { modules: Module[] })[],
-      "filiere",
+      modules,
+      "filiere.nom",
       FiliereView
     );
     checkOverlapModules(data);
     return data;
-  }, [filieres]);
+  }, [modules]);
   // console.log({ filieres });
   const {
     dropTarget,
@@ -77,12 +78,13 @@ export default function CalendarFiliere<
   );
 
   const dropModule = useCallback(() => {
-    const targetModule = filieres
-      .find((f) => f.nom == draggedModule?.filiere!.nom)!
-      .modules!.find((m) => m.id == draggedModule!.id);
-    targetModule!.start = dropTarget!.interval.start;
-    targetModule!.end = dropTarget!.interval.end;
-    dataRefresh();
+    updateModules([
+      {
+        ...draggedModule!,
+        start: dropTarget!.interval.start,
+        end: dropTarget!.interval.end,
+      },
+    ]);
     cleanDropTarget();
   }, [draggedModule, dropTarget]);
 

@@ -5,6 +5,8 @@ import {
   formatISO,
   parseISO,
 } from "date-fns";
+import { Color, colorFromZones, isDark } from "../colors";
+import { nbOfDaysBetween } from "../date";
 
 export type VacanceScolaire = Interval & {
   label: string;
@@ -214,4 +216,20 @@ function intervalSort(i1: Moment, i2: Moment) {
   if (diff !== 0) return diff;
   else if (i1.prop == "start") return -1;
   else return 1;
+}
+
+export function vacanceToCalendarData(
+  data: VacanceData,
+  zoneColors: Map<string, Color>
+) {
+  let duration = nbOfDaysBetween(data.start, data.end);
+  return {
+    start: data.start,
+    end: data.end,
+    duration,
+    label: duration != 1 ? data.zones.join(" + ") : "",
+    info: data.labels.join("/") + " ⇒ " + data.zones.join(" + "),
+    color: colorFromZones(data.zones, zoneColors),
+    textColor: isDark(zoneColors.get(data.zones[0])!) ? "white" : "black",
+  };
 }

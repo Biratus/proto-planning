@@ -1,7 +1,12 @@
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
 import { mergeStyle } from "@/lib/style";
-import { Formateur, FormateurWithModule, ModuleEvent } from "@/lib/types";
+import {
+  Formateur,
+  FormateurWithModule,
+  Module,
+  ModuleEvent,
+} from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
@@ -15,26 +20,26 @@ import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FormateurView } from "./CalendarView";
 type CalendarFormateurProps = {
-  formateurs: FormateurWithModule[];
-  dataRefresh: () => void;
+  modules: Module[];
+  updateModules: (modules: Module[]) => void;
 };
 export default function CalendarFormateur<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  formateurs,
-  dataRefresh,
+  modules,
+  updateModules,
   day,
   ...props
 }: CalendarFormateurProps & CommonCalendarProps<ModuleEvent, E>) {
   const calendarData = useMemo(() => {
     let data = toCalendarData<FormateurWithModule>(
-      formateurs,
+      modules,
       "formateur.mail",
       FormateurView
     );
     checkOverlapModules(data);
     return data;
-  }, [formateurs]);
+  }, [modules]);
 
   const {
     dropTarget,
@@ -84,50 +89,49 @@ export default function CalendarFormateur<
     [draggedModule, dropTarget, props.time]
   );
   const dropModule = useCallback(() => {
-    // setModules((prevModules) => {
-    //   const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
-    //   newModules.push({
-    //     ...draggedModule!,
-    //     start: formatISO(dropTarget!.interval.start),
-    //     end: formatISO(dropTarget!.interval.end),
-    //     formateur: dropTarget!.row as Formateur,
-    //   });
-    //   return newModules;
-    // });
-
-    if ((dropTarget!.row as Formateur).mail == draggedModule?.formateur!.mail) {
-      const targetModule = formateurs
-        .find((f) => f.mail == draggedModule!.formateur!.mail)!
-        .modules.find((m) => m.id == draggedModule.id);
-      targetModule!.start = dropTarget!.interval.start;
-      targetModule!.end = dropTarget!.interval.end;
-    } else {
-      // Remove previous module
-      const previousFormateur = formateurs.find(
-        (f) => f.mail == draggedModule!.formateur!.mail
-      )!;
-      const targetModule = previousFormateur!.modules.find(
-        (m) => m.id == draggedModule!.id
-      )!;
-      previousFormateur.modules.splice(
-        previousFormateur.modules.indexOf(targetModule),
-        1
-      );
-
-      const targetFormateur = formateurs.find(
-        (f) => f.mail == dropTarget!.row.mail
-      )!;
-      targetFormateur.modules.push({
+    updateModules([
+      {
         ...draggedModule!,
         start: dropTarget!.interval.start,
         end: dropTarget!.interval.end,
-        formateur: targetFormateur,
-      });
-    }
-
-    dataRefresh();
+        formateur: dropTarget!.row,
+      },
+    ]);
     cleanDropTarget();
-  }, [formateurs, dropTarget, draggedModule]);
+
+    // if ((dropTarget!.row as Formateur).mail == draggedModule?.formateur!.mail) {
+    //   const targetModule = formateurs
+    //     .find((f) => f.mail == draggedModule!.formateur!.mail)!
+    //     .modules.find((m) => m.id == draggedModule.id);
+    //   targetModule!.start = dropTarget!.interval.start;
+    //   targetModule!.end = dropTarget!.interval.end;
+    // } else {
+    //   // Remove previous module
+    //   const previousFormateur = formateurs.find(
+    //     (f) => f.mail == draggedModule!.formateur!.mail
+    //   )!;
+    //   const targetModule = previousFormateur!.modules.find(
+    //     (m) => m.id == draggedModule!.id
+    //   )!;
+    //   previousFormateur.modules.splice(
+    //     previousFormateur.modules.indexOf(targetModule),
+    //     1
+    //   );
+
+    //   const targetFormateur = formateurs.find(
+    //     (f) => f.mail == dropTarget!.row.mail
+    //   )!;
+    //   targetFormateur.modules.push({
+    //     ...draggedModule!,
+    //     start: dropTarget!.interval.start,
+    //     end: dropTarget!.interval.end,
+    //     formateur: targetFormateur,
+    //   });
+    // }
+
+    // dataRefresh();
+    // cleanDropTarget();
+  }, [modules, dropTarget, draggedModule]);
 
   return (
     <>

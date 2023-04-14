@@ -12,40 +12,32 @@ import { formatDayDate, nbOfDaysBetween } from "../date";
 import { moduleOverlap } from "../realData";
 import { CalendarView, Module, ModuleEvent } from "../types";
 
-export function toCalendarData<K extends { modules: Module[] }>(
-  data: K[],
+export function toCalendarData<K>(
+  data: Module[],
   groupingField: string, // for mapping
   view: CalendarView<K>
 ): CalendarData<K, ModuleEvent>[] {
-  // let dataMap = new Map<K, ModuleEvent[]>();
-  // for (let d of data) {
-  //   // modules list to map
-  //   let index = getDataField(d, groupingField);
-
-  //   if (!dataMap.has(index)) dataMap.set(index, []);
-  //   let start = typeof d.start === "string" ? parseISO(d.start) : d.start;
-  //   let end = typeof d.end === "string" ? parseISO(d.end) : d.end;
-  //   let duration = eachDayOfInterval({ start, end }).length;
-  //   dataMap.get(index)!.push({
-  //     ...d,
-  //     start,
-  //     end,
-  //     duration,
-  //   });
-  // }
+  let dataMap = new Map<K, ModuleEvent[]>();
+  for (let d of data) {
+    // modules list to map
+    let index = getDataField(d, groupingField);
+    if (!dataMap.has(index)) dataMap.set(index, []);
+    let duration = nbOfDaysBetween(d.start, d.end);
+    dataMap.get(index)!.push({
+      ...d,
+      duration,
+    });
+  }
 
   let calendarData = [];
-  for (let object of data) {
+  for (let key of dataMap.keys()) {
     // Iterate over rows
-    let events = object.modules.map((m) => ({
-      ...m,
-      duration: nbOfDaysBetween(m.start, m.end),
-    }));
-    let keyObject = object;
+    let events = dataMap.get(key);
+    let keyObject = view.keyObject(events![0]);
     calendarData.push({
       key: keyObject,
       labelTitle: view.labelTitle(keyObject),
-      events,
+      events: dataMap.get(key)!,
     });
   }
   calendarData.sort((a, b) => a.labelTitle.localeCompare(b.labelTitle));
