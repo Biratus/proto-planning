@@ -64,7 +64,7 @@ export default function CalendarFiliere<
             targetWidth: evt.currentTarget.clientWidth,
             mouseOffsetX: evt.clientX - rect.x,
           },
-          props.time
+          props.timeSpan
         );
       }
       if (!dropTarget || !isSameDay(targetDay, dropTarget.interval.start)) {
@@ -74,7 +74,7 @@ export default function CalendarFiliere<
         });
       }
     },
-    [draggedModule, dropTarget, props.time]
+    [draggedModule, dropTarget, props.timeSpan]
   );
 
   const dropModule = useCallback(() => {

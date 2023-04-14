@@ -69,7 +69,7 @@ export default function CalendarFormateur<
             targetWidth: evt.currentTarget.clientWidth,
             mouseOffsetX: evt.clientX - rect.x,
           },
-          props.time
+          props.timeSpan
         );
       }
       if (
@@ -86,7 +86,7 @@ export default function CalendarFormateur<
         );
       }
     },
-    [draggedModule, dropTarget, props.time]
+    [draggedModule, dropTarget, props.timeSpan]
   );
   const dropModule = useCallback(() => {
     updateModules([

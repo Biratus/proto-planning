@@ -25,7 +25,7 @@ export default function CalendarSimple<
   T extends CalendarItem,
   E extends CalendarEventComponent<T>
 >({
-  time: { start, monthLength },
+  timeSpan,
   events,
   eventProps,
   dayProps,
@@ -34,8 +34,8 @@ export default function CalendarSimple<
   zoom,
 }: CalendarSimpleProps<T, E>) {
   const months = useMemo(
-    () => makeMonths(start, monthLength),
-    [start, monthLength]
+    () => makeMonths(timeSpan.start, timeSpan.end),
+    [timeSpan]
   );
 
   const daysAndEventsOf = ({ day }: Month) =>

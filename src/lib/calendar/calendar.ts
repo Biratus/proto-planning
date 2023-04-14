@@ -1,13 +1,5 @@
-import { CalendarData, Interval, Month } from "@/packages/calendar/types";
-import {
-  addMonths,
-  eachDayOfInterval,
-  endOfMonth,
-  isAfter,
-  isBefore,
-  isSameDay,
-  startOfMonth,
-} from "date-fns";
+import { CalendarData, Interval } from "@/packages/calendar/types";
+import { eachDayOfInterval, isAfter, isBefore, isSameDay } from "date-fns";
 import { formatDayDate, nbOfDaysBetween } from "../date";
 import { moduleOverlap } from "../realData";
 import { CalendarView, Module, ModuleEvent } from "../types";
@@ -59,17 +51,6 @@ export function mergeModule(dest: ModuleEvent, mod: ModuleEvent): ModuleEvent {
     : (newModule.overlappedModules = [dest, mod]);
   return newModule;
 }
-export const makeMonths: (month: Date, length: number) => Month[] = (
-  month: Date,
-  length: number
-) => {
-  let months = [];
-  for (let i = 0; i <= length; i++) {
-    let m = addMonths(month, i);
-    months.push({ day: startOfMonth(m), nbOfDays: endOfMonth(m).getDate() });
-  }
-  return months;
-};
 
 export function moduleDayLabel({ start, end }: Interval) {
   return isSameDay(start, end)

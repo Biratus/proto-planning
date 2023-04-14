@@ -35,19 +35,19 @@ export function nbOfDaysBetween(start: Date, end: Date) {
     ? end.getDate() - start.getDate() + 1
     : dateFns.eachDayOfInterval({ start, end }).length;
 }
-export const makeMonths: (month: Date, length: number) => Month[] = (
-  month: Date,
-  length: number
+export const makeMonths: (monthStart: Date, monthEnd: Date) => Month[] = (
+  monthStart: Date,
+  monthEnd: Date
 ) => {
-  let months = [];
-  for (let i = 0; i <= length; i++) {
-    let m = dateFns.addMonths(month, i);
-    months.push({
-      day: dateFns.startOfMonth(m),
+  return dateFns
+    .eachMonthOfInterval({
+      start: monthStart,
+      end: monthEnd,
+    })
+    .map((m) => ({
+      day: m,
       nbOfDays: dateFns.endOfMonth(m).getDate(),
-    });
-  }
-  return months;
+    }));
 };
 
 /*

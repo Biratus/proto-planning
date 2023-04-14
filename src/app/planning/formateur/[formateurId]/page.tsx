@@ -38,11 +38,11 @@ export default async function FormateurPage({
     searchParams && searchParams.date
       ? parseMonthAndYear(searchParams.date)
       : monthStart;
-
-  const modules = await getModulesOfFormateur(formateur.mail, {
+  const activInterval = {
     start: month,
     end: addMonths(month, monthLength),
-  });
+  };
+  const modules = await getModulesOfFormateur(formateur.mail, activInterval);
   const showLegend = useLegendStore.getState().showLegend;
   showLegend([...new Set(modules.map(({ theme }) => theme))]);
 
@@ -52,6 +52,7 @@ export default async function FormateurPage({
         <CalendarFormateur
           data={serializeDate(modules, ["start", "end"])}
           formateur={formateur}
+          timeSpan={activInterval}
         />
       </ZoomProvider>
     </MonthNavigationProvider>

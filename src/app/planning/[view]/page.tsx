@@ -11,6 +11,7 @@ import {
 import { parseMonthAndYear, serializeDate } from "@/lib/date";
 import { getModulesOfPeriod } from "@/lib/db/dataAccess";
 import { SerializedModule } from "@/lib/types";
+import { SerializedInterval } from "@/packages/calendar/types";
 import {
   addMonths,
   endOfMonth,
@@ -56,10 +57,7 @@ export default async function PlanningPage({
     start: startOfMonth(focusDate),
     end: endOfMonth(addMonths(focusDate, 4)),
   };
-  const datas = serializeDate<SerializedModule>(
-    await getModulesOfPeriod(activInterval),
-    ["start", "end"]
-  );
+  const datas = await getModulesOfPeriod(activInterval);
 
   console.log(`GOT ${datas.length} DATAS`);
 
@@ -73,12 +71,18 @@ export default async function PlanningPage({
             <ZoomUI range={5} />
           </div>
           <CommonCalendar
-            data={datas}
+            data={serializeDate<SerializedModule>(datas, ["start", "end"])}
             view={view}
             vacancesScolaire={serializeDate<SerializedVacanceData>(
               makeVacancesData(data),
               ["start", "end"]
             )}
+            timeSpan={
+              serializeDate<SerializedInterval>(
+                [activInterval],
+                ["start", "end"]
+              )[0]
+            }
           />
         </ZoomProvider>
       </MonthNavigationProvider>

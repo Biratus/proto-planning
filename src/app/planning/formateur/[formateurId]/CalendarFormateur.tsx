@@ -1,7 +1,6 @@
 "use client";
 
 import { useLegendStore } from "@/components/legend/Legend";
-import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
@@ -9,6 +8,7 @@ import { mapISO, nbOfDaysBetween } from "@/lib/date";
 import { emptyStyle } from "@/lib/style";
 import { Formateur, Module, ModuleEvent, SerializedModule } from "@/lib/types";
 import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
+import { Interval } from "@/packages/calendar/types";
 import { isWeekend, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
@@ -23,6 +23,7 @@ import GlobalViewLink from "../../(components)/GlobalViewLink";
 type CalendarFormateurProps = {
   formateur: Formateur;
   data: SerializedModule[];
+  timeSpan: Interval;
 };
 function fromSerializedData(serializedData: SerializedModule[]) {
   return mapISO<Module>(serializedData, ["start", "end"], (raw, parsed) =>
@@ -33,6 +34,7 @@ function fromSerializedData(serializedData: SerializedModule[]) {
 export default function CalendarFormateur({
   formateur: { nom, prenom, mail },
   data,
+  timeSpan,
 }: CalendarFormateurProps) {
   const formateurData = useMemo(
     () =>
@@ -43,8 +45,7 @@ export default function CalendarFormateur({
     [data]
   );
   const { isJoursFeries, getJourFerie } = useJoursFeries();
-  //   const {openMenu} = useCalendarMenu();
-  const [month] = useMonthNavigation();
+
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
 
@@ -57,7 +58,7 @@ export default function CalendarFormateur({
       </div>
       <MonthNavigationUI />
       <CalendarSimple
-        time={{ start: month, monthLength: 3 }}
+        timeSpan={timeSpan}
         events={formateurData}
         zoom={zoom}
         eventProps={{

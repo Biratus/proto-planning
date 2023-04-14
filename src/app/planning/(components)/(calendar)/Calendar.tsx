@@ -1,7 +1,6 @@
 "use client";
 import { useLegendStore } from "@/components/legend/Legend";
 import LegendUI from "@/components/legend/LegendUI";
-import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import {
   SerializedVacanceData,
@@ -16,13 +15,14 @@ import { Module, ModuleEvent, SerializedModule } from "@/lib/types";
 import {
   CalendarEventComponentProps,
   CommonCalendarProps,
+  SerializedInterval,
 } from "@/packages/calendar/types";
 import cn from "classnames";
 import {
-  addMonths,
   areIntervalsOverlapping,
   compareAsc,
-  endOfMonth,
+  parseISO,
+  startOfDay,
 } from "date-fns";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AlertTriangle } from "react-feather";
@@ -70,31 +70,21 @@ const displayViews: DisplayView[] = [
 const zonesVacances = ["Zone A", "Zone B", "Zone C"];
 const zoneColors = getGrayscaleForLabels([...zonesVacances]);
 
-// function fromSerializedData(
-//   serializedData: SerializedFiliere[] | FormateurWithSerializedModule[]
-// ) {
-//   return serializedData.map((d) => ({
-//     ...d,
-//     modules: d.modules
-//       ? mapISO<Module>(d.modules, ["start", "end"], (raw, parsed) =>
-//           startOfDay(parsed)
-//         )
-//       : [],
-//   }));
-// }
 function fromSerializedData(modules: SerializedModule[]) {
-  return mapISO<Module>(modules, ["start", "end"]);
+  return mapISO<Module>(modules, ["start", "end"], (raw, parsed) =>
+    startOfDay(parsed)
+  );
 }
 
 export default function CommonCalendar({
   data: serializedData,
   view = FiliereView.key,
-  monthLength = 3,
+  timeSpan: originalTimeSpan,
   vacancesScolaire,
 }: {
   data: SerializedModule[];
   view?: string;
-  monthLength?: number;
+  timeSpan: SerializedInterval;
   vacancesScolaire: SerializedVacanceData[];
 }) {
   const { isJoursFeries, getJourFerie } = useSpecialDays();
@@ -103,14 +93,22 @@ export default function CommonCalendar({
     const vacanceData = mapISO<VacanceData>(vacancesScolaire, ["start", "end"]);
     vacanceData.sort((v1, v2) => compareAsc(v1.start, v2.start));
     return vacanceData;
-  }, []);
+  }, [vacancesScolaire]);
 
-  const [month] = useMonthNavigation();
+  // const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
   const [eventLabel, setEventLabel] = useState<DisplayView>(displayViews[0]);
 
   const [stateData, setStateData] = useState<Module[]>([]);
+
+  const timeSpan = useMemo(
+    () => ({
+      start: parseISO(originalTimeSpan.start),
+      end: parseISO(originalTimeSpan.end),
+    }),
+    [originalTimeSpan]
+  );
 
   const calendarData = useMemo<Module[]>(() => {
     const calendarData = fromSerializedData(serializedData);
@@ -175,30 +173,23 @@ export default function CommonCalendar({
     () =>
       vacanceData
         .filter((v) =>
-          areIntervalsOverlapping(
-            v,
-            {
-              start: month,
-              end: endOfMonth(addMonths(month, monthLength - 1)),
-            },
-            { inclusive: true }
-          )
+          areIntervalsOverlapping(v, timeSpan, { inclusive: true })
         )
         .map((v) => vacanceToCalendarData(v, zoneColors)),
-    [vacanceData, month, monthLength]
+    [vacanceData, timeSpan]
   );
 
   const commonProps: CommonCalendarProps<ModuleEvent, typeof EventComponent> =
     useMemo(
       () => ({
         zoom,
-        time: { start: month, monthLength },
+        timeSpan,
         event: eventProps,
         day: dayProps,
         monthLabelStyle: monthLabel,
         daysHeader: dayHeader,
       }),
-      [zoom, month, monthLength, dayHeader, eventProps, zoneColors, dayProps]
+      [zoom, timeSpan, dayHeader, eventProps, zoneColors, dayProps]
     );
 
   const dataRefresh = useCallback(() => {

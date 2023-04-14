@@ -76,8 +76,8 @@ export async function getModulesOfPeriod({
 }) {
   return prisma.module.findMany({
     where: {
-      start: { gte: start },
-      end: { lte: end },
+      start: { lte: end },
+      end: { gte: start },
     },
     include: includesOfModule,
   });

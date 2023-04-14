@@ -29,8 +29,6 @@ export type Month = {
   nbOfDays: number;
 };
 
-export type TimeProps = { start: Date; monthLength: number };
-
 /*
   -----
   FULL DATA
@@ -82,7 +80,7 @@ export type CommonCalendarProps<
   T extends CalendarItem,
   E extends CalendarEventComponent<T> = typeof defaultEventElement
 > = {
-  time: TimeProps;
+  timeSpan: Interval;
   day: DayProps;
   zoom: number;
   event: EventProps<T, E>; // eventProps
@@ -213,7 +211,7 @@ export type CalendarSimpleProps<
   T extends CalendarItem,
   E extends CalendarEventComponent<T> = typeof defaultSimpleEventElement
 > = {
-  time: TimeProps;
+  timeSpan: Interval;
   events: T[];
   zoom: number;
   eventProps: SimpleEventProps<T, E>;
