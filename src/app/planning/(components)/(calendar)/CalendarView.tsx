@@ -1,3 +1,4 @@
+import { fetchFiliere } from "@/lib/dataAccess";
 import {
   CalendarView,
   Filiere,
@@ -29,8 +30,9 @@ export const FormateurView: CalendarView<FormateurWithModule> = {
   LabelComponent: FormateurLabel,
 };
 function FiliereLabel({ labelKey: filiere }: { labelKey: Filiere }) {
-  const setFocus = useCallback(() => {
-    setFocusedFiliere(filiere);
+  const setFocus = useCallback(async () => {
+    const fetchedFiliere = await fetchFiliere(filiere.nom);
+    setFocusedFiliere(fetchedFiliere);
   }, [filiere]);
   return (
     <label

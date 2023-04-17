@@ -80,7 +80,7 @@ export default function htmlFromFiliere(filiereId: string, modules: Module[]) {
       "border-bottom": "1px solid gray",
       "padding-left": "1em",
     },
-    ".formateur.missing": {
+    ".missing": {
       color: "red",
     },
   };
@@ -92,7 +92,7 @@ export default function htmlFromFiliere(filiereId: string, modules: Module[]) {
   }
 
   function rowToHtml([month, day, mod, formateur]: any[]) {
-    let { name, start, end, theme } = mod;
+    let { nom, start, end, theme } = mod as Module;
     let dayNb = eachDayOfInterval({ start, end }).length;
     return `<tr style="height:${dayNb * 1.5}em">
     ${
@@ -101,7 +101,7 @@ export default function htmlFromFiliere(filiereId: string, modules: Module[]) {
         : ""
     }
     <td class="day">${day}</td>
-    <td class="module ${theme.replaceAll(" ", "_")}">${name}</td>
+    <td class="module ${theme.replaceAll(" ", "_")}">${nom}</td>
     <td class="formateur ${
       isFormateurMissing(mod) ? "missing" : ""
     }">${formateur}</td>
@@ -131,16 +131,13 @@ export default function htmlFromFiliere(filiereId: string, modules: Module[]) {
 }
 
 function rowFromModule(mod: Module, withMonth = false): any[] {
-  let {
-    end,
-    formateur: { nom, prenom },
-  } = mod;
+  let { end, formateur } = mod;
   let dayLabel = moduleDayLabel(mod);
 
   return [
     withMonth ? { rowSpan: 1, text: formatMonthYear(end) } : "",
     dayLabel,
     mod,
-    `${prenom} ${nom.toUpperCase()}`,
+    formateur ? `${formateur.prenom} ${formateur.nom.toUpperCase()}` : "N/A",
   ];
 }

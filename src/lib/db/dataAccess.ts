@@ -1,3 +1,4 @@
+import { Module } from "../types";
 import { prisma } from "./prisma";
 export async function getAllFilieres() {
   return prisma.filiere.findMany({
@@ -64,6 +65,46 @@ export async function getAllFormateurs() {
 }
 export async function getAllFormateursSimple() {
   return prisma.formateur.findMany();
+}
+export async function searchFormateurs({
+  search,
+  able,
+  available,
+}: {
+  search?: string;
+  able?: Module;
+  available?: Interval;
+}) {
+  let where = {};
+  if (search) {
+    where = {
+      ...where,
+      nom: { contains: search },
+      prenom: { contains: search },
+      email: { contains: search },
+    };
+  }
+  // TODO
+  /*if(able) {
+    where = {
+      ...where,
+
+    }
+  }*/
+  if (available) {
+    where = {
+      ...where,
+      modules: {
+        none: {
+          end: { gte: available.start },
+          start: { lte: available.end },
+        },
+      },
+    };
+  }
+  return prisma.formateur.findMany({
+    where,
+  });
 }
 const includesOfModule = { formateur: true, filiere: true };
 

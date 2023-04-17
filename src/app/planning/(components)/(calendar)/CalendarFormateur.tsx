@@ -98,37 +98,6 @@ export default function CalendarFormateur<
       },
     ]);
     cleanDropTarget();
-
-    // if ((dropTarget!.row as Formateur).mail == draggedModule?.formateur!.mail) {
-    //   const targetModule = formateurs
-    //     .find((f) => f.mail == draggedModule!.formateur!.mail)!
-    //     .modules.find((m) => m.id == draggedModule.id);
-    //   targetModule!.start = dropTarget!.interval.start;
-    //   targetModule!.end = dropTarget!.interval.end;
-    // } else {
-    //   // Remove previous module
-    //   const previousFormateur = formateurs.find(
-    //     (f) => f.mail == draggedModule!.formateur!.mail
-    //   )!;
-    //   const targetModule = previousFormateur!.modules.find(
-    //     (m) => m.id == draggedModule!.id
-    //   )!;
-    //   previousFormateur.modules.splice(
-    //     previousFormateur.modules.indexOf(targetModule),
-    //     1
-    //   );
-
-    //   const targetFormateur = formateurs.find(
-    //     (f) => f.mail == dropTarget!.row.mail
-    //   )!;
-    //   targetFormateur.modules.push({
-    //     ...draggedModule!,
-    //     start: dropTarget!.interval.start,
-    //     end: dropTarget!.interval.end,
-    //     formateur: targetFormateur,
-    //   });
-    // }
-
     // dataRefresh();
     // cleanDropTarget();
   }, [modules, dropTarget, draggedModule]);

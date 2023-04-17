@@ -95,7 +95,6 @@ export default function CommonCalendar({
     return vacanceData;
   }, [vacancesScolaire]);
 
-  // const [month] = useMonthNavigation();
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
   const [eventLabel, setEventLabel] = useState<DisplayView>(displayViews[0]);
@@ -112,19 +111,15 @@ export default function CommonCalendar({
 
   const calendarData = useMemo<Module[]>(() => {
     const calendarData = fromSerializedData(serializedData);
-    for (let module of stateData) {
-      let index = calendarData.findIndex((m) => m.id == module.id);
+    for (let mod of stateData) {
+      let index = calendarData.findIndex((m) => m.id == mod.id);
       calendarData[index] = {
         ...calendarData[index],
-        ...module,
+        ...mod,
       };
     }
     return calendarData;
   }, [serializedData, stateData]);
-
-  // const [calendarData, setCalendarData] = useState<
-  //   Filiere[] | FormateurWithModule[]
-  // >(fromSerializedData(serializedData));
 
   console.log("CommonCalendar", { calendarData, serializedData });
 

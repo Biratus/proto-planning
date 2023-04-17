@@ -29,8 +29,6 @@ export default function CalendarFiliere<
   ...props
 }: CalendarFiliereProps & CommonCalendarProps<ModuleEvent, E>) {
   const calendarData = useMemo(() => {
-    // console.log("make calendarData");
-    // filieres.forEach((f) => (f.modules = f.modules || []));
     const data = toCalendarData<Filiere & { modules: Module[] }>(
       modules,
       "filiere.nom",
@@ -39,7 +37,7 @@ export default function CalendarFiliere<
     checkOverlapModules(data);
     return data;
   }, [modules]);
-  // console.log({ filieres });
+
   const {
     dropTarget,
     draggedModule,

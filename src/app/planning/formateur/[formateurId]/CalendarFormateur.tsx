@@ -6,7 +6,7 @@ import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
 import { mapISO, nbOfDaysBetween } from "@/lib/date";
 import { emptyStyle } from "@/lib/style";
-import { Formateur, Module, ModuleEvent, SerializedModule } from "@/lib/types";
+import { Formateur, Module, SerializedModule } from "@/lib/types";
 import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
 import { Interval } from "@/packages/calendar/types";
 import { isWeekend, startOfDay } from "date-fns";
@@ -62,15 +62,14 @@ export default function CalendarFormateur({
         events={formateurData}
         zoom={zoom}
         eventProps={{
-          label: (mod: ModuleEvent) => mod.nom,
-          style: (date: Date, mod?: ModuleEvent) => {
+          label: (mod: Module) => mod.nom,
+          style: (date: Date, mod?: Module) => {
             return mod
               ? dayEventStyle(date, mod, colorOf(mod.theme))
               : emptyStyle();
           },
           onClick: () => {
             console.log("Do something");
-            //openMenu,
           },
         }}
         dayProps={{

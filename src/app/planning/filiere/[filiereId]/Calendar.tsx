@@ -28,7 +28,6 @@ export default function CalendarFiliere({
   const colorOf = useLegendStore((state) => state.colorOf);
 
   const { zoom } = useZoom();
-  //   const { openMenu } = useCalendar();
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -55,7 +54,6 @@ export default function CalendarFiliere({
             },
             onClick: (mod: Module) => {
               console.log("TODO onClick", mod);
-              //openMenu()
             },
             label: (mod: Module) => mod.nom,
           }}
