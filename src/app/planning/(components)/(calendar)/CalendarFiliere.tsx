@@ -72,7 +72,14 @@ export default function CalendarFiliere<
         });
       }
     },
-    [draggedModule, dropTarget, props.timeSpan]
+    [
+      draggedModule,
+      dropTarget,
+      props.timeSpan,
+      setDropTarget,
+      cleanDropTarget,
+      updateModules,
+    ]
   );
 
   const dropModule = useCallback(() => {

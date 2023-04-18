@@ -6,32 +6,6 @@ export const isFormateurMissing = (mod: Module | SerializedModule) => {
   return mod.formateur == undefined;
 };
 
-// export function filterFormateur({
-//   search,
-//   available,
-//   able,
-// }: {
-//   search?: string;
-//   available?: Interval;
-//   able?: Module;
-// }): Formateur[] {
-//   let filtered = [];
-//   for (let form of formateurMap.values()) {
-//     let satisfies = true;
-//     if (
-//       search &&
-//       !includesIgnoreCase(form.nom, search) &&
-//       !includesIgnoreCase(form.prenom, search)
-//     )
-//       satisfies = false;
-//     // if(available && !formateurAvailable(form,available)) satisfies = false; // Wait for BDD
-//     // if(able && !formateurAble(form,able)) satisfies = false; // Wait for BDD
-
-//     if (satisfies) filtered.push(form);
-//   }
-//   return filtered;
-// }
-
 export const themes = [
   "COMPORTEMENTAL",
   "JAVA",

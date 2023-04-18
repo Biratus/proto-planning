@@ -18,6 +18,7 @@ export function toCalendarData<K>(
     dataMap.get(index)!.push({
       ...d,
       duration,
+      filiere: d.filiere || { nom: "Aucune filière" },
     });
   }
 

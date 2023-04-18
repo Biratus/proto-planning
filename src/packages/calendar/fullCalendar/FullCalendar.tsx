@@ -84,7 +84,7 @@ export default function FullCalendar<
     return months.map((m, i) => (
       <Month style={monthLabelStyle} month={m} key={i} first={i == 0} />
     ));
-  }, [months]);
+  }, [months, monthLabelStyle]);
 
   const daysHeaderRow = useMemo(() => {
     if (!daysHeader) return null;

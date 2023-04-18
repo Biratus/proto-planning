@@ -86,7 +86,14 @@ export default function CalendarFormateur<
         );
       }
     },
-    [draggedModule, dropTarget, props.timeSpan]
+    [
+      draggedModule,
+      dropTarget,
+      props.timeSpan,
+      setDropTarget,
+      cleanDropTarget,
+      updateModules,
+    ]
   );
   const dropModule = useCallback(() => {
     updateModules([

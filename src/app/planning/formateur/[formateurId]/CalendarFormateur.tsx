@@ -8,8 +8,8 @@ import { mapISO, nbOfDaysBetween } from "@/lib/date";
 import { emptyStyle } from "@/lib/style";
 import { Formateur, Module, SerializedModule } from "@/lib/types";
 import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
-import { Interval } from "@/packages/calendar/types";
-import { isWeekend, startOfDay } from "date-fns";
+import { SerializedInterval } from "@/packages/calendar/types";
+import { isWeekend, parseISO, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
 import {
@@ -23,7 +23,7 @@ import GlobalViewLink from "../../(components)/GlobalViewLink";
 type CalendarFormateurProps = {
   formateur: Formateur;
   data: SerializedModule[];
-  timeSpan: Interval;
+  timeSpan: SerializedInterval;
 };
 function fromSerializedData(serializedData: SerializedModule[]) {
   return mapISO<Module>(serializedData, ["start", "end"], (raw, parsed) =>
@@ -34,7 +34,7 @@ function fromSerializedData(serializedData: SerializedModule[]) {
 export default function CalendarFormateur({
   formateur: { nom, prenom, mail },
   data,
-  timeSpan,
+  timeSpan: originalTimeSpan,
 }: CalendarFormateurProps) {
   const formateurData = useMemo(
     () =>
@@ -46,9 +46,17 @@ export default function CalendarFormateur({
   );
   const { isJoursFeries, getJourFerie } = useJoursFeries();
 
+  console.log({ formateurData });
+
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
-
+  const timeSpan = useMemo(
+    () => ({
+      start: parseISO(originalTimeSpan.start),
+      end: parseISO(originalTimeSpan.end),
+    }),
+    [originalTimeSpan]
+  );
   return (
     <div className="flex flex-col items-center gap-2">
       <h2 className="text-center">{`${nom} ${prenom} - [${mail}]`}</h2>

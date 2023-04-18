@@ -41,12 +41,11 @@ export interface Module extends SerializedModule {
   end: Date;
 }
 
-export interface ModuleWithRelation extends Module {
+export interface ModuleWithFiliere extends Module {
   filiere: Filiere;
-  formateur: Formateur;
 }
 
-export type ModuleEvent = ModuleWithRelation &
+export type ModuleEvent = ModuleWithFiliere &
   IntervalWithDuration & {
     overlap?: boolean;
     overlappedModules?: ModuleEvent[];

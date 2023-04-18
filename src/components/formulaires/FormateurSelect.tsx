@@ -16,7 +16,7 @@ export default function FormateurSelect({
   forModule,
   setFormateur,
 }: {
-  formateur: Formateur;
+  formateur?: Formateur;
   forModule?: Module;
   setFormateur: (f: Formateur) => void;
 }) {
@@ -78,7 +78,8 @@ export default function FormateurSelect({
   return (
     <div className="dropdown">
       <label className="btn" tabIndex={0}>
-        {formateur.prenom} {formateur.nom} <User className="ml-1" />
+        {formateur ? `${formateur.prenom} ${formateur.nom}` : "N/A"}{" "}
+        <User className="ml-1" />
       </label>
       <div
         className="dropdown-content rounded-box mt-1 w-auto border border-base-300 bg-base-100 p-5 shadow"
@@ -116,7 +117,9 @@ export default function FormateurSelect({
             (f) => (
               <li key={f.mail}>
                 <a
-                  className={cn({ active: f.mail == formateur.mail })}
+                  className={cn({
+                    active: formateur && f.mail == formateur.mail,
+                  })}
                   onClick={() => setFormateur(f)}
                 >
                   {f.prenom} {f.nom}

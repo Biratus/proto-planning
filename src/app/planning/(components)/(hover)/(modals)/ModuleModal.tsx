@@ -83,7 +83,8 @@ export default function ModuleModal() {
       </div>
       <div className="flex flex-row items-center gap-4">
         <div className="flex flex-row gap-2">
-          Formateur : <User /> {formateur.prenom} {formateur.nom}
+          Formateur : <User />{" "}
+          {formateur ? `${formateur.prenom} ${formateur.nom}` : "N/A"}
         </div>
         <MoreActions actions={formateurActions} />
       </div>
@@ -98,7 +99,7 @@ function MoreActions({
 }) {
   return (
     <div className="dropdown-end dropdown">
-      <label tabIndex={0} className="btn-ghost btn-circle btn">
+      <label tabIndex={0} className="btn btn-ghost btn-circle">
         <div className="flex w-10 justify-center rounded-full">
           <MoreVertical />
         </div>

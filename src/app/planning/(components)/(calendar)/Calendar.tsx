@@ -142,7 +142,7 @@ export default function CommonCalendar({
         return style;
       },
     }),
-    [eventLabel]
+    [eventLabel, colorOf]
   );
 
   const dayProps = useMemo(
@@ -184,13 +184,13 @@ export default function CommonCalendar({
         monthLabelStyle: monthLabel,
         daysHeader: dayHeader,
       }),
-      [zoom, timeSpan, dayHeader, eventProps, zoneColors, dayProps]
+      [zoom, timeSpan, dayHeader, eventProps, dayProps]
     );
 
-  const dataRefresh = useCallback(() => {
-    isModifying.current = true;
-    // setCalendarData([...calendarData]);
-  }, [calendarData]);
+  // const dataRefresh = useCallback(() => {
+  //   isModifying.current = true;
+  //   // setCalendarData([...calendarData]);
+  // }, [calendarData]);
 
   const updateCalendarData = (newModules: Module[]) => {
     isModifying.current = true;
@@ -226,7 +226,7 @@ export default function CommonCalendar({
     isModifying.current = false;
     // Test update
     // if true
-  }, [calendarData]);
+  }, []);
 
   const cancelModification = useCallback(() => {
     isModifying.current = false;
@@ -299,10 +299,10 @@ function UpdateDataUI({
 }) {
   return (
     <div className="space-x-4">
-      <button className="btn-success btn" onClick={modify}>
+      <button className="btn btn-success" onClick={modify}>
         Enregistrer les modifications
       </button>
-      <button className="btn-error btn" onClick={abort}>
+      <button className="btn btn-error" onClick={abort}>
         Annuler
       </button>
     </div>

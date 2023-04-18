@@ -35,7 +35,7 @@ export default function CalendarFiliere({
       <div className="flex w-2/4 flex-row justify-between">
         <GlobalViewLink view={FiliereView.key} />
         <ZoomUI range={5} />
-        <button className="btn-link btn">
+        <button className="btn btn-link">
           <Link href={`/api/filiere/${name}/pdf`}>Export to PDF</Link>
         </button>
       </div>
@@ -65,16 +65,11 @@ export default function CalendarFiliere({
   );
 }
 
-function FormateurSimple({
-  event: {
-    formateur = { nom: "NA", prenom: "NA", mail: "NA.NA@ajc-formation.fr" },
-  },
-}: {
-  event: Module;
-}) {
+function FormateurSimple({ event: { formateur } }: { event: Module }) {
   return (
     <div className="flex h-full flex-row items-center gap-3">
-      <User /> <span>{formateur.nom + " " + formateur.prenom}</span>
+      <User />{" "}
+      <span>{formateur ? formateur.nom + " " + formateur.prenom : "N/A"}</span>
     </div>
   );
 }

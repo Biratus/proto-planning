@@ -8,6 +8,7 @@ import {
   getModulesOfFormateur,
 } from "@/lib/db/dataAccess";
 import { Formateur } from "@/lib/types";
+import { SerializedInterval } from "@/packages/calendar/types";
 import { addMonths, formatISO, startOfMonth, startOfToday } from "date-fns";
 import { notFound } from "next/navigation";
 import CalendarFormateur from "./CalendarFormateur";
@@ -46,13 +47,20 @@ export default async function FormateurPage({
   const showLegend = useLegendStore.getState().showLegend;
   showLegend([...new Set(modules.map(({ theme }) => theme))]);
 
+  console.log("GOT " + modules.length + " modules");
+
   return (
     <MonthNavigationProvider focus={formatISO(month || monthStart)}>
       <ZoomProvider zoomKey={zoom_calendar_formateur}>
         <CalendarFormateur
           data={serializeDate(modules, ["start", "end"])}
           formateur={formateur}
-          timeSpan={activInterval}
+          timeSpan={
+            serializeDate<SerializedInterval>(
+              [activInterval],
+              ["start", "end"]
+            )[0]
+          }
         />
       </ZoomProvider>
     </MonthNavigationProvider>

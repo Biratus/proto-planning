@@ -1,19 +1,19 @@
 // "use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
-import { Formateur, ModuleWithRelation } from "@/lib/types";
+import { Formateur, ModuleWithFiliere } from "@/lib/types";
 import { useCallback, useRef } from "react";
 import ModuleTitle from "./ModuleTitle";
 export const SwitchFormateurModalId = "switchFormateurModal";
 
-type SwitchFormateurModalProps<T extends ModuleWithRelation> = {
+type SwitchFormateurModalProps<T extends ModuleWithFiliere> = {
   module: T | null;
   setModule: (mod: T) => void;
   onClose: () => void;
   submit: (mod?: T) => Promise<boolean>;
 };
 
-export default function SwitchFormateurModal<T extends ModuleWithRelation>({
+export default function SwitchFormateurModal<T extends ModuleWithFiliere>({
   module,
   setModule,
   onClose,
@@ -62,7 +62,7 @@ export default function SwitchFormateurModal<T extends ModuleWithRelation>({
             setFormateur={onSelectFormateur}
           />
           <div className="modal-action w-full">
-            <button className="btn-success btn" onClick={submitForm}>
+            <button className="btn btn-success" onClick={submitForm}>
               Modifier
             </button>
           </div>
