@@ -33,19 +33,15 @@ export interface SerializedModule {
   start: string | Date;
   end: string | Date;
   theme: string;
-  filiere?: Filiere;
-  formateur?: Formateur;
+  filiere: Filiere;
+  formateur?: Formateur | null;
 }
 export interface Module extends SerializedModule {
   start: Date;
   end: Date;
 }
 
-export interface ModuleWithFiliere extends Module {
-  filiere: Filiere;
-}
-
-export type ModuleEvent = ModuleWithFiliere &
+export type ModuleEvent = Module &
   IntervalWithDuration & {
     overlap?: boolean;
     overlappedModules?: ModuleEvent[];

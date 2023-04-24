@@ -1,21 +1,20 @@
-// "use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
 import { formatDateValue, parseDateValue } from "@/lib/date";
-import { Formateur, ModuleWithFiliere } from "@/lib/types";
+import { Formateur, Module } from "@/lib/types";
 import { addDays } from "date-fns";
 import { useCallback, useRef } from "react";
 import ModuleTitle from "./ModuleTitle";
 export const SplitModuleModalId = "splitModuleModal";
 
-type SplitModuleModalProps<T extends ModuleWithFiliere> = {
+type SplitModuleModalProps<T extends Module> = {
   modules: T[] | null;
   setModules: (mod: T[]) => void;
   onClose: () => void;
   submit: (obj?: { split: Date; formateurs: Formateur[] }) => Promise<boolean>;
 };
 
-export default function SplitModuleModal<T extends ModuleWithFiliere>({
+export default function SplitModuleModal<T extends Module>({
   modules,
   setModules,
   onClose,
@@ -130,7 +129,7 @@ export default function SplitModuleModal<T extends ModuleWithFiliere>({
             </div>
           </div>
           <div className="modal-action w-full items-start">
-            <button className="btn btn-success" onClick={submitForm}>
+            <button className="btn-success btn" onClick={submitForm}>
               Modifier
             </button>
           </div>

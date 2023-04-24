@@ -116,3 +116,7 @@ export function serializeDate<OUT>(list: any[], fields: string[]): Array<OUT> {
     return newItem;
   });
 }
+
+export function isValid(date: string) {
+  return dateFns.isValid(dateFns.parseISO(date));
+}

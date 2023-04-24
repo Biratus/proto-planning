@@ -9,7 +9,7 @@ import {
   SerializedVacanceData,
 } from "@/lib/calendar/vacanceScolaire";
 import { parseMonthAndYear, serializeDate } from "@/lib/date";
-import { getModulesOfPeriod } from "@/lib/db/dataAccess";
+import { getModulesOfPeriod } from "@/lib/db/ModuleRepository";
 import { SerializedModule } from "@/lib/types";
 import { SerializedInterval } from "@/packages/calendar/types";
 import {

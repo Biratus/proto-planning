@@ -33,3 +33,23 @@ model module {
   @@index([filiere_nom], map: "module_ibfk_1")
   @@index([formateur_mail], map: "module_ibfk_2")
 }
+
+model module_audit {
+  id                Int                      @id @default(autoincrement())
+  module_id         Int
+  nom               String                   @db.VarChar(255)
+  start        DateTime                 @db.Date
+  end          DateTime                 @db.Date
+  theme             String                   @db.VarChar(255)
+  filiere_nom       String?                   @db.VarChar(255)
+  formateur_mail    String?                  @db.VarChar(255)
+  modified_datetime DateTime                 @db.DateTime(0) @default(now())
+  action_type       module_audit_action_type
+  modified_by       Int?                    
+}
+
+enum module_audit_action_type {
+  INSERT
+  UPDATE
+  DELETE
+}

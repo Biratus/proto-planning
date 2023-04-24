@@ -106,23 +106,6 @@ export async function searchFormateurs({
     where,
   });
 }
-const includesOfModule = { formateur: true, filiere: true };
-
-export async function getModulesOfPeriod({
-  start,
-  end,
-}: {
-  start: Date;
-  end: Date;
-}) {
-  return prisma.module.findMany({
-    where: {
-      start: { lte: end },
-      end: { gte: start },
-    },
-    include: includesOfModule,
-  });
-}
 
 export async function getFormateurOfPeriod({
   start,
@@ -161,32 +144,5 @@ export async function getFiliereOfPeriod({
         include: { formateur: true },
       },
     },
-  });
-}
-
-export async function fetchFiliere(filiereName: string) {
-  return prisma.module.findMany({
-    where: { filiere: { nom: filiereName } },
-    include: includesOfModule,
-  });
-}
-
-export async function getModulesOfFormateur(
-  formateurId: string,
-  {
-    start,
-    end,
-  }: {
-    start: Date;
-    end: Date;
-  }
-) {
-  return prisma.module.findMany({
-    where: {
-      formateur: { mail: formateurId },
-      start: { gte: start },
-      end: { lte: end },
-    },
-    include: includesOfModule,
   });
 }
