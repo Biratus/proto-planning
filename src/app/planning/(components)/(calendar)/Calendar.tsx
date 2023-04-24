@@ -29,6 +29,7 @@ import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
 import { overlayID } from "../(hover)/OverlapModuleOverlay";
 import DataDisplay, { DisplayView } from "../DataDisplay";
+import UpdateDataUI from "../UpdateDataUI";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
 import {
@@ -99,7 +100,15 @@ export default function CommonCalendar({
   const { zoom } = useZoom();
   const [eventLabel, setEventLabel] = useState<DisplayView>(displayViews[0]);
 
-  const [stateData, setStateData] = useState<Module[]>([]);
+  const [tempData, setTempData] = useState<Map<number, Module>>(new Map());
+  const originalTempData = useMemo(() => {
+    return new Map(
+      mapISO<Module>(
+        serializedData.filter((m) => tempData.has(m.id)),
+        ["start", "end"]
+      ).map((m) => [m.id, m])
+    );
+  }, [tempData]);
 
   const timeSpan = useMemo(
     () => ({
@@ -111,15 +120,15 @@ export default function CommonCalendar({
 
   const calendarData = useMemo<Module[]>(() => {
     const calendarData = fromSerializedData(serializedData);
-    for (let mod of stateData) {
-      let index = calendarData.findIndex((m) => m.id == mod.id);
+    for (let [id, mod] of tempData) {
+      let index = calendarData.findIndex((m) => m.id == id);
       calendarData[index] = {
         ...calendarData[index],
         ...mod,
       };
     }
     return calendarData;
-  }, [serializedData, stateData]);
+  }, [serializedData, tempData]);
 
   console.log("CommonCalendar", { calendarData, serializedData });
 
@@ -187,14 +196,14 @@ export default function CommonCalendar({
       [zoom, timeSpan, dayHeader, eventProps, dayProps]
     );
 
-  // const dataRefresh = useCallback(() => {
-  //   isModifying.current = true;
-  //   // setCalendarData([...calendarData]);
-  // }, [calendarData]);
-
   const updateCalendarData = (newModules: Module[]) => {
     isModifying.current = true;
-    setStateData((prevModules) => [...prevModules, ...newModules]);
+    setTempData((prevModules) => {
+      const map = new Map(prevModules);
+
+      for (let mod of newModules) map.set(mod.id, mod);
+      return map;
+    });
   };
 
   const calendarFiliere = useMemo(
@@ -202,7 +211,6 @@ export default function CommonCalendar({
       <CalendarFiliere
         modules={calendarData}
         updateModules={updateCalendarData}
-        // dataRefresh={dataRefresh}
         {...commonProps}
       />
     ),
@@ -214,7 +222,6 @@ export default function CommonCalendar({
       <CalendarFormateur
         modules={calendarData}
         updateModules={updateCalendarData}
-        // dataRefresh={dataRefresh}
         {...commonProps}
       />
     ),
@@ -228,9 +235,17 @@ export default function CommonCalendar({
     // if true
   }, []);
 
-  const cancelModification = useCallback(() => {
-    isModifying.current = false;
-    setStateData([]);
+  const cancelModification = useCallback((modId?: number) => {
+    if (modId) {
+      setTempData((prevModules) => {
+        prevModules.delete(modId);
+        const map = new Map(prevModules);
+        return map;
+      });
+    } else {
+      setTempData(new Map());
+      isModifying.current = false;
+    }
   }, []);
 
   return (
@@ -259,7 +274,12 @@ export default function CommonCalendar({
         </div>
       </div>
       {isModifying.current && (
-        <UpdateDataUI modify={updateData} abort={cancelModification} />
+        <UpdateDataUI
+          originalData={originalTempData}
+          tempData={tempData}
+          modify={updateData}
+          abort={cancelModification}
+        />
       )}
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
@@ -287,25 +307,6 @@ function EventComponent({
         children
       )}
     </label>
-  );
-}
-
-function UpdateDataUI({
-  modify,
-  abort,
-}: {
-  modify: () => void;
-  abort: () => void;
-}) {
-  return (
-    <div className="space-x-4">
-      <button className="btn btn-success" onClick={modify}>
-        Enregistrer les modifications
-      </button>
-      <button className="btn btn-error" onClick={abort}>
-        Annuler
-      </button>
-    </div>
   );
 }
 
