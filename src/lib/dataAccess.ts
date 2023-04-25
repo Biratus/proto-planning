@@ -1,5 +1,9 @@
+import {
+  ClientPutModulesResponse,
+  PutModulesResponse,
+} from "@/pages/api/modules";
 import axios from "axios";
-import { formatISO } from "date-fns";
+import { formatISO, parseISO } from "date-fns";
 import { mapISO } from "./date";
 import { Filiere, Formateur, Module, SerializedFiliere } from "./types";
 
@@ -56,7 +60,7 @@ export async function searchFormateurs(params: {
   return formateurs.data as Formateur[];
 }
 
-export async function fetchFiliere(nomFiliere: string): Promise<Filiere> {
+export async function apiFetchFiliere(nomFiliere: string): Promise<Filiere> {
   const resp = await axios.get("/api/filiere/" + nomFiliere);
   const filiere = {
     ...(resp.data as SerializedFiliere),
@@ -67,4 +71,25 @@ export async function fetchFiliere(nomFiliere: string): Promise<Filiere> {
   };
 
   return filiere;
+}
+
+export async function apiUpdateModules(modules: Module[]) {
+  const resp = await axios.put("/api/modules/", modules);
+
+  const ret: PutModulesResponse = {
+    updated: mapISO<Module>((resp.data as ClientPutModulesResponse).updated, [
+      "start",
+      "end",
+    ]),
+    errors: (resp.data as ClientPutModulesResponse).errors.map((err) => ({
+      error: err.error,
+      module: {
+        ...err.module,
+        start: parseISO(err.module.start as string),
+        end: parseISO(err.module.end as string),
+      },
+    })),
+  };
+
+  return ret;
 }

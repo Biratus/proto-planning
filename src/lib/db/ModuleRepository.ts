@@ -1,4 +1,4 @@
-import { module } from "@prisma/client";
+import { module, module_audit } from "@prisma/client";
 import { Module } from "../types";
 import { prisma } from "./prisma";
 
@@ -61,25 +61,59 @@ export async function createModule(module: Module) {
     },
   });
 }
+
+// Mise à jour des modules en batch
+// On fait une transaction pour chaque module. Si la transaction échoue on casse pas tout: on créer un object avec {error,module}
+export async function updateModules(
+  modules: Module[]
+): Promise<([module, module_audit] | { error: any; module: Module })[]> {
+  const transactionUpdates = [];
+
+  for (let mod of modules) {
+    const transaction = updateModule(mod).catch((err) => {
+      console.error(err);
+      return {
+        error: err.message,
+        module: mod,
+      };
+    });
+    transactionUpdates.push(transaction);
+  }
+
+  return Promise.all(transactionUpdates);
+}
+
 export async function updateModule(module: Module) {
+  const currModule = await prisma.module.findUnique({
+    where: { id: module.id },
+  });
+
+  if (!currModule)
+    return Promise.reject(
+      new Error("Pas de module avec id[" + module.id + "]")
+    );
+
+  return prisma.$transaction([
+    updateFromModule(module),
+    auditModule(currModule),
+  ]);
+}
+
+function updateFromModule(module: Module) {
+  console.log(module);
   let { start, end, nom, filiere, id, formateur, theme } = module;
-  const currModule = await prisma.module.findUnique({ where: { id: id } });
 
-  if (!currModule) throw new Error("Pas de module avec id[" + id + "]");
-
-  const update = prisma.module.update({
+  return prisma.module.update({
     where: { id },
     data: {
       start,
       end,
       nom,
       theme,
-      filiere: { connect: filiere },
-      formateur: formateur ? { connect: formateur } : undefined,
+      filiere: { connect: { nom: filiere.nom } },
+      formateur: formateur ? { connect: { mail: formateur.mail } } : undefined,
     },
   });
-
-  return prisma.$transaction([update, auditModule(currModule)]);
 }
 
 function auditModule(module: module) {

@@ -8,6 +8,7 @@ import {
   vacanceToCalendarData,
 } from "@/lib/calendar/vacanceScolaire";
 import { getGrayscaleForLabels } from "@/lib/colors";
+import { apiUpdateModules } from "@/lib/dataAccess";
 import { mapISO } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
@@ -24,6 +25,7 @@ import {
   parseISO,
   startOfDay,
 } from "date-fns";
+import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
@@ -88,6 +90,7 @@ export default function CommonCalendar({
   timeSpan: SerializedInterval;
   vacancesScolaire: SerializedVacanceData[];
 }) {
+  const router = useRouter();
   const { isJoursFeries, getJourFerie } = useSpecialDays();
 
   const vacanceData = useMemo(() => {
@@ -228,12 +231,21 @@ export default function CommonCalendar({
     [calendarData, commonProps]
   );
 
-  const updateData = useCallback(() => {
-    console.log("TODO updateData");
+  const updateData = useCallback(async () => {
+    try {
+      const response = await apiUpdateModules(Array.from(tempData.values()));
+
+      if (response.errors.length > 0) {
+        for (let error of response.errors) {
+          console.error(error);
+        }
+      } else {
+        router.refresh();
+      }
+    } catch (e) {}
+
     isModifying.current = false;
-    // Test update
-    // if true
-  }, []);
+  }, [tempData]);
 
   const cancelModification = useCallback((modId?: number) => {
     if (modId) {
