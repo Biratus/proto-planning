@@ -1,6 +1,7 @@
 import { apiHistoryModules, apiVersionDowngrade } from "@/lib/dataAccess";
 import { formatFullDate, formatFullPrettyDate, mapISO } from "@/lib/date";
 import { Formateur, Module } from "@/lib/types";
+import cn from "classnames";
 import { isSameDay } from "date-fns";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { RotateCcw } from "react-feather";
@@ -125,10 +126,9 @@ function SingleHistoryModal({
   moduleHistory: Module[];
   revertBackTo: (id: number) => void;
 }) {
-  console.log("SingleHistoryModal", { moduleHistory });
   const [original, ...history] = moduleHistory;
 
-  if (!original) return null;
+  if (!moduleHistory.length) return null;
 
   return (
     <div className="modal">
@@ -140,12 +140,13 @@ function SingleHistoryModal({
           &larr;
         </label>
         <h3 className="text-lg font-bold">Historique de {original.nom}</h3>
-        <div>
-          <span className="underline">Actuellement</span>
-          <DateDisplay {...original} />
-          <FormateurDisplay formateur={original.formateur} />
-        </div>
-        <ul className="menu w-full bg-base-100 p-4 text-base-content">
+        <ul className="steps steps-vertical w-full">
+          <li className="step-neutral step" data-content="●">
+            <div className="text-left">
+              <DateDisplay {...moduleHistory[0]} />
+              <FormateurDisplay formateur={moduleHistory[0].formateur} />
+            </div>
+          </li>
           {history.map((h, i) => (
             <ModuleHistory
               key={i}
@@ -197,24 +198,39 @@ function ModuleHistory({
     (!original.formateur && current.formateur) ||
     original.formateur?.mail != current.formateur?.mail;
   return (
-    <>
-      <div className="relative my-1">
-        <div className="grow">
-          <div className="text-lg font-bold">{original.nom}</div>
-          {diffDates && <DiffDates original={original} current={current} />}
-          {diffFormateur && (
-            <DiffFormateur original={original} current={current} />
-          )}
+    <li className="group step-neutral step" data-content="">
+      <div className="relative w-full">
+        <div className="text-left">
+          <div
+            className={cn({
+              "opacity-0 transition-opacity duration-500 group-hover:opacity-100":
+                !diffDates,
+              "font-bold": diffDates,
+            })}
+          >
+            <DateDisplay {...current} />
+          </div>
+          <div
+            className={cn({
+              "opacity-0 transition-opacity duration-500 group-hover:opacity-100":
+                !diffFormateur,
+              "font-bold": diffFormateur,
+            })}
+          >
+            {current.formateur
+              ? `${current.formateur.prenom} ${current.formateur.nom}`
+              : "N/A"}
+          </div>
         </div>
         <button
+          title="Revenir à cette version"
           className={`btn btn-ghost absolute right-0 top-0 h-full`}
           onClick={revertBack}
         >
-          <RotateCcw />
+          <RotateCcw size={16} />
         </button>
       </div>
-      <div className="divider"></div>
-    </>
+    </li>
   );
 }
 function DiffFormateur({

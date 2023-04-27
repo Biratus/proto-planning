@@ -5,7 +5,10 @@ import { prisma } from "./prisma";
 const includesOfModule = { formateur: true, filiere: true };
 
 export async function getModules(ids: number[]) {
-  return prisma.module.findMany({ where: { id: { in: ids } } });
+  return prisma.module.findMany({
+    where: { id: { in: ids } },
+    include: includesOfModule,
+  });
 }
 
 export async function getModulesOfPeriod({
