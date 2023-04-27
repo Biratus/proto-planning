@@ -5,7 +5,13 @@ import {
 import axios from "axios";
 import { formatISO, parseISO } from "date-fns";
 import { mapISO } from "./date";
-import { Filiere, Formateur, Module, SerializedFiliere } from "./types";
+import {
+  Filiere,
+  Formateur,
+  Module,
+  SerializedFiliere,
+  SerializedModule,
+} from "./types";
 
 export async function switchFormateur(newModule: Module) {
   try {
@@ -92,4 +98,29 @@ export async function apiUpdateModules(modules: Module[]) {
   };
 
   return ret;
+}
+
+export async function apiHistoryModules(page = 1, count = 20) {
+  try {
+    const resp = await axios.get(
+      "/api/modules/audit?" +
+        new URLSearchParams({
+          page: page.toString(),
+          count: count.toString(),
+        }).toString()
+    );
+    return resp.data as SerializedModule[][];
+  } catch (e) {
+    throw e;
+  }
+}
+
+export async function apiVersionDowngrade(historyId: number) {
+  try {
+    const resp = await axios.put("/api/modules/audit/" + historyId);
+
+    return resp.data;
+  } catch (e: any) {
+    return { error: e.message };
+  }
 }

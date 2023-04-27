@@ -17,22 +17,26 @@ export default function UpdateDataUI({
   return (
     <div className="flex items-center gap-4 rounded border border-slate-900 p-4">
       {/* The button to open modal */}
-      <label htmlFor="history-modal" className="btn space-x-2">
+      <label htmlFor="current-history-modal" className="btn space-x-2">
         Modification <MoreHorizontal />
       </label>
 
       {/* Put this part before </body> tag */}
-      <input type="checkbox" id="history-modal" className="modal-toggle" />
-      <label htmlFor="history-modal" className="modal cursor-pointer">
+      <input
+        type="checkbox"
+        id="current-history-modal"
+        className="modal-toggle"
+      />
+      <label htmlFor="current-history-modal" className="modal cursor-pointer">
         <label className="modal-box relative" htmlFor="">
           <div className="text-center text-lg font-bold">
             Modification en cours
           </div>
           <div className="flex justify-center">
-            <button className={`btn-success btn-sm btn`} onClick={modify}>
+            <button className={`btn btn-success btn-sm`} onClick={modify}>
               Valider <Check />
             </button>
-            <button className={`btn-error btn-sm btn`} onClick={() => abort}>
+            <button className={`btn btn-error btn-sm`} onClick={() => abort}>
               Annuler <X />
             </button>
           </div>
@@ -48,10 +52,10 @@ export default function UpdateDataUI({
           </div>
         </label>
       </label>
-      <button className={`btn-success btn`} onClick={modify}>
+      <button className={`btn btn-success`} onClick={modify}>
         <Check />
       </button>
-      <button className={`btn-error btn`} onClick={() => abort()}>
+      <button className={`btn btn-error`} onClick={() => abort()}>
         <X />
       </button>
     </div>
@@ -79,7 +83,7 @@ function ModuleHistory({
     <div className="mt-2">
       <div className="space-x-2">
         <span className="text-lg font-bold">{original.nom}</span>
-        <button className={`btn-error btn-sm btn`} onClick={deleteEntry}>
+        <button className={`btn btn-error btn-sm`} onClick={deleteEntry}>
           <X />
         </button>
       </div>

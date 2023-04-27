@@ -31,6 +31,7 @@ import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
 import { overlayID } from "../(hover)/OverlapModuleOverlay";
 import DataDisplay, { DisplayView } from "../DataDisplay";
+import History from "../History";
 import UpdateDataUI from "../UpdateDataUI";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
@@ -293,6 +294,7 @@ export default function CommonCalendar({
           abort={cancelModification}
         />
       )}
+      <History refreshData={() => router.refresh()} />
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
     </>

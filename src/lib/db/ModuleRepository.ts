@@ -3,6 +3,11 @@ import { Module } from "../types";
 import { prisma } from "./prisma";
 
 const includesOfModule = { formateur: true, filiere: true };
+
+export async function getModules(ids: number[]) {
+  return prisma.module.findMany({ where: { id: { in: ids } } });
+}
+
 export async function getModulesOfPeriod({
   start,
   end,
@@ -100,7 +105,6 @@ export async function updateModule(module: Module) {
 }
 
 function updateFromModule(module: Module) {
-  console.log(module);
   let { start, end, nom, filiere, id, formateur, theme } = module;
 
   return prisma.module.update({
@@ -131,4 +135,36 @@ function auditModule(module: module) {
       formateur_mail,
     },
   });
+}
+
+export async function moduleVersionDowngrade(historyId: number) {
+  const history = await prisma.module_audit.findUnique({
+    where: { id: historyId },
+  });
+
+  if (!history) {
+    return Promise.reject(new Error("No history with id [" + historyId + "]"));
+  }
+
+  const histoyDelete = prisma.module_audit.deleteMany({
+    where: {
+      module_id: history.module_id,
+      modified_datetime: { gte: history.modified_datetime },
+    },
+  });
+  let { start, end, nom, filiere_nom, id, formateur_mail, theme } = history;
+
+  const moduleUpdate = prisma.module.update({
+    where: { id: history.module_id },
+    data: {
+      start,
+      end,
+      nom,
+      filiere_nom,
+      formateur_mail,
+      theme,
+    },
+  });
+
+  return prisma.$transaction([histoyDelete, moduleUpdate]);
 }

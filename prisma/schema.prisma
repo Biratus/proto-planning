@@ -41,7 +41,7 @@ model module_audit {
   start        DateTime                 @db.Date
   end          DateTime                 @db.Date
   theme             String                   @db.VarChar(255)
-  filiere_nom       String?                   @db.VarChar(255)
+  filiere_nom       String                   @db.VarChar(255)
   formateur_mail    String?                  @db.VarChar(255)
   modified_datetime DateTime                 @db.DateTime(0) @default(now())
   action_type       module_audit_action_type
