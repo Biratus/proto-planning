@@ -41,6 +41,10 @@ export function formatDateValue(d: Date) {
   return format(d, "yyyy-MM-dd");
 }
 
+export function formatTime(d: Date) {
+  return format(d, "HH:mm");
+}
+
 /*
   --------
     PARSING

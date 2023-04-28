@@ -1,6 +1,11 @@
-import { apiHistoryModules, apiVersionDowngrade } from "@/lib/dataAccess";
-import { formatFullDate, formatFullPrettyDate, mapISO } from "@/lib/date";
-import { Formateur, Module } from "@/lib/types";
+import {
+  apiHistoryModule,
+  apiHistoryModules,
+  apiVersionDowngrade,
+} from "@/lib/dataAccess";
+import { formatFullDate, formatFullPrettyDate, formatTime } from "@/lib/date";
+import { SimpleHistory } from "@/lib/db/ModuleAuditRepository";
+import { Formateur, ModuleHistory } from "@/lib/types";
 import cn from "classnames";
 import { isSameDay } from "date-fns";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -9,26 +14,22 @@ import { RotateCcw } from "react-feather";
 export default function History({ refreshData }: { refreshData: () => void }) {
   const [pagination, setPagination] = useState({ page: 1, count: 20 });
 
-  const [history, setHistory] = useState<Module[][]>([]);
+  const [history, setHistory] = useState<SimpleHistory[]>([]);
 
-  const [selectedHistory, setSelectedHistory] = useState<Module[]>([]);
+  const [selectedHistory, setSelectedHistory] = useState<ModuleHistory[]>([]);
+
+  const fetchHistory = useCallback(async () => {
+    setHistory(await apiHistoryModules(pagination.page, pagination.count));
+  }, [pagination]);
 
   useEffect(() => {
-    async function fetchHistory({
-      page,
-      count,
-    }: {
-      page: number;
-      count: number;
-    }) {
-      setHistory(
-        (await apiHistoryModules(page, count)).map((histo) =>
-          mapISO<Module>(histo, ["start", "end"])
-        )
-      );
-    }
-    fetchHistory(pagination);
+    fetchHistory();
   }, [pagination]);
+
+  const selectHistory = useCallback(async (simpleHisto: SimpleHistory) => {
+    const data = await apiHistoryModule(simpleHisto.module_id);
+    setSelectedHistory(data);
+  }, []);
 
   const nextPage = useCallback(() => {
     setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
@@ -48,8 +49,11 @@ export default function History({ refreshData }: { refreshData: () => void }) {
     const resp = await apiVersionDowngrade(id);
 
     if ("error" in resp) {
-      console.error(resp);
-    } else refreshData();
+      alert(JSON.stringify(resp.error));
+    } else {
+      refreshData();
+      setSelectedHistory(resp);
+    }
   }, []);
 
   return (
@@ -60,17 +64,31 @@ export default function History({ refreshData }: { refreshData: () => void }) {
 
       <input type="checkbox" id="history-modal" className="modal-toggle" />
       <label htmlFor="history-modal" className="modal cursor-pointer">
-        <label className="modal-box relative" htmlFor="">
-          <h3 className="text-lg font-bold">
-            Historique des modifications du planning
-          </h3>
+        <label className="modal-box relative max-w-2xl" htmlFor="">
+          <div className="flex items-center justify-between">
+            <h3 className="mb-2 text-lg font-bold">
+              Historique des modifications du planning
+            </h3>
+            <button className="btn btn-ghost" onClick={fetchHistory}>
+              Actualiser
+            </button>
+          </div>
           <div className="flex flex-col gap-3">
             {history.map((h, i) => (
-              <HistoryItem
-                key={i}
-                moduleHistory={h}
-                onClick={() => setSelectedHistory(h)}
-              />
+              <div className="indicator w-full" key={i}>
+                <span className="badge-secondary badge indicator-item">
+                  {h.count}
+                </span>
+                <label
+                  htmlFor="focusedHistory"
+                  className="btn w-full"
+                  onClick={() => selectHistory(h)}
+                >
+                  <span className="truncate">
+                    {h.nom} - {h.filiere_nom}
+                  </span>
+                </label>
+              </div>
             ))}
           </div>
           <div className="mt-2 flex justify-center gap-2">
@@ -105,25 +123,11 @@ export default function History({ refreshData }: { refreshData: () => void }) {
   );
 }
 
-function HistoryItem({
-  moduleHistory,
-  onClick,
-}: {
-  moduleHistory: Module[];
-  onClick: () => void;
-}) {
-  return (
-    <label htmlFor="focusedHistory" className="btn" onClick={onClick}>
-      {moduleHistory[0].nom}
-    </label>
-  );
-}
-
 function SingleHistoryModal({
   moduleHistory,
   revertBackTo,
 }: {
-  moduleHistory: Module[];
+  moduleHistory: ModuleHistory[];
   revertBackTo: (id: number) => void;
 }) {
   const [original, ...history] = moduleHistory;
@@ -140,11 +144,16 @@ function SingleHistoryModal({
           &larr;
         </label>
         <h3 className="text-lg font-bold">Historique de {original.nom}</h3>
-        <ul className="steps steps-vertical w-full">
+        <ul className="steps steps-vertical w-full space-y-2">
           <li className="step-neutral step" data-content="●">
             <div className="text-left">
               <DateDisplay {...moduleHistory[0]} />
               <FormateurDisplay formateur={moduleHistory[0].formateur} />
+              <div className="italic">
+                Modifié par Clément Birette le{" "}
+                {formatFullDate(moduleHistory[0].modified_datetime)} à{" "}
+                {formatTime(moduleHistory[0].modified_datetime)}
+              </div>
             </div>
           </li>
           {history.map((h, i) => (
@@ -185,8 +194,8 @@ function ModuleHistory({
   current,
   revertBack,
 }: {
-  original: Module;
-  current: Module;
+  original: ModuleHistory;
+  current: ModuleHistory;
   revertBack: () => void;
 }) {
   const diffDates =
@@ -221,10 +230,15 @@ function ModuleHistory({
               ? `${current.formateur.prenom} ${current.formateur.nom}`
               : "N/A"}
           </div>
+          <div className="italic">
+            Modifié par Clément Birette le{" "}
+            {formatFullDate(current.modified_datetime)} à{" "}
+            {formatTime(current.modified_datetime)}
+          </div>
         </div>
         <button
           title="Revenir à cette version"
-          className={`btn btn-ghost absolute right-0 top-0 h-full`}
+          className={`btn btn-ghost invisible absolute right-0 top-0 h-full group-hover:visible`}
           onClick={revertBack}
         >
           <RotateCcw size={16} />
@@ -237,8 +251,8 @@ function DiffFormateur({
   original,
   current,
 }: {
-  original: Module;
-  current: Module;
+  original: ModuleHistory;
+  current: ModuleHistory;
 }) {
   const originalText = original.formateur
     ? `${original.formateur.nom} ${original.formateur.prenom}`
@@ -257,8 +271,8 @@ function DiffDates({
   original,
   current,
 }: {
-  original: Module;
-  current: Module;
+  original: ModuleHistory;
+  current: ModuleHistory;
 }) {
   return (
     <div>

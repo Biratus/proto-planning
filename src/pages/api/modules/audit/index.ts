@@ -1,7 +1,5 @@
 import { isGet, ok } from "@/lib/api";
-import { getModuleHistory } from "@/lib/db/ModuleAuditRepository";
-import { getModules } from "@/lib/db/ModuleRepository";
-import { module, module_audit } from "@prisma/client";
+import { getModulesHistory } from "@/lib/db/ModuleAuditRepository";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -17,18 +15,18 @@ export default async function handler(
     if (req.query.count && !isNaN(parseInt(req.query.count as string)))
       recordPerPage = parseInt(req.query.count as string);
 
-    const rawHistory = await getModuleHistory(page, recordPerPage);
+    const rawHistory = await getModulesHistory(page, recordPerPage);
 
-    const currentModules = await getModules(
-      Array.from(new Set(rawHistory.map((m) => m.module_id)))
-    );
+    // const currentModules = await getModules(
+    //   Array.from(new Set(rawHistory.map((m) => m.module_id)))
+    // );
 
-    const history: (module | module_audit)[][] = [];
+    // const history: (module | module_audit)[][] = [];
 
-    for (let mod of currentModules) {
-      history.push([mod, ...rawHistory.filter((m) => m.module_id == mod.id)]);
-    }
+    // for (let mod of currentModules) {
+    //   history.push([mod, ...rawHistory.filter((m) => m.module_id == mod.id)]);
+    // }
 
-    return ok(res, history);
+    return ok(res, rawHistory);
   }
 }

@@ -4,13 +4,15 @@ import {
 } from "@/pages/api/modules";
 import axios from "axios";
 import { formatISO, parseISO } from "date-fns";
-import { mapISO } from "./date";
+import { isValid, mapISO } from "./date";
+import { SimpleHistory } from "./db/ModuleAuditRepository";
 import {
   Filiere,
   Formateur,
   Module,
+  ModuleHistory,
+  Serialized,
   SerializedFiliere,
-  SerializedModule,
 } from "./types";
 
 export async function switchFormateur(newModule: Module) {
@@ -109,7 +111,17 @@ export async function apiHistoryModules(page = 1, count = 20) {
           count: count.toString(),
         }).toString()
     );
-    return resp.data as SerializedModule[][];
+    return resp.data as SimpleHistory[];
+  } catch (e) {
+    throw e;
+  }
+}
+export async function apiHistoryModule(module_id: number) {
+  try {
+    const resp = await axios.get("/api/modules/audit/" + module_id);
+    return (resp.data as Serialized<ModuleHistory>[]).map((d) =>
+      deserialize<ModuleHistory>(d)
+    );
   } catch (e) {
     throw e;
   }
@@ -119,8 +131,25 @@ export async function apiVersionDowngrade(historyId: number) {
   try {
     const resp = await axios.put("/api/modules/audit/" + historyId);
 
-    return resp.data;
+    return (resp.data as Serialized<ModuleHistory>[]).map((d) =>
+      deserialize<ModuleHistory>(d)
+    );
   } catch (e: any) {
     return { error: e.message };
   }
+}
+
+function deserialize<T>(serialized: Serialized<T>): T {
+  const result = Object.create(Object.getPrototypeOf(serialized)) as T;
+  for (const key in serialized) {
+    if (serialized.hasOwnProperty(key)) {
+      const value = serialized[key];
+      if (typeof value === "string" && isValid(value)) {
+        result[key as keyof T] = parseISO(value) as any;
+      } else {
+        result[key as keyof T] = value as any;
+      }
+    }
+  }
+  return result;
 }

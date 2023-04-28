@@ -26,20 +26,30 @@ export type FormateurWithModule = Formateur & {
 export type FormateurWithSerializedModule = Formateur & {
   modules: SerializedModule[];
 };
+export type Serialized<T> = {
+  [K in keyof T]: T[K] extends Date ? string : T[K];
+};
+// export interface SerializedModule {
+// id: number;
+// nom: string;
+// start: string | Date;
+// end: string | Date;
+// theme: string;
+// filiere: Filiere;
+// formateur?: Formateur | null;
+// }
 
-export interface SerializedModule {
+export type SerializedModule = Serialized<Module>;
+
+export type Module = {
   id: number;
   nom: string;
-  start: string | Date;
-  end: string | Date;
   theme: string;
   filiere: Filiere;
   formateur?: Formateur | null;
-}
-export interface Module extends SerializedModule {
   start: Date;
   end: Date;
-}
+};
 
 export type ModuleEvent = Module &
   IntervalWithDuration & {
@@ -54,3 +64,9 @@ export type CalendarView<K> = {
   labelTitle: (key: K) => string;
   LabelComponent: CalendarRowLabel<K>;
 };
+
+export interface ModuleHistory extends Module {
+  module_id: number;
+  modified_by: number;
+  modified_datetime: Date;
+}
