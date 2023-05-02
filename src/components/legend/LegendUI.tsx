@@ -1,10 +1,16 @@
 import { Style } from "@/lib/style";
 import { LegendItem } from "./Legend";
 
-export default function LegendUI({ legendList }: { legendList: LegendItem[] }) {
+export default function LegendUI({
+  legendList,
+  title,
+}: {
+  legendList: LegendItem[];
+  title: string;
+}) {
   return (
     <div className="m-5 rounded-lg border border-gray-600 bg-white p-1">
-      <h3 className="m-1">Légende des modules</h3>
+      <h3 className="m-1">{title}</h3>
       <div className="grid grid-cols-2 gap-1">
         {legendList.map(({ label, style }) => (
           <LegendItem key={label} styleProps={style} label={label} />

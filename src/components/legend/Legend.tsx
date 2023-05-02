@@ -45,7 +45,7 @@ export const useLegendStore = create<{
 
 export default function Legend({}) {
   const legendList = useLegendStore.getState().legendList;
-  return <LegendUI legendList={legendList} />;
+  return <LegendUI title="Modules" legendList={legendList} />;
 }
 
 function toLegendItem(themes: string[], colors: Map<string, Color>) {

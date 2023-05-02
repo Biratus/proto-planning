@@ -28,6 +28,7 @@ import SwitchView from "../(components)/SwitchView";
 export const dynamic = "force-dynamic"; // To get searchParams in prod
 
 const monthStart = startOfMonth(startOfToday());
+const timeSpan = 3; // en mois
 
 type PlanningPageSearchParams = {
   date?: string;
@@ -50,12 +51,12 @@ export default async function PlanningPage({
 
   const data = await getVacancesScolaire(
     startOfMonth(addMonths(focusDate, -1)),
-    endOfMonth(addMonths(focusDate, 4))
+    endOfMonth(addMonths(focusDate, timeSpan - 1))
   );
 
   const activInterval = {
     start: startOfMonth(focusDate),
-    end: endOfMonth(addMonths(focusDate, 4)),
+    end: endOfMonth(addMonths(focusDate, timeSpan - 1)),
   };
   const datas = await getModulesOfPeriod(activInterval);
 

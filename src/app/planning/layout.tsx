@@ -1,4 +1,3 @@
-import Legend from "@/components/legend/Legend";
 import { getAllJoursFeries } from "@/lib/calendar/joursFeries";
 import { startOfMonth, startOfToday } from "date-fns";
 import { PropsWithChildren } from "react";
@@ -15,7 +14,6 @@ export default async function layout({ children }: PropsWithChildren) {
     <>
       <CalendarInitializer joursFeries={joursFeries} />
       {children}
-      <Legend />
     </>
   );
 }

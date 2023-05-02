@@ -1,5 +1,5 @@
 "use client";
-import { useLegendStore } from "@/components/legend/Legend";
+import Legend, { useLegendStore } from "@/components/legend/Legend";
 import LegendUI from "@/components/legend/LegendUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import {
@@ -27,7 +27,7 @@ import {
 } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { AlertTriangle } from "react-feather";
+import { AlertCircle, AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
 import { overlayID } from "../(hover)/OverlapModuleOverlay";
 import DataDisplay, { DisplayView } from "../DataDisplay";
@@ -273,29 +273,54 @@ export default function CommonCalendar({
           }))}
           setSelected={setEventLabel}
         />
-        <div>
-          <LegendUI
-            legendList={Array.from(zoneColors.keys()).map((t) => ({
-              label: t,
-              style: {
-                className: "",
-                props: {
-                  backgroundColor: zoneColors.get(t)!.rgb,
-                },
-              },
-            }))}
+
+        {isModifying.current && (
+          <UpdateDataUI
+            originalData={originalTempData}
+            tempData={tempData}
+            modify={updateData}
+            abort={cancelModification}
           />
+        )}
+        <div className="my-2 flex gap-2">
+          <div className="dropdown">
+            <label tabIndex={0} className="btn btn-ghost gap-2 text-info">
+              <span>Aide</span>
+              <AlertCircle color="blue" />
+            </label>
+            <div
+              tabIndex={0}
+              className="card dropdown-content rounded-box w-[600px] border border-base-300 bg-base-100 shadow-lg"
+            >
+              <div className="card-body">
+                <h2 className="card-title">Aide sur l'outil de planning</h2>
+                <p>
+                  Naviguer dans le planning: <kbd className="kbd">shift</kbd> +{" "}
+                  <kbd className="kbd">molette</kbd>
+                </p>
+                <p>
+                  Vous pouvez cliquer sur les filières/formateurs et déplacer
+                  les modules à l'aide de la souris
+                </p>
+                <LegendUI
+                  title="Vacances scolaire"
+                  legendList={Array.from(zoneColors.keys()).map((t) => ({
+                    label: t,
+                    style: {
+                      className: "",
+                      props: {
+                        backgroundColor: zoneColors.get(t)!.rgb,
+                      },
+                    },
+                  }))}
+                />
+                <Legend />
+              </div>
+            </div>
+          </div>
+          <History refreshData={() => router.refresh()} />
         </div>
       </div>
-      {isModifying.current && (
-        <UpdateDataUI
-          originalData={originalTempData}
-          tempData={tempData}
-          modify={updateData}
-          abort={cancelModification}
-        />
-      )}
-      <History refreshData={() => router.refresh()} />
       {view === FiliereView.key && calendarFiliere}
       {view === FormateurView.key && calendarFormateur}
     </>
