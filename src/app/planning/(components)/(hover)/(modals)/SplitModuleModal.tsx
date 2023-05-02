@@ -115,21 +115,21 @@ export default function SplitModuleModal<T extends Module>({
             </div>
             <div className="row-start-1 row-end-4 flex columns-2 items-start px-4 pt-9">
               <FormateurSelect
-                formateur={modules[0].formateur}
+                formateur={modules[0].formateur || undefined}
                 forModule={modules[0]}
                 setFormateur={onSelectFirstFormateur}
               />
             </div>
             <div className="row-start-4 row-end-7 flex columns-2 items-end px-4">
               <FormateurSelect
-                formateur={modules[1].formateur}
+                formateur={modules[1].formateur || undefined}
                 forModule={modules[1]}
                 setFormateur={onSelectSecondFormateur}
               />
             </div>
           </div>
           <div className="modal-action w-full items-start">
-            <button className="btn-success btn" onClick={submitForm}>
+            <button className="btn btn-success" onClick={submitForm}>
               Modifier
             </button>
           </div>

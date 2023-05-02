@@ -56,12 +56,12 @@ export default function SwitchFormateurModal<T extends Module>({
           <div>Fin : {formatFullPrettyDate(module.end)}</div>
           <div>{JSON.stringify(module.formateur)}</div> */}
           <FormateurSelect
-            formateur={module.formateur}
+            formateur={module.formateur || undefined}
             forModule={module}
             setFormateur={onSelectFormateur}
           />
           <div className="modal-action w-full">
-            <button className="btn-success btn" onClick={submitForm}>
+            <button className="btn btn-success" onClick={submitForm}>
               Modifier
             </button>
           </div>

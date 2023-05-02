@@ -144,7 +144,7 @@ function SingleHistoryModal({
           &larr;
         </label>
         <h3 className="text-lg font-bold">Historique de {original.nom}</h3>
-        <ul className="steps steps-vertical w-full space-y-4">
+        <ul className="steps steps-vertical w-full gap-4">
           <li className="step-neutral step" data-content="●">
             <div className="text-left">
               <DateDisplay {...original} />

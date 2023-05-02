@@ -113,7 +113,7 @@ export default function CommonCalendar({
         .filter((m) => tempData.has(m.id))
         .map((m) => [m.id, deserialize<Module>(m)])
     );
-  }, [tempData]);
+  }, [serializedData, tempData]);
 
   const timeSpan = useMemo(
     () => ({
@@ -247,7 +247,7 @@ export default function CommonCalendar({
     } catch (e) {}
 
     isModifying.current = false;
-  }, [tempData]);
+  }, [tempData, router]);
 
   const cancelModification = useCallback((modId?: number) => {
     if (modId) {

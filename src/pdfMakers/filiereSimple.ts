@@ -1,4 +1,4 @@
-import { Module } from "@/lib/types";
+import { Formateur, Module } from "@/lib/types";
 import { eachDayOfInterval, isSameMonth } from "date-fns";
 import { moduleDayLabel } from "../lib/calendar/calendar";
 import { allColorsForThemes } from "../lib/colors";
@@ -6,7 +6,10 @@ import { formatMonthYear } from "../lib/date";
 import { objectToCSS } from "../lib/pdf";
 import { isFormateurMissing } from "../lib/realData";
 
-export default function htmlFromFiliere(filiereId: string, modules: Module[]) {
+export default function htmlFromFiliere(
+  filiereId: string,
+  modules: Omit<Module, "filiere">[]
+) {
   // Building table rows
   let currMonth = modules[0].start;
   let indexToAdd = 0;
@@ -130,7 +133,10 @@ export default function htmlFromFiliere(filiereId: string, modules: Module[]) {
     `;
 }
 
-function rowFromModule(mod: Module, withMonth = false): any[] {
+function rowFromModule(
+  mod: { start: Date; end: Date; formateur?: Formateur | null },
+  withMonth = false
+): any[] {
   let { end, formateur } = mod;
   let dayLabel = moduleDayLabel(mod);
 
