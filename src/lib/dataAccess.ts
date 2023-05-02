@@ -4,7 +4,7 @@ import {
 } from "@/pages/api/modules";
 import axios from "axios";
 import { formatISO, parseISO } from "date-fns";
-import { isValid, mapISO } from "./date";
+import { deserialize } from "./date";
 import { SimpleHistory } from "./db/ModuleAuditRepository";
 import {
   Filiere,
@@ -61,7 +61,6 @@ export async function searchFormateurs(params: {
       availableTo: formatISO(params.available.end),
     };
   }
-  console.log({ parsedParams });
   const formateurs = await axios.get(
     "/api/formateurs?" + new URLSearchParams(parsedParams).toString()
   );
@@ -72,10 +71,9 @@ export async function apiFetchFiliere(nomFiliere: string): Promise<Filiere> {
   const resp = await axios.get("/api/filiere/" + nomFiliere);
   const filiere = {
     ...(resp.data as SerializedFiliere),
-    modules: mapISO<Module>((resp.data as SerializedFiliere).modules!, [
-      "start",
-      "end",
-    ]),
+    modules: (resp.data as SerializedFiliere).modules!.map((m) =>
+      deserialize<Module>(m)
+    ),
   };
 
   return filiere;
@@ -85,10 +83,11 @@ export async function apiUpdateModules(modules: Module[]) {
   const resp = await axios.put("/api/modules/", modules);
 
   const ret: PutModulesResponse = {
-    updated: mapISO<Module>((resp.data as ClientPutModulesResponse).updated, [
-      "start",
-      "end",
-    ]),
+    updated: (resp.data as ClientPutModulesResponse).updated.map((m) => ({
+      ...m,
+      start: parseISO(m.start),
+      end: parseISO(m.end),
+    })),
     errors: (resp.data as ClientPutModulesResponse).errors.map((err) => ({
       error: err.error,
       module: {
@@ -137,19 +136,4 @@ export async function apiVersionDowngrade(historyId: number) {
   } catch (e: any) {
     return { error: e.message };
   }
-}
-
-function deserialize<T>(serialized: Serialized<T>): T {
-  const result = Object.create(Object.getPrototypeOf(serialized)) as T;
-  for (const key in serialized) {
-    if (serialized.hasOwnProperty(key)) {
-      const value = serialized[key];
-      if (typeof value === "string" && isValid(value)) {
-        result[key as keyof T] = parseISO(value) as any;
-      } else {
-        result[key as keyof T] = value as any;
-      }
-    }
-  }
-  return result;
 }

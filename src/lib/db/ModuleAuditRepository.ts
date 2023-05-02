@@ -17,7 +17,6 @@ export async function getModulesHistory(page = 1, recordPerPage = 20) {
     SELECT module_id, MAX(modified_datetime) AS max_modified_datetime,count(*) as count
     FROM module_audit
     GROUP BY module_id
-    having count(*) > 1
   ) as ma ON m.module_id = ma.module_id
   where m.modified_datetime = ma.max_modified_datetime
   order by ma.max_modified_datetime

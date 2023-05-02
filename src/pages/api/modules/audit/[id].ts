@@ -1,6 +1,6 @@
 import { isGet, isPut, ok, requestError, serverError } from "@/lib/api";
 import { getModuleHistory } from "@/lib/db/ModuleAuditRepository";
-import { moduleVersionDowngrade } from "@/lib/db/ModuleRepository";
+import { getModule, moduleVersionDowngrade } from "@/lib/db/ModuleRepository";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -36,7 +36,11 @@ export default async function handler(
       const moduleHistory = await getModuleHistory(
         parseInt(req.query.id as string)
       );
-      return ok(res, moduleHistory);
+      const currentModule = await getModule(moduleHistory[0].module_id, {
+        formateur: true,
+      });
+
+      return ok(res, [currentModule, ...moduleHistory]);
     } catch (e) {
       console.error(e);
       return serverError(

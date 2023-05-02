@@ -9,7 +9,7 @@ import {
 } from "@/lib/calendar/vacanceScolaire";
 import { getGrayscaleForLabels } from "@/lib/colors";
 import { apiUpdateModules } from "@/lib/dataAccess";
-import { mapISO } from "@/lib/date";
+import { deserialize } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
 import { Module, ModuleEvent, SerializedModule } from "@/lib/types";
@@ -75,9 +75,9 @@ const zonesVacances = ["Zone A", "Zone B", "Zone C"];
 const zoneColors = getGrayscaleForLabels([...zonesVacances]);
 
 function fromSerializedData(modules: SerializedModule[]) {
-  return mapISO<Module>(modules, ["start", "end"], (raw, parsed) =>
-    startOfDay(parsed)
-  );
+  return modules
+    .map((m) => deserialize<Module>(m))
+    .map((m) => ({ ...m, start: startOfDay(m.start), end: startOfDay(m.end) }));
 }
 
 export default function CommonCalendar({
@@ -95,7 +95,9 @@ export default function CommonCalendar({
   const { isJoursFeries, getJourFerie } = useSpecialDays();
 
   const vacanceData = useMemo(() => {
-    const vacanceData = mapISO<VacanceData>(vacancesScolaire, ["start", "end"]);
+    const vacanceData = vacancesScolaire.map((vd) =>
+      deserialize<VacanceData>(vd)
+    );
     vacanceData.sort((v1, v2) => compareAsc(v1.start, v2.start));
     return vacanceData;
   }, [vacancesScolaire]);
@@ -107,10 +109,9 @@ export default function CommonCalendar({
   const [tempData, setTempData] = useState<Map<number, Module>>(new Map());
   const originalTempData = useMemo(() => {
     return new Map(
-      mapISO<Module>(
-        serializedData.filter((m) => tempData.has(m.id)),
-        ["start", "end"]
-      ).map((m) => [m.id, m])
+      serializedData
+        .filter((m) => tempData.has(m.id))
+        .map((m) => [m.id, deserialize<Module>(m)])
     );
   }, [tempData]);
 

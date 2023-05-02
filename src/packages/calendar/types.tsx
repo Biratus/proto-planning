@@ -1,3 +1,4 @@
+import { isValid, parseISO } from "date-fns";
 import { DragEvent, PropsWithChildren } from "react";
 import { defaultEventElement } from "./fullCalendar/CalendarEvent";
 import { defaultSimpleEventElement } from "./SimpleView/CalendarCell";
@@ -13,10 +14,10 @@ export type Interval = {
   start: Date;
   end: Date;
 };
-export type SerializedInterval = {
-  start: string;
-  end: string;
+export type Serialized<T> = {
+  [K in keyof T]: T[K] extends Date ? string : T[K];
 };
+export type SerializedInterval = Serialized<Interval>;
 
 export type IntervalWithDuration = Interval & {
   duration: number;
@@ -219,3 +220,18 @@ export type CalendarSimpleProps<
   style?: Style;
   monthLabelStyle?: Style;
 };
+
+export function deserialize<T>(serialized: Serialized<T>): T {
+  const result = Object.create(Object.getPrototypeOf(serialized)) as T;
+  for (const key in serialized) {
+    if (serialized.hasOwnProperty(key)) {
+      const value = serialized[key];
+      if (typeof value === "string" && isValid(parseISO(value))) {
+        result[key as keyof T] = parseISO(value) as any;
+      } else {
+        result[key as keyof T] = value as any;
+      }
+    }
+  }
+  return result;
+}

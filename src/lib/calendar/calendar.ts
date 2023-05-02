@@ -1,7 +1,12 @@
 import { CalendarData, Interval } from "@/packages/calendar/types";
-import { eachDayOfInterval, isAfter, isBefore, isSameDay } from "date-fns";
+import {
+  areIntervalsOverlapping,
+  eachDayOfInterval,
+  isAfter,
+  isBefore,
+  isSameDay,
+} from "date-fns";
 import { formatDayDate, nbOfDaysBetween } from "../date";
-import { moduleOverlap } from "../realData";
 import { CalendarView, Module, ModuleEvent } from "../types";
 
 export function toCalendarData<K>(
@@ -82,4 +87,49 @@ export function checkOverlapModules<K>(data: CalendarData<K, ModuleEvent>[]) {
     }
     row.events = newEvents;
   }
+}
+
+function moduleOverlap(m1: Module, m2: Module) {
+  return areIntervalsOverlapping(m1, m2, { inclusive: true });
+}
+
+export function getOverlapModules(
+  modules: Module[]
+): (Interval & { overlappedModules: Module[] })[] {
+  let overlappedModules: Module[][] = [];
+
+  for (let mod1 of modules) {
+    for (let mod2 of modules) {
+      if (mod1.id !== mod2.id && moduleOverlap(mod1, mod2)) {
+        if (
+          !overlappedModules.some((overlapped) => overlapped.includes(mod1))
+        ) {
+          overlappedModules.push([mod1, mod2]);
+        } else {
+          const overlappIndex = overlappedModules.findIndex((overlapped) =>
+            overlapped.includes(mod1)
+          );
+          overlappedModules[overlappIndex].push(mod2);
+        }
+      }
+    }
+  }
+
+  return overlappedModules.map((mods) => ({
+    start: mods.reduce(
+      (acc: Date | null, m) =>
+        (acc = acc == null || isBefore(m.start, acc) ? m.start : acc),
+      null
+    )!,
+    end: mods.reduce(
+      (acc: Date | null, m) =>
+        (acc = acc == null || isAfter(m.end, acc) ? m.end : acc),
+      null
+    )!,
+    overlappedModules: sortModules(mods),
+  }));
+}
+
+function sortModules(modules: Module[]) {
+  return modules.sort((m1, m2) => m1.start.getTime() - m2.start.getTime());
 }

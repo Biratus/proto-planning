@@ -144,15 +144,15 @@ function SingleHistoryModal({
           &larr;
         </label>
         <h3 className="text-lg font-bold">Historique de {original.nom}</h3>
-        <ul className="steps steps-vertical w-full space-y-2">
+        <ul className="steps steps-vertical w-full space-y-4">
           <li className="step-neutral step" data-content="●">
             <div className="text-left">
-              <DateDisplay {...moduleHistory[0]} />
-              <FormateurDisplay formateur={moduleHistory[0].formateur} />
+              <DateDisplay {...original} />
+              <FormateurDisplay formateur={original.formateur} />
               <div className="italic">
                 Modifié par Clément Birette le{" "}
-                {formatFullDate(moduleHistory[0].modified_datetime)} à{" "}
-                {formatTime(moduleHistory[0].modified_datetime)}
+                {formatFullDate(history[0].modified_datetime)} à{" "}
+                {formatTime(history[0].modified_datetime)}
               </div>
             </div>
           </li>
@@ -160,6 +160,13 @@ function SingleHistoryModal({
             <ModuleHistory
               key={i}
               original={i == 0 ? original : history[i - 1]}
+              modified={{
+                date:
+                  i == history.length - 1
+                    ? undefined
+                    : history[i + 1].modified_datetime,
+                by: { nom: "Birette", prenom: "Clément" },
+              }}
               current={h}
               revertBack={() => revertBackTo(h.id)}
             />
@@ -192,10 +199,12 @@ function FormateurDisplay({ formateur }: { formateur?: Formateur | null }) {
 function ModuleHistory({
   original,
   current,
+  modified,
   revertBack,
 }: {
   original: ModuleHistory;
   current: ModuleHistory;
+  modified: { date?: Date; by: { nom: string; prenom: string } };
   revertBack: () => void;
 }) {
   const diffDates =
@@ -230,11 +239,12 @@ function ModuleHistory({
               ? `${current.formateur.prenom} ${current.formateur.nom}`
               : "N/A"}
           </div>
-          <div className="italic">
-            Modifié par Clément Birette le{" "}
-            {formatFullDate(current.modified_datetime)} à{" "}
-            {formatTime(current.modified_datetime)}
-          </div>
+          {modified.date && (
+            <div className="italic">
+              Modifié par {`${modified.by.prenom} ${modified.by.nom}`} le{" "}
+              {formatFullDate(modified.date)} à {formatTime(modified.date)}
+            </div>
+          )}
         </div>
         <button
           title="Revenir à cette version"

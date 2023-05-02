@@ -92,9 +92,7 @@ export async function updateModules(
 }
 
 export async function updateModule(module: Module) {
-  const currModule = await prisma.module.findUnique({
-    where: { id: module.id },
-  });
+  const currModule = await getModule(module.id);
 
   if (!currModule)
     return Promise.reject(
@@ -170,4 +168,17 @@ export async function moduleVersionDowngrade(historyId: number) {
   });
 
   return prisma.$transaction([histoyDelete, moduleUpdate]);
+}
+
+export async function getModule(
+  id: number,
+  fetch: { filiere?: boolean; formateur?: boolean } = {
+    filiere: false,
+    formateur: false,
+  }
+) {
+  return prisma.module.findUnique({
+    where: { id },
+    include: fetch,
+  });
 }

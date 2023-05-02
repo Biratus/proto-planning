@@ -3,7 +3,7 @@
 import { useLegendStore } from "@/components/legend/Legend";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
-import { mapISO } from "@/lib/date";
+import { deserialize } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
 import { Module, SerializedModule } from "@/lib/types";
 import CalendarDetail from "@/packages/calendar/SingleData/CalendarDetail";
@@ -24,7 +24,7 @@ export default function CalendarFiliere({
   name: string;
   modules: SerializedModule[];
 }) {
-  const filiereData = mapISO<Module>(modules, ["start", "end"]);
+  const filiereData = modules.map((m) => deserialize<Module>(m));
   const colorOf = useLegendStore((state) => state.colorOf);
 
   const { zoom } = useZoom();

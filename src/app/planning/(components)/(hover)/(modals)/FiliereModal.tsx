@@ -1,7 +1,7 @@
 "use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
+import { getOverlapModules } from "@/lib/calendar/calendar";
 import { formatFullDate, nbOfDaysBetween } from "@/lib/date";
-import { getOverlapModules } from "@/lib/realData";
 import Link from "next/link";
 import { useMemo, useRef } from "react";
 import { AlertTriangle, Download, Info, User } from "react-feather";

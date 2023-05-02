@@ -23,23 +23,12 @@ export interface Formateur {
 export type FormateurWithModule = Formateur & {
   modules: Module[];
 };
-export type FormateurWithSerializedModule = Formateur & {
+export type SerializedFormateur = Formateur & {
   modules: SerializedModule[];
 };
 export type Serialized<T> = {
   [K in keyof T]: T[K] extends Date ? string : T[K];
 };
-// export interface SerializedModule {
-// id: number;
-// nom: string;
-// start: string | Date;
-// end: string | Date;
-// theme: string;
-// filiere: Filiere;
-// formateur?: Formateur | null;
-// }
-
-export type SerializedModule = Serialized<Module>;
 
 export type Module = {
   id: number;
@@ -50,6 +39,7 @@ export type Module = {
   start: Date;
   end: Date;
 };
+export type SerializedModule = Serialized<Module>;
 
 export type ModuleEvent = Module &
   IntervalWithDuration & {

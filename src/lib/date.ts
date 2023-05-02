@@ -1,3 +1,4 @@
+import { Serialized } from "@/packages/calendar/types";
 import * as dateFns from "date-fns";
 import fr from "date-fns/locale/fr";
 import { upperFirst } from "./strings";
@@ -93,25 +94,6 @@ export function nbOfDaysBetween(start: Date, end: Date) {
 function defaultParseFunction(str: string) {
   return dateFns.parseISO(str);
 }
-export function mapISO<OUT>(
-  list: any[],
-  fields: string[],
-  parseFunction: (raw: string, parsed: Date) => Date = (r, p) => p
-): Array<OUT> {
-  return list.map((item) => {
-    let newItem = { ...item };
-
-    fields.forEach(
-      (f) =>
-        (newItem[f] = parseFunction(
-          newItem[f],
-          defaultParseFunction(newItem[f])
-        ))
-    );
-
-    return newItem;
-  });
-}
 
 export function serializeDate<OUT>(list: any[], fields: string[]): Array<OUT> {
   return list.map((item) => {
@@ -123,4 +105,18 @@ export function serializeDate<OUT>(list: any[], fields: string[]): Array<OUT> {
 
 export function isValid(date: string) {
   return dateFns.isValid(dateFns.parseISO(date));
+}
+export function deserialize<T>(serialized: Serialized<T>): T {
+  const result = Object.create(Object.getPrototypeOf(serialized)) as T;
+  for (const key in serialized) {
+    if (serialized.hasOwnProperty(key)) {
+      const value = serialized[key];
+      if (typeof value === "string" && isValid(value)) {
+        result[key as keyof T] = dateFns.parseISO(value) as any;
+      } else {
+        result[key as keyof T] = value as any;
+      }
+    }
+  }
+  return result;
 }

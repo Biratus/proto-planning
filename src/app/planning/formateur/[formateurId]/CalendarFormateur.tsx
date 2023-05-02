@@ -4,7 +4,7 @@ import { useLegendStore } from "@/components/legend/Legend";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
-import { mapISO, nbOfDaysBetween } from "@/lib/date";
+import { deserialize, nbOfDaysBetween } from "@/lib/date";
 import { emptyStyle } from "@/lib/style";
 import { Formateur, Module, SerializedModule } from "@/lib/types";
 import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
@@ -26,9 +26,9 @@ type CalendarFormateurProps = {
   timeSpan: SerializedInterval;
 };
 function fromSerializedData(serializedData: SerializedModule[]) {
-  return mapISO<Module>(serializedData, ["start", "end"], (raw, parsed) =>
-    startOfDay(parsed)
-  );
+  return serializedData
+    .map((m) => deserialize<Module>(m))
+    .map((m) => ({ ...m, start: startOfDay(m.start), end: startOfDay(m.end) }));
 }
 
 export default function CalendarFormateur({
