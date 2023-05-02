@@ -3,13 +3,14 @@
 import { useLegendStore } from "@/components/legend/Legend";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
-import { mapISO } from "@/lib/date";
+import { deserialize } from "@/lib/date";
 import { isFormateurMissing } from "@/lib/realData";
-import { Module, RawModule } from "@/lib/types";
+import { Module, SerializedModule } from "@/lib/types";
 import CalendarDetail from "@/packages/calendar/SingleData/CalendarDetail";
 import Link from "next/link";
 import { User } from "react-feather";
 import { missingFormateurStyle } from "../../(components)/(calendar)/CalendarStyle";
+import { FiliereView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
 const viewWidth = 50;
@@ -21,21 +22,20 @@ export default function CalendarFiliere({
   modules,
 }: {
   name: string;
-  modules: RawModule[];
+  modules: SerializedModule[];
 }) {
-  const filiereData = mapISO<Module>(modules, ["start", "end"]);
+  const filiereData = modules.map((m) => deserialize<Module>(m));
   const colorOf = useLegendStore((state) => state.colorOf);
 
   const { zoom } = useZoom();
-  //   const { openMenu } = useCalendar();
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <h2 className="text-center">{name}</h2>
       <div className="flex w-2/4 flex-row justify-between">
-        <GlobalViewLink />
+        <GlobalViewLink view={FiliereView.key} />
         <ZoomUI range={5} />
-        <button className="btn-link btn">
+        <button className="btn btn-link">
           <Link href={`/api/filiere/${name}/pdf`}>Export to PDF</Link>
         </button>
       </div>
@@ -54,9 +54,8 @@ export default function CalendarFiliere({
             },
             onClick: (mod: Module) => {
               console.log("TODO onClick", mod);
-              //openMenu()
             },
-            label: (mod: Module) => mod.name,
+            label: (mod: Module) => mod.nom,
           }}
           additionalLabel="Formateur"
           AdditionalInfo={FormateurSimple}
@@ -69,7 +68,8 @@ export default function CalendarFiliere({
 function FormateurSimple({ event: { formateur } }: { event: Module }) {
   return (
     <div className="flex h-full flex-row items-center gap-3">
-      <User /> <span>{formateur.nom + " " + formateur.prenom}</span>
+      <User />{" "}
+      <span>{formateur ? formateur.nom + " " + formateur.prenom : "N/A"}</span>
     </div>
   );
 }

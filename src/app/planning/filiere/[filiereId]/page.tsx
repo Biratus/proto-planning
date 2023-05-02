@@ -1,7 +1,9 @@
 import { useLegendStore } from "@/components/legend/Legend";
 import ZoomProvider from "@/components/zoom/ZoomProvider";
 import { zoom_calendar_filiere } from "@/hooks/localStorageStore";
-import { fetchFiliere } from "@/lib/realData";
+import { serializeDate } from "@/lib/date";
+import { prisma } from "@/lib/db/prisma";
+import { SerializedModule } from "@/lib/types";
 import { notFound } from "next/navigation";
 import CalendarFiliere from "./Calendar";
 
@@ -9,23 +11,37 @@ export type FiliereParamPage = {
   params: { filiereId: string };
 };
 
-export default function FilierePage({
+export default async function FilierePage({
   params: { filiereId },
 }: FiliereParamPage) {
-  const filiereData = fetchFiliere(filiereId).map((m) => ({
-    ...m,
-    label: m.name,
-  }));
-
-  if (filiereData.length == 0) {
+  const filiereData = await prisma.filiere.findUnique({
+    where: {
+      nom: filiereId,
+    },
+    include: { modules: { include: { formateur: true } } },
+  });
+  if (!filiereData) {
     notFound();
   }
+  const allThemes = filiereData.modules
+    .filter(({ theme }) => theme !== null)
+    .map(({ theme }) => theme as string);
+
   const showLegend = useLegendStore.getState().showLegend;
-  showLegend([...new Set(filiereData.map(({ theme }) => theme))]);
+  showLegend([...new Set(allThemes)]);
 
   return (
     <ZoomProvider zoomKey={zoom_calendar_filiere}>
-      <CalendarFiliere name={filiereId} modules={filiereData} />
+      <CalendarFiliere
+        name={filiereId}
+        modules={serializeDate<SerializedModule>(
+          filiereData.modules.map((m) => ({
+            ...m,
+            label: m.nom,
+          })),
+          ["start", "end"]
+        )}
+      />
     </ZoomProvider>
   );
 }

@@ -37,7 +37,7 @@ export default function FullCalendar<
 >({
   data: originalData,
   LabelComponent,
-  time: { start, monthLength },
+  timeSpan,
   event: eventProps,
   day,
   zoom,
@@ -50,10 +50,9 @@ export default function FullCalendar<
     styleProps,
   } = day;
 
-  const month = start;
   const months = useMemo(
-    () => makeMonths(month, monthLength - 1),
-    [month, monthLength]
+    () => makeMonths(timeSpan.start, timeSpan.end),
+    [timeSpan]
   );
   const dayLimit = endOfMonth(months[months.length - 1].day);
   // Only display data that is within the month interval
@@ -85,16 +84,16 @@ export default function FullCalendar<
     return months.map((m, i) => (
       <Month style={monthLabelStyle} month={m} key={i} first={i == 0} />
     ));
-  }, [months]);
+  }, [months, monthLabelStyle]);
 
   const daysHeaderRow = useMemo(() => {
     if (!daysHeader) return null;
     let elements = [];
-    let prev = month;
+    let prev = timeSpan.start;
     for (let dayHeader of daysHeader) {
-      if (isBefore(dayHeader.start, month)) {
-        dayHeader.start = month;
-        dayHeader.duration = nbOfDaysBetween(month, dayHeader.end);
+      if (isBefore(dayHeader.start, timeSpan.start)) {
+        dayHeader.start = timeSpan.start;
+        dayHeader.duration = nbOfDaysBetween(timeSpan.start, dayHeader.end);
       }
       let duration = nbOfDaysBetween(prev, dayHeader.start) - 1;
       if (duration > 0) {
@@ -134,7 +133,7 @@ export default function FullCalendar<
       );
     }
     return elements;
-  }, [month, daysHeader, dayLimit]);
+  }, [timeSpan, daysHeader, dayLimit]);
 
   return (
     <FullCalendarProvider

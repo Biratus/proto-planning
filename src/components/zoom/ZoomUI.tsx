@@ -6,8 +6,8 @@ import { useZoom } from "./ZoomProvider";
 export default function ZoomUI({ range }: { range: number }) {
   const { zoom, setZoom } = useZoom();
 
-  const incZoom = useCallback(() => setZoom(zoom + 1), [zoom]);
-  const decZoom = useCallback(() => setZoom(zoom - 1), [zoom]);
+  const incZoom = useCallback(() => setZoom(zoom + 1), [zoom, setZoom]);
+  const decZoom = useCallback(() => setZoom(zoom - 1), [zoom, setZoom]);
   return (
     <div className="btn-group">
       <button

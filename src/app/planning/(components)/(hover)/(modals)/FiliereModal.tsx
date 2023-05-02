@@ -1,8 +1,7 @@
 "use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
-import { formatFullDate, mapISO, nbOfDaysBetween } from "@/lib/date";
-import { fetchFiliere, getOverlapModules, sortModules } from "@/lib/realData";
-import { Module } from "@/lib/types";
+import { getOverlapModules } from "@/lib/calendar/calendar";
+import { formatFullDate, nbOfDaysBetween } from "@/lib/date";
 import Link from "next/link";
 import { useMemo, useRef } from "react";
 import { AlertTriangle, Download, Info, User } from "react-feather";
@@ -22,11 +21,7 @@ const defaultDatebounds: DateBounds = {
 };
 
 export default function FiliereModal() {
-  const nom = useFocusedFiliere();
-  const modules = useMemo(
-    () => sortModules(mapISO<Module>(fetchFiliere(nom), ["start", "end"])),
-    [nom]
-  );
+  const { nom, modules = [] } = useFocusedFiliere() || { nom: "", modules: [] };
 
   const modalRef = useRef<ModalRef>({});
 
@@ -96,7 +91,7 @@ export default function FiliereModal() {
       {/* Modules superposés */}
       {overlappingModules.length > 0 && (
         <div className="mt-4 flex flex-col gap-2">
-          <span className="flex flex-row gap-3 text-lg font-bold underline">
+          <span className="flex flex-row items-center gap-3 text-lg font-bold underline">
             <AlertTriangle color="red" /> Modules superposés
           </span>
           {overlappingModules.map((overlap, i) => (
@@ -122,7 +117,7 @@ export default function FiliereModal() {
                       <span className="font-bold">
                         {formatFullDate(mod.end)}
                       </span>
-                      : {mod.name}
+                      : {mod.nom}
                     </div>
                   ))}
                 </div>

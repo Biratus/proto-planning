@@ -1,15 +1,15 @@
 "use client";
 
 import { useLegendStore } from "@/components/legend/Legend";
-import { useMonthNavigation } from "@/components/monthNavigation/MonthNavigationProvider";
 import MonthNavigationUI from "@/components/monthNavigation/MonthNavigationUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
-import { mapISO } from "@/lib/date";
+import { deserialize, nbOfDaysBetween } from "@/lib/date";
 import { emptyStyle } from "@/lib/style";
-import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+import { Formateur, Module, SerializedModule } from "@/lib/types";
 import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
-import { isWeekend } from "date-fns";
+import { SerializedInterval } from "@/packages/calendar/types";
+import { isWeekend, parseISO, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
 import {
@@ -17,49 +17,67 @@ import {
   dayEventStyle,
   monthLabel,
 } from "../../(components)/(calendar)/CalendarStyle";
+import { FormateurView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 
 type CalendarFormateurProps = {
   formateur: Formateur;
-  data: RawModule[];
+  data: SerializedModule[];
+  timeSpan: SerializedInterval;
 };
+function fromSerializedData(serializedData: SerializedModule[]) {
+  return serializedData
+    .map((m) => deserialize<Module>(m))
+    .map((m) => ({ ...m, start: startOfDay(m.start), end: startOfDay(m.end) }));
+}
 
 export default function CalendarFormateur({
   formateur: { nom, prenom, mail },
   data,
+  timeSpan: originalTimeSpan,
 }: CalendarFormateurProps) {
   const formateurData = useMemo(
-    () => mapISO<ModuleEvent>(data, ["start", "end"]),
+    () =>
+      fromSerializedData(data).map((d) => ({
+        ...d,
+        duration: nbOfDaysBetween(d.start, d.end),
+      })),
     [data]
   );
   const { isJoursFeries, getJourFerie } = useJoursFeries();
-  //   const {openMenu} = useCalendarMenu();
-  const [month] = useMonthNavigation();
+
+  console.log({ formateurData });
+
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
-
+  const timeSpan = useMemo(
+    () => ({
+      start: parseISO(originalTimeSpan.start),
+      end: parseISO(originalTimeSpan.end),
+    }),
+    [originalTimeSpan]
+  );
   return (
     <div className="flex flex-col items-center gap-2">
       <h2 className="text-center">{`${nom} ${prenom} - [${mail}]`}</h2>
       <div className="flex w-1/2 flex-row justify-between">
-        <GlobalViewLink />
+        <GlobalViewLink view={FormateurView.key} />
         <ZoomUI range={5} />
       </div>
       <MonthNavigationUI />
       <CalendarSimple
-        time={{ start: month, monthLength: 3 }}
+        timeSpan={timeSpan}
         events={formateurData}
         zoom={zoom}
         eventProps={{
-          label: (mod: ModuleEvent) => mod.name,
-          style: (date: Date, mod?: ModuleEvent) => {
+          label: (mod: Module) => mod.nom,
+          style: (date: Date, mod?: Module) => {
             return mod
               ? dayEventStyle(date, mod, colorOf(mod.theme))
               : emptyStyle();
           },
           onClick: () => {
             console.log("Do something");
-            //openMenu,
           },
         }}
         dayProps={{

@@ -1,4 +1,4 @@
-import { CalendarEvent, TimeProps } from "@/packages/calendar/types";
+import { CalendarEvent, Interval } from "@/packages/calendar/types";
 import { addDays, isBefore } from "date-fns";
 import { ModuleEvent } from "./types";
 
@@ -10,7 +10,7 @@ type CustomMouseCoord = {
 export function getTargetDay(
   targetModule: CalendarEvent<ModuleEvent>,
   { targetWidth, mouseOffsetX }: CustomMouseCoord,
-  timeProps: TimeProps
+  timeProps: Interval
 ) {
   let targetDuration = targetModule.span!;
   const dayOffset = Math.floor(mouseOffsetX / (targetWidth / targetDuration));

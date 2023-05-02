@@ -1,10 +1,12 @@
-"use client";
 import { useLegendStore } from "@/components/legend/Legend";
 import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigationProvider";
 import ZoomProvider from "@/components/zoom/ZoomProvider";
 import { zoom_calendar_formateur } from "@/hooks/localStorageStore";
-import { parseMonthAndYear } from "@/lib/date";
-import { formateurs, getModulesOfFormateur } from "@/lib/realData";
+import { parseMonthAndYear, serializeDate } from "@/lib/date";
+import { getAllFormateursSimple } from "@/lib/db/dataAccess";
+import { getModulesOfFormateur } from "@/lib/db/ModuleRepository";
+import { Formateur } from "@/lib/types";
+import { SerializedInterval } from "@/packages/calendar/types";
 import { addMonths, formatISO, startOfMonth, startOfToday } from "date-fns";
 import { notFound } from "next/navigation";
 import CalendarFormateur from "./CalendarFormateur";
@@ -19,10 +21,13 @@ type FormateurPageProps = {
   searchParams?: { date: string };
 };
 
-export default function FormateurPage({
+export default async function FormateurPage({
   params,
   searchParams,
 }: FormateurPageProps) {
+  const formateurs = new Map<string, Formateur>(
+    (await getAllFormateursSimple()).map((f) => [f.mail, f as Formateur])
+  );
   if (!params || !formateurs.has(decodeURIComponent(params.formateurId))) {
     notFound();
   }
@@ -32,18 +37,29 @@ export default function FormateurPage({
     searchParams && searchParams.date
       ? parseMonthAndYear(searchParams.date)
       : monthStart;
-
-  const modules = getModulesOfFormateur(formateur.mail, {
+  const activInterval = {
     start: month,
     end: addMonths(month, monthLength),
-  });
-  const showLegend = useLegendStore((s) => s.showLegend);
+  };
+  const modules = await getModulesOfFormateur(formateur.mail, activInterval);
+  const showLegend = useLegendStore.getState().showLegend;
   showLegend([...new Set(modules.map(({ theme }) => theme))]);
+
+  console.log("GOT " + modules.length + " modules");
 
   return (
     <MonthNavigationProvider focus={formatISO(month || monthStart)}>
       <ZoomProvider zoomKey={zoom_calendar_formateur}>
-        <CalendarFormateur data={modules} formateur={formateur} />
+        <CalendarFormateur
+          data={serializeDate(modules, ["start", "end"])}
+          formateur={formateur}
+          timeSpan={
+            serializeDate<SerializedInterval>(
+              [activInterval],
+              ["start", "end"]
+            )[0]
+          }
+        />
       </ZoomProvider>
     </MonthNavigationProvider>
   );

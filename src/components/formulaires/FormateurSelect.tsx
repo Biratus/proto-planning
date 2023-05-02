@@ -1,9 +1,7 @@
-"use client";
-
-import { filterFormateur } from "@/lib/realData";
+import { searchFormateurs } from "@/lib/dataAccess";
 import { Formateur, Module } from "@/lib/types";
 import cn from "classnames";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { User } from "react-feather";
 import { Interval } from "../../packages/calendar/types";
 
@@ -18,7 +16,7 @@ export default function FormateurSelect({
   forModule,
   setFormateur,
 }: {
-  formateur: Formateur;
+  formateur?: Formateur;
   forModule?: Module;
   setFormateur: (f: Formateur) => void;
 }) {
@@ -28,35 +26,60 @@ export default function FormateurSelect({
     [forModule]
   );
 
-  const [searchProps, setSearchProps] = useState<SearchProps>({});
+  const [filteredFormateurs, setFilteredFormateurs] = useState<Formateur[]>([]);
 
-  const filterFormateurs = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
-    setSearchProps((prev) => ({ ...prev, search: evt.target.value }));
+  useEffect(() => {
+    (async () => {
+      console.log("fetch formateurs in effect");
+      const formateurs = await searchFormateurs({});
+      setFilteredFormateurs(
+        formateurs.map((f) => ({
+          ...f,
+          nom: f.nom || "",
+          prenom: f.prenom || "",
+        }))
+      );
+    })();
   }, []);
 
-  const availableFormateurs = useCallback(
-    (evt: ChangeEvent<HTMLInputElement>) => {
-      setSearchProps((prev) => ({
-        ...prev,
-        available: evt.target.checked ? moduleInterval : undefined,
-      }));
+  const [searchProps, setSearchProps] = useState<SearchProps>({});
+
+  const filterFormateurs = useCallback(
+    async (evt: ChangeEvent<HTMLInputElement>) => {
+      const search = evt.target.value;
+      setSearchProps((prev) => ({ ...prev, search }));
     },
-    [moduleInterval]
+    []
+  );
+
+  const availableFormateurs = useCallback(
+    async (evt: ChangeEvent<HTMLInputElement>) => {
+      const newSearchProps = {
+        ...searchProps,
+        available: evt.target.checked ? moduleInterval : undefined,
+      };
+      setSearchProps(newSearchProps);
+      setFilteredFormateurs(await searchFormateurs(newSearchProps));
+    },
+    [searchProps, moduleInterval]
   );
   const ableFormateurs = useCallback(
-    (evt: ChangeEvent<HTMLInputElement>) => {
-      setSearchProps((prev) => ({
-        ...prev,
+    async (evt: ChangeEvent<HTMLInputElement>) => {
+      const newSearchProps = {
+        ...searchProps,
         able: evt.target.checked ? forModule : undefined,
-      }));
+      };
+      setSearchProps(newSearchProps);
+      setFilteredFormateurs(await searchFormateurs(newSearchProps));
     },
-    [forModule]
+    [searchProps, forModule]
   );
 
   return (
     <div className="dropdown">
       <label className="btn" tabIndex={0}>
-        {formateur.prenom} {formateur.nom} <User className="ml-1" />
+        {formateur ? `${formateur.prenom} ${formateur.nom}` : "N/A"}{" "}
+        <User className="ml-1" />
       </label>
       <div
         className="dropdown-content rounded-box mt-1 w-auto border border-base-300 bg-base-100 p-5 shadow"
@@ -90,18 +113,31 @@ export default function FormateurSelect({
           onChange={filterFormateurs}
         />
         <ul className="menu mt-2 h-80 flex-nowrap overflow-y-scroll bg-base-100">
-          {filterFormateur(searchProps).map((f) => (
-            <li key={f.mail}>
-              <a
-                className={cn({ active: f.mail == formateur.mail })}
-                onClick={() => setFormateur(f)}
-              >
-                {f.prenom} {f.nom}
-              </a>
-            </li>
-          ))}
+          {filterSearchFormateurs(filteredFormateurs, searchProps.search).map(
+            (f) => (
+              <li key={f.mail}>
+                <a
+                  className={cn({
+                    active: formateur && f.mail == formateur.mail,
+                  })}
+                  onClick={() => setFormateur(f)}
+                >
+                  {f.prenom} {f.nom}
+                </a>
+              </li>
+            )
+          )}
         </ul>
       </div>
     </div>
+  );
+}
+
+function filterSearchFormateurs(formateurs: Formateur[], search = "") {
+  return formateurs.filter(
+    (f) =>
+      f.nom.toLowerCase().includes(search.toLowerCase()) ||
+      f.prenom.toLowerCase().includes(search.toLowerCase()) ||
+      f.mail.toLowerCase().includes(search.toLowerCase())
   );
 }

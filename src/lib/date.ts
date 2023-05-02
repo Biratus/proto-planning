@@ -1,3 +1,4 @@
+import { Serialized } from "@/packages/calendar/types";
 import * as dateFns from "date-fns";
 import fr from "date-fns/locale/fr";
 import { upperFirst } from "./strings";
@@ -39,6 +40,10 @@ export function formatFullPrettyDate(d: Date) {
 
 export function formatDateValue(d: Date) {
   return format(d, "yyyy-MM-dd");
+}
+
+export function formatTime(d: Date) {
+  return format(d, "HH:mm");
 }
 
 /*
@@ -86,14 +91,8 @@ export function nbOfDaysBetween(start: Date, end: Date) {
     : dateFns.eachDayOfInterval({ start, end }).length;
 }
 
-export function mapISO<OUT>(list: any[], fields: string[]): Array<OUT> {
-  return list.map((item) => {
-    let newItem = { ...item };
-
-    fields.forEach((f) => (newItem[f] = dateFns.parseISO(newItem[f])));
-
-    return newItem;
-  });
+function defaultParseFunction(str: string) {
+  return dateFns.parseISO(str);
 }
 
 export function serializeDate<OUT>(list: any[], fields: string[]): Array<OUT> {
@@ -102,4 +101,22 @@ export function serializeDate<OUT>(list: any[], fields: string[]): Array<OUT> {
     fields.forEach((f) => (newItem[f] = dateFns.formatISO(item[f])));
     return newItem;
   });
+}
+
+export function isValid(date: string) {
+  return dateFns.isValid(dateFns.parseISO(date));
+}
+export function deserialize<T>(serialized: Serialized<T>): T {
+  const result = Object.create(Object.getPrototypeOf(serialized)) as T;
+  for (const key in serialized) {
+    if (serialized.hasOwnProperty(key)) {
+      const value = serialized[key];
+      if (typeof value === "string" && isValid(value)) {
+        result[key as keyof T] = dateFns.parseISO(value) as any;
+      } else {
+        result[key as keyof T] = value as any;
+      }
+    }
+  }
+  return result;
 }

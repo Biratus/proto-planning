@@ -43,6 +43,7 @@ export default function MonthNavigationProvider({
       newParams.set(k, additionalParams[k]);
     }
     router.push(path + "?" + newParams.toString());
+    router.refresh();
   };
 
   return (

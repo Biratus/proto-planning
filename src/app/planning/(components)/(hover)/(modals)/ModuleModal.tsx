@@ -11,21 +11,26 @@ import { SwitchFormateurModalId } from "./SwitchFormateurModal";
 export const ModuleDetailModalId = "moduleDetailModalId";
 
 const defaultModule: ModuleEvent = {
-  id: "",
-  name: "",
+  id: 0,
+  nom: "",
   start: new Date(),
   end: new Date(),
   theme: "",
-  filiere: "",
+  filiere: { nom: "" },
   formateur: { nom: "", prenom: "", mail: "" },
   duration: 0,
 };
 
 export default function ModuleModal() {
   const { focus, temps } = useFocusModule();
-
-  const { name, start, end, formateur, filiere, duration } =
-    focus || defaultModule;
+  const {
+    nom: name,
+    start,
+    end,
+    formateur,
+    filiere,
+    duration,
+  } = focus || defaultModule;
 
   const modalRef = useRef<ModalRef>({});
 
@@ -62,7 +67,10 @@ export default function ModuleModal() {
   return (
     <CommonModal inputId={ModuleDetailModalId} modalRef={modalRef}>
       {/* Info basiques */}
-      <ModuleTitle name={name} filiere={filiere} />
+      <ModuleTitle name={name} filiere={filiere.nom} />
+      <button className="btn" onClick={() => console.log(focus)}>
+        Log focus
+      </button>
       {/* Dates */}
       <div className="flex flex-row items-center gap-4">
         <span>
@@ -75,7 +83,8 @@ export default function ModuleModal() {
       </div>
       <div className="flex flex-row items-center gap-4">
         <div className="flex flex-row gap-2">
-          Formateur : <User /> {formateur.prenom} {formateur.nom}
+          Formateur : <User />{" "}
+          {formateur ? `${formateur.prenom} ${formateur.nom}` : "N/A"}
         </div>
         <MoreActions actions={formateurActions} />
       </div>
@@ -90,7 +99,7 @@ function MoreActions({
 }) {
   return (
     <div className="dropdown-end dropdown">
-      <label tabIndex={0} className="btn-ghost btn-circle btn">
+      <label tabIndex={0} className="btn btn-ghost btn-circle">
         <div className="flex w-10 justify-center rounded-full">
           <MoreVertical />
         </div>

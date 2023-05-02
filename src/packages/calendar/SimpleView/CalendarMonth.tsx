@@ -34,6 +34,6 @@ export default function CalendarMonth<T extends CalendarItem>({
         ))}
       </>
     ),
-    [days, isFirstMonth]
+    [days, isFirstMonth, monthLabelStyle]
   );
 }

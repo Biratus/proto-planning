@@ -1,10 +1,18 @@
+import { prisma } from "@/lib/db/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isGet, notFound } from "../../../../lib/api";
-import { modules } from "../../../../lib/realData";
+import { isGet, notFound, ok } from "../../../../lib/api";
 
-export default async function handler(req:NextApiRequest, res:NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (isGet(req)) {
-    return modules.filter((m) => m.filiere == req.query.id);
+    const filiere = await prisma.filiere.findUnique({
+      where: { nom: req.query.id as string },
+      include: { modules: true },
+    });
+    if (filiere) return ok(res, filiere);
+    else return notFound(res, "Filiere");
   }
   return notFound(res, "URL NOT Mapped");
 }

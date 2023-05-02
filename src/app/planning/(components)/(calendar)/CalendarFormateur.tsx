@@ -1,8 +1,12 @@
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
-import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
-import { Formateur, ModuleEvent, RawModule } from "@/lib/types";
+import {
+  Formateur,
+  FormateurWithModule,
+  Module,
+  ModuleEvent,
+} from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
@@ -11,24 +15,25 @@ import {
   DayAndEvent,
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
-import { formatISO } from "date-fns/esm";
-import { DragEvent, useCallback, useMemo, useState } from "react";
+import { DragEvent, useCallback, useMemo } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FormateurView } from "./CalendarView";
-
+type CalendarFormateurProps = {
+  modules: Module[];
+  updateModules: (modules: Module[]) => void;
+};
 export default function CalendarFormateur<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  modules: originalModules,
+  modules,
+  updateModules,
   day,
   ...props
-}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent, E>) {
-  const [modules, setModules] = useState(originalModules);
-
+}: CalendarFormateurProps & CommonCalendarProps<ModuleEvent, E>) {
   const calendarData = useMemo(() => {
-    let data = toCalendarData(
-      modules.filter((m) => !isFormateurMissing(m)),
+    let data = toCalendarData<FormateurWithModule>(
+      modules,
       "formateur.mail",
       FormateurView
     );
@@ -64,7 +69,7 @@ export default function CalendarFormateur<
             targetWidth: evt.currentTarget.clientWidth,
             mouseOffsetX: evt.clientX - rect.x,
           },
-          props.time
+          props.timeSpan
         );
       }
       if (
@@ -81,21 +86,27 @@ export default function CalendarFormateur<
         );
       }
     },
-    [draggedModule, dropTarget, props.time]
+    [
+      draggedModule,
+      dropTarget,
+      props.timeSpan,
+      setDropTarget,
+      cleanDropTarget,
+      updateModules,
+    ]
   );
-
   const dropModule = useCallback(() => {
-    setModules((prevModules) => {
-      const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
-      newModules.push({
+    updateModules([
+      {
         ...draggedModule!,
-        start: formatISO(dropTarget!.interval.start),
-        end: formatISO(dropTarget!.interval.end),
-        formateur: dropTarget!.row as Formateur,
-      });
-      return newModules;
-    });
+        start: dropTarget!.interval.start,
+        end: dropTarget!.interval.end,
+        formateur: dropTarget!.row,
+      },
+    ]);
     cleanDropTarget();
+    // dataRefresh();
+    // cleanDropTarget();
   }, [modules, dropTarget, draggedModule]);
 
   return (

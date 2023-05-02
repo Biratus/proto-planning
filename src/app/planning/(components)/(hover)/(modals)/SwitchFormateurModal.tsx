@@ -1,4 +1,3 @@
-"use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
 import { Formateur, Module } from "@/lib/types";
@@ -49,20 +48,20 @@ export default function SwitchFormateurModal<T extends Module>({
       {module && (
         <>
           <ModuleTitle
-            name={module.name}
-            filiere={module.filiere}
+            name={module.nom}
+            filiere={module.filiere.nom}
             backButton={SwitchFormateurModalId}
           />
           {/* <div>Début : {formatFullPrettyDate(module.start)}</div>
           <div>Fin : {formatFullPrettyDate(module.end)}</div>
           <div>{JSON.stringify(module.formateur)}</div> */}
           <FormateurSelect
-            formateur={module.formateur}
+            formateur={module.formateur || undefined}
             forModule={module}
             setFormateur={onSelectFormateur}
           />
           <div className="modal-action w-full">
-            <button className="btn-success btn" onClick={submitForm}>
+            <button className="btn btn-success" onClick={submitForm}>
               Modifier
             </button>
           </div>

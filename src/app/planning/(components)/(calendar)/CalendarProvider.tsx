@@ -1,10 +1,18 @@
 import { JoursFeries } from "@/lib/calendar/joursFeries";
 import { format } from "@/lib/date";
-import { ModuleEvent } from "@/lib/types";
+import { Filiere, ModuleEvent } from "@/lib/types";
 import { Interval } from "@/packages/calendar/types";
 import { isWithinInterval } from "date-fns";
 import { RefObject } from "react";
 import { create } from "zustand";
+
+/*
+  ------ Data
+*/
+
+/*
+  ------ SpecialDays
+*/
 
 export type SpecialDaysProps = {
   joursFeries: JoursFeries;
@@ -49,14 +57,14 @@ interface CalendarHoverStore {
   focus: ModuleEvent | null;
   tempFocus: ModuleEvent[];
   openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) => void;
-  filiereFocus: string;
+  filiereFocus: Filiere | null;
 }
 
 const initialHoverProps = {
   anchor: null,
   focus: null,
   tempFocus: [],
-  filiereFocus: "",
+  filiereFocus: null,
 };
 
 const calendarHoverStore = create<CalendarHoverStore>((set, get) => ({
@@ -100,7 +108,7 @@ export const openOverlapUI = calendarHoverStore.getState().openOverlapUI;
 export const useFocusedFiliere = () =>
   calendarHoverStore((state) => state.filiereFocus);
 
-export const setFocusedFiliere = (filiere: string) =>
+export const setFocusedFiliere = (filiere: Filiere) =>
   calendarHoverStore.setState({ filiereFocus: filiere });
 
 /*

@@ -1,3 +1,4 @@
+import { isValid, parseISO } from "date-fns";
 import { DragEvent, PropsWithChildren } from "react";
 import { defaultEventElement } from "./fullCalendar/CalendarEvent";
 import { defaultSimpleEventElement } from "./SimpleView/CalendarCell";
@@ -13,10 +14,10 @@ export type Interval = {
   start: Date;
   end: Date;
 };
-export type SerializedInterval = {
-  start: string;
-  end: string;
+export type Serialized<T> = {
+  [K in keyof T]: T[K] extends Date ? string : T[K];
 };
+export type SerializedInterval = Serialized<Interval>;
 
 export type IntervalWithDuration = Interval & {
   duration: number;
@@ -28,8 +29,6 @@ export type Month = {
   day: Date;
   nbOfDays: number;
 };
-
-export type TimeProps = { start: Date; monthLength: number };
 
 /*
   -----
@@ -82,7 +81,7 @@ export type CommonCalendarProps<
   T extends CalendarItem,
   E extends CalendarEventComponent<T> = typeof defaultEventElement
 > = {
-  time: TimeProps;
+  timeSpan: Interval;
   day: DayProps;
   zoom: number;
   event: EventProps<T, E>; // eventProps
@@ -213,7 +212,7 @@ export type CalendarSimpleProps<
   T extends CalendarItem,
   E extends CalendarEventComponent<T> = typeof defaultSimpleEventElement
 > = {
-  time: TimeProps;
+  timeSpan: Interval;
   events: T[];
   zoom: number;
   eventProps: SimpleEventProps<T, E>;
@@ -221,3 +220,18 @@ export type CalendarSimpleProps<
   style?: Style;
   monthLabelStyle?: Style;
 };
+
+export function deserialize<T>(serialized: Serialized<T>): T {
+  const result = Object.create(Object.getPrototypeOf(serialized)) as T;
+  for (const key in serialized) {
+    if (serialized.hasOwnProperty(key)) {
+      const value = serialized[key];
+      if (typeof value === "string" && isValid(parseISO(value))) {
+        result[key as keyof T] = parseISO(value) as any;
+      } else {
+        result[key as keyof T] = value as any;
+      }
+    }
+  }
+  return result;
+}

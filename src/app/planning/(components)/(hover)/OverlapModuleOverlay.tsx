@@ -74,7 +74,7 @@ export default function OverlapModuleOverlay() {
                 onDragStart={() => dragStart(mod)}
                 //   onDragEnd={onClose}
               >
-                <span className="truncate">{mod.name}</span>
+                <span className="truncate">{mod.nom}</span>
               </div>
             ))}
           </div>

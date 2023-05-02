@@ -3,30 +3,43 @@ import {
   IntervalWithDuration,
 } from "@/packages/calendar/types";
 
+export interface Filiere {
+  nom: string;
+  modules?: Module[];
+}
+
+export interface SerializedFiliere {
+  nom: string;
+  modules?: SerializedModule[];
+}
+
 export interface Formateur {
   mail: string;
   nom: string;
   prenom: string;
+  modules?: Module[];
 }
 
-export interface RawModule {
-  id: string;
-  name: string;
-  start: string;
-  end: string;
+export type FormateurWithModule = Formateur & {
+  modules: Module[];
+};
+export type SerializedFormateur = Formateur & {
+  modules: SerializedModule[];
+};
+export type Serialized<T> = {
+  [K in keyof T]: T[K] extends Date ? string : T[K];
+};
+
+export type Module = {
+  id: number;
+  nom: string;
   theme: string;
-  filiere: string;
-  formateur: Formateur;
-}
-export interface Module {
-  id: string;
-  name: string;
+  filiere: Filiere;
+  formateur?: Formateur | null;
   start: Date;
   end: Date;
-  theme: string;
-  filiere: string;
-  formateur: Formateur;
-}
+};
+export type SerializedModule = Serialized<Module>;
 
 export type ModuleEvent = Module &
   IntervalWithDuration & {
@@ -41,3 +54,9 @@ export type CalendarView<K> = {
   labelTitle: (key: K) => string;
   LabelComponent: CalendarRowLabel<K>;
 };
+
+export interface ModuleHistory extends Module {
+  module_id: number;
+  modified_by: number;
+  modified_datetime: Date;
+}

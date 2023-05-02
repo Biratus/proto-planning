@@ -13,15 +13,9 @@ export default function MonthNavigationUI({
       <FastSelectMonth
         focusedMonth={month}
         onChange={setMonth}
-        // color="ajcBlue"
         disabled={set}
       />
-      <button
-        className="btn"
-        onClick={prevMonth}
-        // color="ajcBlue"
-        disabled={prev}
-      >
+      <button className="btn" onClick={prevMonth} disabled={prev}>
         <ArrowLeftCircle />
         <span className="mx-2">Mois précédent</span>
       </button>

@@ -38,15 +38,3 @@ export const theme = {
     // paper: backgroundColor[mode].paper,
   }),
 };
-
-// export const themeForMode = (mode) => {
-//   let newTheme = {};
-//   for (let key in theme) {
-//     if (typeof theme[key] === "function") newTheme[key] = theme[key](mode);
-//     else
-//       newTheme[key] = theme[key].hasOwnProperty(mode)
-//         ? { ...theme[key][mode] }
-//         : { ...theme[key] };
-//   }
-//   return newTheme;
-// };

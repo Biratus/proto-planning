@@ -1,8 +1,8 @@
-"use client";
+// "use client";
 import { checkOverlapModules, toCalendarData } from "@/lib/calendar/calendar";
 import { getTargetDay } from "@/lib/mouseEvent";
 import { mergeStyle } from "@/lib/style";
-import { ModuleEvent, RawModule } from "@/lib/types";
+import { Filiere, Module, ModuleEvent } from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
@@ -10,22 +10,30 @@ import {
   CommonCalendarProps,
   DayAndEvent,
 } from "@/packages/calendar/types";
-import { addDays, formatISO, isSameDay } from "date-fns";
-import { DragEvent, useCallback, useMemo, useState } from "react";
+import { addDays, isSameDay } from "date-fns";
+import { DragEvent, useCallback, useMemo } from "react";
 import { setDraggedModule, useDropTarget } from "./CalendarProvider";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FiliereView } from "./CalendarView";
-
+type CalendarFiliereProps = {
+  modules: Module[];
+  updateModules: (modules: Module[]) => void;
+  // dataRefresh: () => void;
+};
 export default function CalendarFiliere<
   E extends CalendarEventComponent<ModuleEvent>
 >({
-  modules: originalModules,
+  modules,
+  updateModules,
   day,
   ...props
-}: { modules: RawModule[] } & CommonCalendarProps<ModuleEvent, E>) {
-  const [modules, setModules] = useState(originalModules);
+}: CalendarFiliereProps & CommonCalendarProps<ModuleEvent, E>) {
   const calendarData = useMemo(() => {
-    const data = toCalendarData(modules, "filiere", FiliereView);
+    const data = toCalendarData<Filiere & { modules: Module[] }>(
+      modules,
+      "filiere.nom",
+      FiliereView
+    );
     checkOverlapModules(data);
     return data;
   }, [modules]);
@@ -54,7 +62,7 @@ export default function CalendarFiliere<
             targetWidth: evt.currentTarget.clientWidth,
             mouseOffsetX: evt.clientX - rect.x,
           },
-          props.time
+          props.timeSpan
         );
       }
       if (!dropTarget || !isSameDay(targetDay, dropTarget.interval.start)) {
@@ -64,21 +72,26 @@ export default function CalendarFiliere<
         });
       }
     },
-    [draggedModule, dropTarget, props.time]
+    [
+      draggedModule,
+      dropTarget,
+      props.timeSpan,
+      setDropTarget,
+      cleanDropTarget,
+      updateModules,
+    ]
   );
 
   const dropModule = useCallback(() => {
-    setModules((prevModules) => {
-      const newModules = prevModules.filter((m) => m.id != draggedModule!.id);
-      newModules.push({
+    updateModules([
+      {
         ...draggedModule!,
-        start: formatISO(dropTarget!.interval.start),
-        end: formatISO(dropTarget!.interval.end),
-      });
-      return newModules;
-    });
+        start: dropTarget!.interval.start,
+        end: dropTarget!.interval.end,
+      },
+    ]);
     cleanDropTarget();
-  }, [draggedModule, modules, dropTarget]);
+  }, [draggedModule, dropTarget]);
 
   return (
     <FullCalendar
@@ -99,17 +112,17 @@ export default function CalendarFiliere<
           else evt.preventDefault();
         },
         enter: (dayAndEvent, row, evt) => {
-          if (draggedModule!.filiere !== row) {
+          if (draggedModule!.filiere!.nom !== row.nom) {
             cleanDropTarget();
             return;
           }
           changeDropTarget(dayAndEvent, evt);
         },
         leave: (_, row, __) => {
-          if (draggedModule!.filiere !== row) cleanDropTarget();
+          if (draggedModule!.filiere!.nom !== row.nom) cleanDropTarget();
         },
         drop: (_, row, __) => {
-          if (draggedModule!.filiere !== row) {
+          if (draggedModule!.filiere!.nom !== row.nom) {
             cleanDropTarget();
             return;
           }
@@ -117,7 +130,7 @@ export default function CalendarFiliere<
         },
         move: (dayAndEvent, row, evt) => {
           evt.preventDefault();
-          if (draggedModule!.filiere !== row) {
+          if (draggedModule!.filiere!.nom !== row.nom) {
             cleanDropTarget();
             return;
           }
