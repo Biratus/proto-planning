@@ -284,7 +284,7 @@ export default function CommonCalendar({
         )}
         <div className="my-2 flex gap-2">
           <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost gap-2 text-info">
+            <label tabIndex={0} className="btn-ghost btn gap-2 text-info">
               <span>Aide</span>
               <AlertCircle color="blue" />
             </label>
@@ -293,14 +293,16 @@ export default function CommonCalendar({
               className="card dropdown-content rounded-box w-[600px] border border-base-300 bg-base-100 shadow-lg"
             >
               <div className="card-body">
-                <h2 className="card-title">Aide sur l'outil de planning</h2>
+                <h2 className="card-title">
+                  Aide sur l&apos;outil de planning
+                </h2>
                 <p>
                   Naviguer dans le planning: <kbd className="kbd">shift</kbd> +{" "}
                   <kbd className="kbd">molette</kbd>
                 </p>
                 <p>
                   Vous pouvez cliquer sur les filières/formateurs et déplacer
-                  les modules à l'aide de la souris
+                  les modules à l&apos;aide de la souris
                 </p>
                 <LegendUI
                   title="Vacances scolaire"
@@ -354,5 +356,8 @@ function EventComponent({
 function eventOnClick(mod: ModuleEvent, ref: HTMLElement) {
   if (mod.overlap) {
     openOverlapUI(mod, ref);
-  } else setFocusModule(mod);
+  } else {
+    console.log("set focus");
+    setFocusModule(mod);
+  }
 }

@@ -3,7 +3,6 @@ import { format } from "@/lib/date";
 import { Filiere, ModuleEvent } from "@/lib/types";
 import { Interval } from "@/packages/calendar/types";
 import { isWithinInterval } from "date-fns";
-import { RefObject } from "react";
 import { create } from "zustand";
 
 /*
@@ -52,9 +51,9 @@ export const useSpecialDays = () =>
 */
 
 interface CalendarHoverStore {
-  popupMenu: RefObject<HTMLUListElement> | null;
   anchor: HTMLElement | null;
   focus: ModuleEvent | null;
+  overlapFocus: ModuleEvent | null;
   tempFocus: ModuleEvent[];
   openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) => void;
   filiereFocus: Filiere | null;
@@ -63,18 +62,16 @@ interface CalendarHoverStore {
 const initialHoverProps = {
   anchor: null,
   focus: null,
+  overlapFocus: null,
   tempFocus: [],
   filiereFocus: null,
 };
 
 const calendarHoverStore = create<CalendarHoverStore>((set, get) => ({
   ...initialHoverProps,
-  popupMenu: null,
   openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) =>
-    set({ anchor: ref, focus: mod }),
+    set({ anchor: ref, overlapFocus: mod }),
 }));
-export const setPopUpMenu = (ref: RefObject<HTMLUListElement>) =>
-  calendarHoverStore.setState({ popupMenu: ref });
 
 export const resetHoverProps = () => {
   calendarHoverStore.setState({ ...initialHoverProps });
@@ -99,7 +96,7 @@ export const setFocusModule = (mod: ModuleEvent) =>
 
 export const useOverlapModuleUI = () =>
   calendarHoverStore((state) => ({
-    focus: state.focus,
+    focus: state.overlapFocus,
     anchor: state.anchor,
   }));
 

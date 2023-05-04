@@ -23,6 +23,7 @@ import CommonCalendar from "../(components)/(calendar)/Calendar";
 import FiliereModal from "../(components)/(hover)/(modals)/FiliereModal";
 import ModuleModal from "../(components)/(hover)/(modals)/ModuleModal";
 import HoverElements from "../(components)/(hover)/HoverElements";
+import OverlapModuleOverlay from "../(components)/(hover)/OverlapModuleOverlay";
 import SwitchView from "../(components)/SwitchView";
 
 export const dynamic = "force-dynamic"; // To get searchParams in prod
@@ -87,6 +88,7 @@ export default async function PlanningPage({
           />
         </ZoomProvider>
       </MonthNavigationProvider>
+      <OverlapModuleOverlay />
       <FiliereModal />
       <ModuleModal />
       <HoverElements />

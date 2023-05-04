@@ -8,7 +8,6 @@ import {
 } from "../(calendar)/CalendarProvider";
 import SplitModuleModal from "./(modals)/SplitModuleModal";
 import SwitchFormateurModal from "./(modals)/SwitchFormateurModal";
-import OverlapModuleOverlay from "./OverlapModuleOverlay";
 
 export default function HoverElements() {
   const {
@@ -51,7 +50,6 @@ export default function HoverElements() {
         setModules={setTempModules}
         submit={submitSplitForm}
       />
-      <OverlapModuleOverlay />
     </>
   );
 }

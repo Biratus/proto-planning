@@ -98,8 +98,8 @@ function MoreActions({
   actions: { labelId: string; content: ReactNode }[];
 }) {
   return (
-    <div className="dropdown-end dropdown">
-      <label tabIndex={0} className="btn btn-ghost btn-circle">
+    <div className="dropdown dropdown-end">
+      <label tabIndex={0} className="btn-ghost btn-circle btn">
         <div className="flex w-10 justify-center rounded-full">
           <MoreVertical />
         </div>

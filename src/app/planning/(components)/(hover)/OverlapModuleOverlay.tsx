@@ -5,8 +5,10 @@ import { eachDayOfInterval } from "date-fns";
 import { useCallback, useMemo, useRef } from "react";
 import {
   setDraggedModule,
+  setFocusModule,
   useOverlapModuleUI,
 } from "../(calendar)/CalendarProvider";
+import { ModuleDetailModalId } from "./(modals)/ModuleModal";
 
 export const overlayID = "overlapModuleOverlayId";
 export default function OverlapModuleOverlay() {
@@ -61,7 +63,8 @@ export default function OverlapModuleOverlay() {
             }}
           >
             {focus.overlappedModules.map((mod: ModuleEvent, i: number) => (
-              <div
+              <label
+                htmlFor={ModuleDetailModalId}
                 key={i}
                 className="flex cursor-grab items-center px-2 font-bold hover:opacity-80"
                 style={{
@@ -72,10 +75,10 @@ export default function OverlapModuleOverlay() {
                 }}
                 draggable
                 onDragStart={() => dragStart(mod)}
-                //   onDragEnd={onClose}
+                onClick={() => setFocusModule(mod)}
               >
                 <span className="truncate">{mod.nom}</span>
-              </div>
+              </label>
             ))}
           </div>
         )}
