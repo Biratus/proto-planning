@@ -22,7 +22,7 @@ type CalendarFiliereProps = {
 export default function CalendarFiliere({
   modules,
   updateModules,
-  day,
+  dayStyle,
   ...props
 }: CalendarFiliereProps & CommonCalendarProps<ModuleEvent>) {
   const calendarData = useMemo(() => {
@@ -95,13 +95,10 @@ export default function CalendarFiliere({
       {...props}
       data={calendarData}
       LabelComponent={FiliereView.LabelComponent}
-      day={{
-        ...day,
-        styleProps: (date) => {
-          let style = day.styleProps(date);
-          if (isDropTarget(date)) style = mergeStyle(style, dropTargetStyle);
-          return style;
-        },
+      dayStyle={(date) => {
+        let style = dayStyle(date);
+        if (isDropTarget(date)) style = mergeStyle(style, dropTargetStyle);
+        return style;
       }}
       drag={{
         drag: (dayAndEvent, row, evt) => {

@@ -32,6 +32,7 @@ import CalendarFormateur from "./CalendarFormateur";
 import { useSpecialDays } from "./CalendarProvider";
 import { calendarDayStyle, monthLabel } from "./CalendarStyle";
 import { FiliereView, FormateurView } from "./CalendarView";
+import DayComponent from "./DayComponent";
 import EventComponent from "./EventComponent";
 
 const zonesVacances = ["Zone A", "Zone B", "Zone C"];
@@ -134,11 +135,18 @@ export default function CommonCalendar({
       zoom,
       timeSpan,
       event: EventComponent,
-      day: dayProps,
       monthLabelStyle: monthLabel,
       daysHeader: dayHeader,
+      day: DayComponent,
+      dayStyle: (date: Date) => {
+        let style = {
+          ...calendarDayStyle(date),
+        };
+        if (isJoursFeries(date)) style.className = "text-red-600";
+        return style;
+      },
     }),
-    [zoom, timeSpan, dayHeader, dayProps]
+    [zoom, timeSpan, dayHeader]
   );
 
   const updateCalendarData = (newModules: Module[]) => {
@@ -205,14 +213,7 @@ export default function CommonCalendar({
   return (
     <>
       <div>
-        <DataDisplay
-        // views={displayViews.map((v) => ({
-        //   ...v,
-        //   disabled: Boolean(v.for) && v.for != view,
-        //   selected: v.label == eventLabel.label,
-        // }))}
-        // setSelected={setEventLabel}
-        />
+        <DataDisplay />
 
         {isModifying.current && (
           <UpdateDataUI

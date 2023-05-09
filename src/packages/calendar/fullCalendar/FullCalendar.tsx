@@ -12,13 +12,7 @@ import {
 } from "date-fns";
 import { useMemo } from "react";
 import { CalendarItem, CalendarProps, Month, Style } from "../types";
-import {
-  formatDayDate,
-  formatMonthYear,
-  formatSimpleDayLabel,
-  makeMonths,
-  nbOfDaysBetween,
-} from "../utils";
+import { formatMonthYear, makeMonths, nbOfDaysBetween } from "../utils";
 import CalendarRow from "./CalendarRow";
 import FullCalendarProvider from "./FullCalendarProvider";
 
@@ -34,11 +28,9 @@ export default function FullCalendar<K, T extends CalendarItem>({
   monthLabelStyle,
   drag,
   daysHeader,
+  dayStyle,
 }: CalendarProps<K, T>) {
-  const {
-    tooltip: { hasTooltip, tooltipInfo },
-    styleProps,
-  } = day;
+  const DayComponent = day;
 
   const months = useMemo(
     () => makeMonths(timeSpan.start, timeSpan.end),
@@ -60,15 +52,16 @@ export default function FullCalendar<K, T extends CalendarItem>({
 
   const daysRow = useMemo(() => {
     return days.map((day, i) => (
-      <Day
+      <DayComponent
         key={i}
-        first={i == 0}
-        day={day}
-        style={styleProps(day)}
-        specialInfo={hasTooltip(day) ? tooltipInfo(day) : null}
+        className={cn({
+          "col-start-2": i == 0,
+          "col-start-auto": i != 0,
+        })}
+        date={day}
       />
     ));
-  }, [days, hasTooltip, tooltipInfo, styleProps]);
+  }, [days]);
 
   const monthRow = useMemo(() => {
     return months.map((m, i) => (
@@ -129,8 +122,8 @@ export default function FullCalendar<K, T extends CalendarItem>({
     <FullCalendarProvider
       {...{
         days,
+        dayStyle,
         eventProps,
-        dayStyle: styleProps,
         drag,
       }}
     >
@@ -188,33 +181,6 @@ function Month({
   );
 }
 
-function Day({
-  day,
-  first,
-  style,
-  specialInfo,
-}: {
-  day: Date;
-  first: boolean;
-  style: Style;
-  specialInfo?: string;
-}) {
-  return (
-    <div
-      className={cn({
-        [`text-center ${style.className}`]: true,
-        "col-start-2": first,
-        "col-start-auto": !first,
-        tooltip: specialInfo,
-      })}
-      style={{ ...style.props }}
-      data-tip={specialInfo}
-    >
-      <div>{formatSimpleDayLabel(day)}</div>
-      <div>{formatDayDate(day)}</div>
-    </div>
-  );
-}
 const dataOverlapInterval = (data: Interval[], interval: Interval) => {
   return data.some(({ start, end }) =>
     areIntervalsOverlapping({ start, end }, interval, { inclusive: true })

@@ -59,6 +59,10 @@ export type CalendarEventComponent<T extends CalendarItem> = React.FC<
   CalendarEventComponentProps<T>
 >;
 
+export type DayComponentProps = {
+  date: Date;
+} & React.HTMLAttributes<HTMLElement>;
+
 type DayHeaderData = IntervalWithDuration & {
   label: string;
   info: string;
@@ -67,12 +71,13 @@ type DayHeaderData = IntervalWithDuration & {
 };
 // Props globale du calendrier
 export type CommonCalendarProps<T extends CalendarItem> = {
-  timeSpan: Interval;
-  day: DayProps; // Prop pour l'affichage des jours
+  timeSpan: Interval; // Interval du calendrier
+  day: React.FC<DayComponentProps>; // Prop pour l'affichage des jours
   zoom: number;
   event: CalendarEventComponent<T>; // Le component utilisé pour affiché les évenements
   monthLabelStyle: Style;
   daysHeader?: DayHeaderData[]; // Vacances scolaire
+  dayStyle: (day: Date) => Style; // Style des jours sans évenements
 };
 
 // Props spécifique à un calendrier
