@@ -11,13 +11,7 @@ import {
   startOfMonth,
 } from "date-fns";
 import { useMemo } from "react";
-import {
-  CalendarEventComponent,
-  CalendarItem,
-  CalendarProps,
-  Month,
-  Style,
-} from "../types";
+import { CalendarItem, CalendarProps, Month, Style } from "../types";
 import {
   formatDayDate,
   formatMonthYear,
@@ -30,11 +24,7 @@ import FullCalendarProvider from "./FullCalendarProvider";
 
 const minCellSize = 20;
 
-export default function FullCalendar<
-  K,
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
->({
+export default function FullCalendar<K, T extends CalendarItem>({
   data: originalData,
   LabelComponent,
   timeSpan,
@@ -44,7 +34,7 @@ export default function FullCalendar<
   monthLabelStyle,
   drag,
   daysHeader,
-}: CalendarProps<K, T, E>) {
+}: CalendarProps<K, T>) {
   const {
     tooltip: { hasTooltip, tooltipInfo },
     styleProps,

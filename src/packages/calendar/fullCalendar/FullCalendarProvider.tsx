@@ -5,72 +5,54 @@ import {
   CalendarEventComponent,
   CalendarItem,
   DragEvents,
-  EventProps,
   Style,
 } from "../types";
 
-type FullCalendarProps<
-  K,
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
-> = {
+type FullCalendarProps<K, T extends CalendarItem> = {
   days: Date[];
-  eventProps: EventProps<T, E>;
+  eventProps: CalendarEventComponent<T>;
   dayStyle: (date: Date) => Style;
   drag: DragEvents<K, T>;
 };
 
-const CalendarContext = createContext<FullCalendarStore<any, any, any> | null>(
-  null
-);
+const CalendarContext = createContext<FullCalendarStore<any, any> | null>(null);
 
-type FullCalendarStore<
-  K,
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
-> = UseBoundStore<StoreApi<FullCalendarProps<K, T, E>>>;
+type FullCalendarStore<K, T extends CalendarItem> = UseBoundStore<
+  StoreApi<FullCalendarProps<K, T>>
+>;
 
-type CreateFullCalendarStoreFunction = <
-  K,
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
->(
+type CreateFullCalendarStoreFunction = <K, T extends CalendarItem>(
   days: Date[],
-  eventProps: EventProps<any & T, E>,
+  eventProps: CalendarEventComponent<T>,
   dayStyle: (date: Date) => Style,
   drag: DragEvents<K, T>
-) => FullCalendarStore<K, T, E>;
+) => FullCalendarStore<K, T>;
 
 const calendarStore: CreateFullCalendarStoreFunction = <
   K,
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
+  T extends CalendarItem
 >(
   days: Date[],
-  eventProps: EventProps<any & T, E>,
+  eventProps: CalendarEventComponent<T>,
   dayStyle: (date: Date) => Style,
   drag: DragEvents<K, T>
 ) =>
-  create<FullCalendarProps<K, T, E>>((set) => ({
+  create<FullCalendarProps<K, T>>((set) => ({
     days,
     eventProps,
     dayStyle,
     drag,
   }));
 
-export default function FullCalendarProvider<
-  K,
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
->({
+export default function FullCalendarProvider<K, T extends CalendarItem>({
   days,
   eventProps,
   dayStyle,
   drag,
   children,
-}: PropsWithChildren & FullCalendarProps<K, T, E>) {
+}: PropsWithChildren & FullCalendarProps<K, T>) {
   const store = useMemo(
-    () => calendarStore<K, T, E>(days, eventProps, dayStyle, drag),
+    () => calendarStore<K, T>(days, eventProps, dayStyle, drag),
     [days, eventProps, dayStyle, drag]
   );
 
@@ -104,15 +86,11 @@ export function useFullCalendarRow<
   }));
 }
 
-type CalendarEventStore<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
-> = EventProps<T, E>;
+type CalendarEventStore<T extends CalendarItem> = CalendarEventComponent<T>;
 
 export function useFullCalendarEvent<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
->(): CalendarEventStore<T, E> {
+  T extends CalendarItem
+>(): CalendarEventStore<T> {
   const store = useContext(CalendarContext); // as FullCalendarStore<any, T>;
   if (!store)
     throw new Error(

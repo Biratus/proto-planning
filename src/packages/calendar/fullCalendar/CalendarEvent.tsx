@@ -2,7 +2,6 @@
 
 import {
   CalendarEvent as CalendarEventType,
-  CalendarEventComponent,
   CalendarEventComponentProps,
   CalendarItem,
 } from "../types";
@@ -16,29 +15,25 @@ export const defaultEventElement = ({
   <div {...props}>{children}</div>
 );
 
-export default function CalendarEvent<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T> = typeof defaultEventElement
->({ day: { event, span }, ...props }: { day: CalendarEventType<T> }) {
-  const { onClick, style, label, as } = useFullCalendarEvent<T, E>();
-
-  const styleProps = style(event);
+export default function CalendarEvent<T extends CalendarItem>({
+  day: { event, span },
+  ...props
+}: {
+  day: CalendarEventType<T>;
+}) {
+  const as = useFullCalendarEvent<T>();
 
   const Component = as ?? defaultEventElement;
 
   return (
     <Component
-      className={`flex cursor-pointer items-center hover:opacity-60 ${styleProps.className}`}
+      className={`flex cursor-pointer items-center hover:opacity-60`}
       style={{
         gridColumnEnd: `span ${span}`,
-        ...styleProps.props,
       }}
-      onClick={(evt) => onClick(event, evt.currentTarget)}
       {...props}
       draggable
       event={event}
-    >
-      <span className="truncate">{label(event)}</span>
-    </Component>
+    />
   );
 }

@@ -1,6 +1,5 @@
 import { isValid, parseISO } from "date-fns";
 import { DragEvent, PropsWithChildren } from "react";
-import { defaultEventElement } from "./fullCalendar/CalendarEvent";
 import { defaultSimpleEventElement } from "./SimpleView/CalendarCell";
 import { defaultSingleEventElement } from "./SingleData/CalendarRow";
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -51,7 +50,7 @@ export type DayProps = {
 
 // Props du component spécial pour FullCalendar
 export type CalendarEventComponentProps<T extends CalendarItem> = {
-  event?: T;
+  event: T;
 } & PropsWithChildren &
   React.HTMLAttributes<HTMLElement>;
 
@@ -60,16 +59,6 @@ export type CalendarEventComponent<T extends CalendarItem> = React.FC<
   CalendarEventComponentProps<T>
 >;
 
-// Propritété des évenements
-export type EventProps<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
-> = {
-  onClick: (event: T, evt: HTMLElement) => void;
-  label: (event: T) => String;
-  style: (event: T) => Style;
-  as?: E; //Component spécial
-};
 type DayHeaderData = IntervalWithDuration & {
   label: string;
   info: string;
@@ -77,24 +66,20 @@ type DayHeaderData = IntervalWithDuration & {
   textColor: string;
 };
 // Props globale du calendrier
-export type CommonCalendarProps<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T> = typeof defaultEventElement
-> = {
+export type CommonCalendarProps<T extends CalendarItem> = {
   timeSpan: Interval;
-  day: DayProps;
+  day: DayProps; // Prop pour l'affichage des jours
   zoom: number;
-  event: EventProps<T, E>; // eventProps
+  event: CalendarEventComponent<T>; // Le component utilisé pour affiché les évenements
   monthLabelStyle: Style;
-  daysHeader?: DayHeaderData[];
+  daysHeader?: DayHeaderData[]; // Vacances scolaire
 };
 
 // Props spécifique à un calendrier
 export type CalendarProps<
   K,
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
-> = CommonCalendarProps<T, E> & {
+  T extends CalendarItem
+> = CommonCalendarProps<T> & {
   data: CalendarData<K, T>[];
   LabelComponent: CalendarRowLabel<K>;
   drag: DragEvents<K, T>;

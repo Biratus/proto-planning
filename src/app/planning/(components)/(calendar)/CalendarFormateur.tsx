@@ -10,7 +10,6 @@ import {
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
-  CalendarEventComponent,
   CommonCalendarProps,
   DayAndEvent,
 } from "@/packages/calendar/types";
@@ -23,14 +22,12 @@ type CalendarFormateurProps = {
   modules: Module[];
   updateModules: (modules: Module[]) => void;
 };
-export default function CalendarFormateur<
-  E extends CalendarEventComponent<ModuleEvent>
->({
+export default function CalendarFormateur({
   modules,
   updateModules,
   day,
   ...props
-}: CalendarFormateurProps & CommonCalendarProps<ModuleEvent, E>) {
+}: CalendarFormateurProps & CommonCalendarProps<ModuleEvent>) {
   const calendarData = useMemo(() => {
     let data = toCalendarData<FormateurWithModule>(
       modules,

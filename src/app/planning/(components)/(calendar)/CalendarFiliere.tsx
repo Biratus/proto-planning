@@ -6,7 +6,6 @@ import { Filiere, Module, ModuleEvent } from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
   CalendarEvent,
-  CalendarEventComponent,
   CommonCalendarProps,
   DayAndEvent,
 } from "@/packages/calendar/types";
@@ -20,14 +19,12 @@ type CalendarFiliereProps = {
   updateModules: (modules: Module[]) => void;
   // dataRefresh: () => void;
 };
-export default function CalendarFiliere<
-  E extends CalendarEventComponent<ModuleEvent>
->({
+export default function CalendarFiliere({
   modules,
   updateModules,
   day,
   ...props
-}: CalendarFiliereProps & CommonCalendarProps<ModuleEvent, E>) {
+}: CalendarFiliereProps & CommonCalendarProps<ModuleEvent>) {
   const calendarData = useMemo(() => {
     const data = toCalendarData<Filiere & { modules: Module[] }>(
       modules,

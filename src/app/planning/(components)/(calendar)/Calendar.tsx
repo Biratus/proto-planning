@@ -1,5 +1,5 @@
 "use client";
-import Legend, { useLegendStore } from "@/components/legend/Legend";
+import Legend from "@/components/legend/Legend";
 import LegendUI from "@/components/legend/LegendUI";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import {
@@ -10,15 +10,11 @@ import {
 import { getGrayscaleForLabels } from "@/lib/colors";
 import { apiUpdateModules } from "@/lib/dataAccess";
 import { deserialize } from "@/lib/date";
-import { isFormateurMissing } from "@/lib/realData";
-import { mergeStyle } from "@/lib/style";
 import { Module, ModuleEvent, SerializedModule } from "@/lib/types";
 import {
-  CalendarEventComponentProps,
   CommonCalendarProps,
   SerializedInterval,
 } from "@/packages/calendar/types";
-import cn from "classnames";
 import {
   areIntervalsOverlapping,
   compareAsc,
@@ -27,50 +23,17 @@ import {
 } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { AlertCircle, AlertTriangle } from "react-feather";
-import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
-import { overlayID } from "../(hover)/OverlapModuleOverlay";
-import DataDisplay, { DisplayView } from "../DataDisplay";
+import { AlertCircle } from "react-feather";
+import DataDisplay from "../DataDisplay";
 import History from "../History";
 import UpdateDataUI from "../UpdateDataUI";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
-import {
-  openOverlapUI,
-  setFocusModule,
-  useSpecialDays,
-} from "./CalendarProvider";
-import {
-  calendarDayStyle,
-  eventStyle,
-  missingFormateurStyle,
-  monthLabel,
-  overlapModuleStyle,
-} from "./CalendarStyle";
+import { useSpecialDays } from "./CalendarProvider";
+import { calendarDayStyle, monthLabel } from "./CalendarStyle";
 import { FiliereView, FormateurView } from "./CalendarView";
-const displayViews: DisplayView[] = [
-  {
-    label: "Module",
-    print: (mod: ModuleEvent) => mod.nom,
-    disabled: false,
-    selected: false,
-  },
-  {
-    label: "Filière",
-    print: (mod: ModuleEvent) => mod.filiere!.nom,
-    for: FormateurView.key,
-    disabled: false,
-    selected: false,
-  },
-  {
-    label: "Formateur",
-    print: (mod: ModuleEvent) =>
-      mod.formateur!.nom + " " + mod.formateur!.prenom,
-    for: FiliereView.key,
-    disabled: false,
-    selected: false,
-  },
-];
+import EventComponent from "./EventComponent";
+
 const zonesVacances = ["Zone A", "Zone B", "Zone C"];
 const zoneColors = getGrayscaleForLabels([...zonesVacances]);
 
@@ -102,9 +65,7 @@ export default function CommonCalendar({
     return vacanceData;
   }, [vacancesScolaire]);
 
-  const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();
-  const [eventLabel, setEventLabel] = useState<DisplayView>(displayViews[0]);
 
   const [tempData, setTempData] = useState<Map<number, Module>>(new Map());
   const originalTempData = useMemo(() => {
@@ -135,29 +96,9 @@ export default function CommonCalendar({
     return calendarData;
   }, [serializedData, tempData]);
 
-  console.log("CommonCalendar", { calendarData, serializedData });
+  // console.log("CommonCalendar", { calendarData, serializedData });
 
   const isModifying = useRef(false);
-
-  // Props passed to Calendar
-  const eventProps = useMemo(
-    () => ({
-      as: EventComponent,
-      label: (mod: ModuleEvent) =>
-        mod.duration == 1 ? "" : eventLabel.print(mod),
-      onClick: eventOnClick,
-      style: (mod: ModuleEvent) => {
-        let style = eventStyle(colorOf(mod.theme));
-        if (mod.overlap) {
-          style = mergeStyle(style, overlapModuleStyle);
-        } else if (isFormateurMissing(mod)) {
-          style = mergeStyle(style, missingFormateurStyle(colorOf(mod.theme)));
-        }
-        return style;
-      },
-    }),
-    [eventLabel, colorOf]
-  );
 
   const dayProps = useMemo(
     () => ({
@@ -188,18 +129,17 @@ export default function CommonCalendar({
     [vacanceData, timeSpan]
   );
 
-  const commonProps: CommonCalendarProps<ModuleEvent, typeof EventComponent> =
-    useMemo(
-      () => ({
-        zoom,
-        timeSpan,
-        event: eventProps,
-        day: dayProps,
-        monthLabelStyle: monthLabel,
-        daysHeader: dayHeader,
-      }),
-      [zoom, timeSpan, dayHeader, eventProps, dayProps]
-    );
+  const commonProps: CommonCalendarProps<ModuleEvent> = useMemo(
+    () => ({
+      zoom,
+      timeSpan,
+      event: EventComponent,
+      day: dayProps,
+      monthLabelStyle: monthLabel,
+      daysHeader: dayHeader,
+    }),
+    [zoom, timeSpan, dayHeader, dayProps]
+  );
 
   const updateCalendarData = (newModules: Module[]) => {
     isModifying.current = true;
@@ -266,12 +206,12 @@ export default function CommonCalendar({
     <>
       <div>
         <DataDisplay
-          views={displayViews.map((v) => ({
-            ...v,
-            disabled: Boolean(v.for) && v.for != view,
-            selected: v.label == eventLabel.label,
-          }))}
-          setSelected={setEventLabel}
+        // views={displayViews.map((v) => ({
+        //   ...v,
+        //   disabled: Boolean(v.for) && v.for != view,
+        //   selected: v.label == eventLabel.label,
+        // }))}
+        // setSelected={setEventLabel}
         />
 
         {isModifying.current && (
@@ -327,37 +267,4 @@ export default function CommonCalendar({
       {view === FormateurView.key && calendarFormateur}
     </>
   );
-}
-
-function EventComponent({
-  event: mod,
-  children,
-  ...props
-}: CalendarEventComponentProps<ModuleEvent>) {
-  return (
-    <label
-      htmlFor={mod!.overlap ? overlayID : ModuleDetailModalId}
-      {...props}
-      className={`pl-1 ${props.className}`}
-    >
-      {mod!.overlap ? (
-        <AlertTriangle
-          color="red"
-          className={cn({ "ml-2": mod!.duration != 1 })}
-        />
-      ) : (
-        children
-      )}
-    </label>
-  );
-}
-
-// Utils for common props
-function eventOnClick(mod: ModuleEvent, ref: HTMLElement) {
-  if (mod.overlap) {
-    openOverlapUI(mod, ref);
-  } else {
-    console.log("set focus");
-    setFocusModule(mod);
-  }
 }
