@@ -118,6 +118,7 @@ export default function FiliereModal() {
                         {formatFullDate(mod.end)}
                       </span>
                       : {mod.nom}
+                      {mod.id}
                     </div>
                   ))}
                 </div>
@@ -134,8 +135,8 @@ export default function FiliereModal() {
         </div>
         <div className="collapse-content">
           <div className="flex flex-col justify-start gap-2 p-5">
-            {stagiaires.map((stagiaire) => (
-              <div key={stagiaire} className="flex items-center ">
+            {stagiaires.map((stagiaire, i) => (
+              <div key={i} className="flex items-center ">
                 <User className="mr-2" />
                 {stagiaire}
               </div>

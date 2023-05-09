@@ -5,7 +5,7 @@ import { serializeDate } from "@/lib/date";
 import { prisma } from "@/lib/db/prisma";
 import { SerializedModule } from "@/lib/types";
 import { notFound } from "next/navigation";
-import CalendarFiliere from "./Calendar";
+import CalendarFiliere from "./CalendarFiliere";
 
 export type FiliereParamPage = {
   params: { filiereId: string };

@@ -96,26 +96,25 @@ function moduleOverlap(m1: Module, m2: Module) {
 export function getOverlapModules(
   modules: Module[]
 ): (Interval & { overlappedModules: Module[] })[] {
-  let overlappedModules: Module[][] = [];
+  let overlappedModules: Set<Module>[] = [];
 
   for (let mod1 of modules) {
     for (let mod2 of modules) {
       if (mod1.id !== mod2.id && moduleOverlap(mod1, mod2)) {
-        if (
-          !overlappedModules.some((overlapped) => overlapped.includes(mod1))
-        ) {
-          overlappedModules.push([mod1, mod2]);
+        // 2 modules overlap
+        if (!overlappedModules.some((overlapped) => overlapped.has(mod1))) {
+          overlappedModules.push(new Set([mod1, mod2]));
         } else {
           const overlappIndex = overlappedModules.findIndex((overlapped) =>
-            overlapped.includes(mod1)
+            overlapped.has(mod1)
           );
-          overlappedModules[overlappIndex].push(mod2);
+          overlappedModules[overlappIndex].add(mod2);
         }
       }
     }
   }
 
-  return overlappedModules.map((mods) => ({
+  return overlappedModules.map(([...mods]) => ({
     start: mods.reduce(
       (acc: Date | null, m) =>
         (acc = acc == null || isBefore(m.start, acc) ? m.start : acc),
@@ -133,3 +132,27 @@ export function getOverlapModules(
 function sortModules(modules: Module[]) {
   return modules.sort((m1, m2) => m1.start.getTime() - m2.start.getTime());
 }
+
+/*
+Overlap test data
+
+[in] :
+  01/01 -> 04/01
+  03/01 -> 05/01
+
+  06/01 -> 07/01
+
+  08/01 -> 09/01
+  09/01 -> 10/01
+  10/01 -> 11/01
+
+[out]:
+  01/01 -> 05/01
+      01/01 -> 04/01
+      03/01 -> 05/01
+
+  08/01 -> 11/01
+      08/01 -> 09/01
+      09/01 -> 10/01
+      10/01 -> 11/01
+*/
