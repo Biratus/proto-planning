@@ -89,7 +89,7 @@ export function checkOverlapModules<K>(data: CalendarData<K, ModuleEvent>[]) {
   }
 }
 
-function moduleOverlap(m1: Module, m2: Module) {
+export function moduleOverlap(m1: Module, m2: Module) {
   return areIntervalsOverlapping(m1, m2, { inclusive: true });
 }
 

@@ -1,21 +1,24 @@
 "use client";
 
-import { useLegendStore } from "@/components/legend/Legend";
 import { useZoom } from "@/components/zoom/ZoomProvider";
 import ZoomUI from "@/components/zoom/ZoomUI";
+import { moduleDayLabel, moduleOverlap } from "@/lib/calendar/calendar";
 import { deserialize } from "@/lib/date";
-import { isFormateurMissing } from "@/lib/realData";
 import { Module, SerializedModule } from "@/lib/types";
 import CalendarDetail from "@/packages/calendar/SingleData/CalendarDetail";
+import { ComponentForEventProps } from "@/packages/calendar/types";
 import Link from "next/link";
-import { User } from "react-feather";
-import { missingFormateurStyle } from "../../(components)/(calendar)/CalendarStyle";
+import { useMemo } from "react";
+import { AlertTriangle, User } from "react-feather";
 import { FiliereView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
+import EventComponent from "./EventComponent";
 
 const viewWidth = 50;
 const minCellHeight = 1.3;
 const zoomCoef = 0.4;
+
+export type ModuleForSingleCalendar = Module & { overlap: boolean };
 
 export default function CalendarFiliere({
   name,
@@ -24,8 +27,14 @@ export default function CalendarFiliere({
   name: string;
   modules: SerializedModule[];
 }) {
-  const filiereData = modules.map((m) => deserialize<Module>(m));
-  const colorOf = useLegendStore((state) => state.colorOf);
+  const filiereData: ModuleForSingleCalendar[] = useMemo(() => {
+    let serMods = modules.map((m) => deserialize<Module>(m));
+
+    return serMods.map((mod) => ({
+      ...mod,
+      overlap: serMods.some((m) => moduleOverlap(mod, m) && mod.id != m.id),
+    }));
+  }, [modules]);
 
   const { zoom } = useZoom();
 
@@ -35,7 +44,7 @@ export default function CalendarFiliere({
       <div className="flex w-2/4 flex-row justify-between">
         <GlobalViewLink view={FiliereView.key} />
         <ZoomUI range={5} />
-        <button className="btn btn-link">
+        <button className="btn-link btn">
           <Link href={`/api/filiere/${name}/pdf`}>Export to PDF</Link>
         </button>
       </div>
@@ -43,24 +52,26 @@ export default function CalendarFiliere({
         <CalendarDetail
           cellHeight={`${minCellHeight + zoom * zoomCoef}em`}
           events={filiereData}
-          eventProps={{
-            style: (mod: Module) => {
-              return isFormateurMissing(mod)
-                ? missingFormateurStyle(colorOf(mod.theme))
-                : {
-                    className: "",
-                    props: { backgroundColor: colorOf(mod.theme) },
-                  };
-            },
-            onClick: (mod: Module) => {
-              console.log("TODO onClick", mod);
-            },
-            label: (mod: Module) => mod.nom,
-          }}
+          dayComponent={DayComponent}
+          eventComponent={EventComponent}
           additionalLabel="Formateur"
           AdditionalInfo={FormateurSimple}
         />
       </div>
+    </div>
+  );
+}
+
+function DayComponent({
+  event: module,
+  ...props
+}: ComponentForEventProps<ModuleForSingleCalendar>) {
+  return (
+    <div
+      className={`flex items-center gap-2 ${props.className}`}
+      style={{ ...props.style }}
+    >
+      {module.overlap && <AlertTriangle color="red" />} {moduleDayLabel(module)}
     </div>
   );
 }
