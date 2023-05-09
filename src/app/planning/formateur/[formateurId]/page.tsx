@@ -45,8 +45,6 @@ export default async function FormateurPage({
   const showLegend = useLegendStore.getState().showLegend;
   showLegend([...new Set(modules.map(({ theme }) => theme))]);
 
-  console.log("GOT " + modules.length + " modules");
-
   return (
     <MonthNavigationProvider focus={formatISO(month || monthStart)}>
       <ZoomProvider zoomKey={zoom_calendar_formateur}>

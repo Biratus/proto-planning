@@ -83,6 +83,5 @@ export async function getModuleHistoryOfFiliere(filiereName: string) {
   ON module_audit.formateur_mail = formateur.mail
   WHERE module_audit.filiere_nom = ${filiereName}
   ORDER BY module_audit.modified_datetime DESC`;
-  console.log({ data });
   return data;
 }

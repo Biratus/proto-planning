@@ -146,7 +146,6 @@ export const useFocusModule = () =>
     setTempModule: (mod: ModuleEvent) =>
       calendarHoverStore.setState({ tempFocus: [mod, mod] }),
     setTempModules: (mods: ModuleEvent[]) => {
-      console.log(mods);
       calendarHoverStore.setState({ tempFocus: mods });
     },
   }));

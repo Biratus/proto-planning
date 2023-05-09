@@ -46,7 +46,7 @@ export default function CalendarFormateur({
   );
   const { isJoursFeries, getJourFerie } = useJoursFeries();
 
-  console.log({ formateurData });
+  // console.log({ formateurData });
 
   const colorOf = useLegendStore((state) => state.colorOf);
   const { zoom } = useZoom();

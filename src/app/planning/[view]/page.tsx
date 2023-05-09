@@ -62,7 +62,6 @@ export default async function PlanningPage({
   };
   const datas = await getModulesOfPeriod(activInterval);
 
-  // console.log(`GOT ${datas.length} DATAS`);
   setSelectedView(view);
 
   return (
