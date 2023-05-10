@@ -1,7 +1,4 @@
 import { useLegendStore } from "@/components/legend/Legend";
-import ZoomProvider from "@/components/zoom/ZoomProvider";
-import ZoomUI from "@/components/zoom/ZoomUI";
-import { zoom_calendar_filiere } from "@/hooks/localStorageStore";
 import { serialize } from "@/lib/date";
 import { getModuleHistoryOfFiliere } from "@/lib/db/ModuleAuditRepository";
 import { prisma } from "@/lib/db/prisma";
@@ -11,6 +8,7 @@ import { FiliereView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 import FiliereHistory from "./FiliereHistory";
 import FilierePage from "./FilierePage";
+import FiliereProvider from "./FiliereProvider";
 
 export type FiliereParamPage = {
   params: { filiereId: string };
@@ -38,6 +36,11 @@ export default async function Page({
 
   useLegendStore.getState().showLegend([...new Set(allThemes)]);
 
+  // initializeStore(
+  //   filiereData!.modules.map((m) => ({ ...m, filiere: { nom: filiereId } })),
+  //   filiereHistory
+  // );
+
   return (
     <div>
       <h2 className="text-center">{filiereId}</h2>
@@ -49,26 +52,22 @@ export default async function Page({
         </button>
       </div>
       <div className="flex justify-between">
-        <div className="w-1/2">
-          <ZoomProvider zoomKey={zoom_calendar_filiere}>
-            <ZoomUI range={5} />
-
-            <FilierePage
-              name={filiereId}
-              modules={filiereData.modules
-                .map(serialize)
-                .map((m) => ({ ...m, filiere: { nom: filiereId } }))}
-            />
-          </ZoomProvider>
-        </div>
-        <div className="w-1/2">
-          <FiliereHistory
-            history={filiereHistory}
-            currentData={filiereData.modules
-              .map(serialize)
-              .map((m) => ({ ...m, filiere: { nom: filiereId } }))}
-          />
-        </div>
+        <FiliereProvider
+          filiereData={filiereData!.modules
+            .map((m) => ({
+              ...m,
+              filiere: { nom: filiereId },
+            }))
+            .map(serialize)}
+          filiereHistory={filiereHistory.map(serialize)}
+        >
+          <div className="w-2/3">
+            <FilierePage />
+          </div>
+          <div className="w-1/2">
+            <FiliereHistory />
+          </div>
+        </FiliereProvider>
       </div>
     </div>
   );
