@@ -101,25 +101,6 @@ export default function CommonCalendar({
 
   const isModifying = useRef(false);
 
-  const dayProps = useMemo(
-    () => ({
-      tooltip: {
-        hasTooltip: (d: Date) => isJoursFeries(d),
-        tooltipInfo: (d: Date) => {
-          if (isJoursFeries(d)) return getJourFerie(d);
-        },
-      },
-      styleProps: (date: Date) => {
-        let style = {
-          ...calendarDayStyle(date),
-        };
-        if (isJoursFeries(date)) style.className = "text-red-600";
-        return style;
-      },
-    }),
-    [isJoursFeries, getJourFerie]
-  );
-
   const dayHeader = useMemo(
     () =>
       vacanceData

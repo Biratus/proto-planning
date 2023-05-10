@@ -3,7 +3,7 @@ import { isFormateurMissing } from "@/lib/realData";
 import { ComponentForEventProps } from "@/packages/calendar/types";
 import { useMemo } from "react";
 import { missingFormateurStyle } from "../../(components)/(calendar)/CalendarStyle";
-import { ModuleForSingleCalendar } from "./CalendarFiliere";
+import { ModuleForSingleCalendar } from "./FilierePage";
 
 export default function EventComponent({
   event: module,
