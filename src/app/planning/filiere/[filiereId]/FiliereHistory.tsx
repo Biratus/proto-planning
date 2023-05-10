@@ -4,6 +4,7 @@ import { formatFullDate, formatFullPrettyDate, formatTime } from "@/lib/date";
 import { Formateur } from "@/lib/types";
 import { Interval } from "@/packages/calendar/types";
 import cn from "classnames";
+import { isSameDay } from "date-fns";
 import { Eye, EyeOff, RotateCcw } from "react-feather";
 import { ModuleModification, useFiliereStore } from "./FiliereProvider";
 
@@ -55,6 +56,15 @@ function Modification({ modification }: { modification: ModuleModification }) {
   const { isVisible, toggleModificationVisibility } = useFiliereStore();
 
   const visible = isVisible(modification.id);
+
+  const sameDate =
+    isSameDay(modification.before.end, modification.after.end) &&
+    isSameDay(modification.before.start, modification.after.start);
+  const sameFormateur = compareFormateur(
+    modification.before.formateur,
+    modification.after.formateur
+  );
+
   return (
     <div className="group flex items-center gap-2">
       <div
@@ -64,8 +74,11 @@ function Modification({ modification }: { modification: ModuleModification }) {
       >
         <div className="font-bold">{modification.nom}</div>
         <div className="pl-3">
-          <DiffDates {...modification} />
-          <DiffFormateur {...modification} />
+          <DiffDates before={modification.before} after={modification.after} />
+          <DiffFormateur
+            before={modification.before}
+            after={modification.after}
+          />
         </div>
       </div>
       <div className="invisible group-hover:visible">
@@ -95,10 +108,11 @@ function Modification({ modification }: { modification: ModuleModification }) {
 function DiffFormateur({
   before,
   after,
+  className,
 }: {
   before: { formateur?: Formateur | null };
   after: { formateur?: Formateur | null };
-}) {
+} & React.HTMLAttributes<HTMLElement>) {
   const beforeText = before.formateur
     ? `${before.formateur.nom} ${before.formateur.prenom}`
     : "N/A";
@@ -106,24 +120,55 @@ function DiffFormateur({
     ? `${after.formateur.nom} ${after.formateur.prenom}`
     : "N/A";
   return (
-    <div>
-      {beforeText} &rarr; {afterText}
+    <div
+      className={cn({
+        "group-hover:visible": beforeText == afterText,
+        invisible: beforeText == afterText,
+      })}
+    >
+      {beforeText} &rarr;{" "}
+      <span
+        className={cn(className, {
+          "font-bold": beforeText != afterText,
+        })}
+      >
+        {afterText}
+      </span>
     </div>
   );
 }
 
-function DiffDates({ before, after }: { before: Interval; after: Interval }) {
+function DiffDates({
+  before,
+  after,
+  className,
+}: { before: Interval; after: Interval } & React.HTMLAttributes<HTMLElement>) {
+  const sameDate =
+    isSameDay(after.start, before.start) && isSameDay(after.end, before.end);
   return (
-    <div className="flex items-center gap-4">
+    <div
+      className={cn(`flex items-center gap-4 ${className}`, {
+        "group-hover:visible": sameDate,
+        invisible: sameDate,
+      })}
+    >
       <span>
         <div>Du {formatFullPrettyDate(before.start)}</div>
         <div>au {formatFullPrettyDate(before.end)}</div>
       </span>
       <span>&rarr;</span>
-      <span className="font-bold">
+      <span
+        className={cn({
+          "font-bold": !sameDate,
+        })}
+      >
         <div>Du {formatFullPrettyDate(after.start)}</div>
         <div>au {formatFullPrettyDate(after.end)}</div>
       </span>
     </div>
   );
+}
+
+function compareFormateur(form1?: Formateur | null, form2?: Formateur | null) {
+  return (!form1 && form2) || (form1 && !form2) || form1?.mail == form2?.mail;
 }
