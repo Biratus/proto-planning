@@ -25,7 +25,6 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AlertCircle } from "react-feather";
 import DataDisplay from "../DataDisplay";
-import History from "../History";
 import UpdateDataUI from "../UpdateDataUI";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
@@ -242,7 +241,6 @@ export default function CommonCalendar({
               </div>
             </div>
           </div>
-          <History refreshData={() => router.refresh()} />
         </div>
       </div>
       {view === FiliereView.key && calendarFiliere}
