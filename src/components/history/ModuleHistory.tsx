@@ -1,8 +1,6 @@
-import {
-  ModuleModification,
-  useFiliereStore,
-} from "@/app/planning/filiere/[filiereId]/FiliereProvider";
+import { useFiliereStore } from "@/app/planning/filiere/[filiereId]/FiliereProvider";
 import { formatFullDate, formatTime } from "@/lib/date";
+import { ModuleModification } from "@/lib/history";
 import cn from "classnames";
 import { Eye, EyeOff, RotateCcw } from "react-feather";
 import DiffDates from "./DiffDates";
