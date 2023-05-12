@@ -3,7 +3,7 @@ import { useLegendStore } from "@/components/legend/Legend";
 import { isFormateurMissing } from "@/lib/realData";
 import { mergeStyle } from "@/lib/style";
 import { ModuleEvent } from "@/lib/types";
-import { CalendarEventComponentProps } from "@/packages/calendar/types";
+import { ComponentForEventProps } from "@/packages/calendar/types";
 import cn from "classnames";
 import { useCallback, useMemo } from "react";
 import { AlertTriangle } from "react-feather";
@@ -24,7 +24,7 @@ export default function EventComponent({
   event: mod,
   children,
   ...props
-}: CalendarEventComponentProps<ModuleEvent>) {
+}: ComponentForEventProps<ModuleEvent>) {
   const colorOf = useLegendStore((state) => state.colorOf);
   const eventLabel = eventLabelDisplay();
 

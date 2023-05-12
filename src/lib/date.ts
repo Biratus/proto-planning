@@ -120,3 +120,18 @@ export function deserialize<T>(serialized: Serialized<T>): T {
   }
   return result;
 }
+
+export function serialize<T extends object>(data: T): Serialized<T> {
+  const result = Object.create(Object.getPrototypeOf(data)) as Serialized<T>;
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const value = data[key];
+      if (typeof value === "object" && dateFns.isValid(value)) {
+        result[key as keyof T] = dateFns.formatISO(value as Date) as any;
+      } else {
+        result[key as keyof T] = value as any;
+      }
+    }
+  }
+  return result;
+}

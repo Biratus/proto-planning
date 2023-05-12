@@ -25,7 +25,6 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AlertCircle } from "react-feather";
 import DataDisplay from "../DataDisplay";
-import History from "../History";
 import UpdateDataUI from "../UpdateDataUI";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
@@ -100,25 +99,6 @@ export default function CommonCalendar({
   // console.log("CommonCalendar", { calendarData, serializedData });
 
   const isModifying = useRef(false);
-
-  const dayProps = useMemo(
-    () => ({
-      tooltip: {
-        hasTooltip: (d: Date) => isJoursFeries(d),
-        tooltipInfo: (d: Date) => {
-          if (isJoursFeries(d)) return getJourFerie(d);
-        },
-      },
-      styleProps: (date: Date) => {
-        let style = {
-          ...calendarDayStyle(date),
-        };
-        if (isJoursFeries(date)) style.className = "text-red-600";
-        return style;
-      },
-    }),
-    [isJoursFeries, getJourFerie]
-  );
 
   const dayHeader = useMemo(
     () =>
@@ -261,7 +241,6 @@ export default function CommonCalendar({
               </div>
             </div>
           </div>
-          <History refreshData={() => router.refresh()} />
         </div>
       </div>
       {view === FiliereView.key && calendarFiliere}

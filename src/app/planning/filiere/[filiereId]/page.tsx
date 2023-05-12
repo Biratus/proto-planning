@@ -1,24 +1,29 @@
 import { useLegendStore } from "@/components/legend/Legend";
-import ZoomProvider from "@/components/zoom/ZoomProvider";
-import { zoom_calendar_filiere } from "@/hooks/localStorageStore";
-import { serializeDate } from "@/lib/date";
+import { serialize } from "@/lib/date";
+import { getModuleHistoryOfFiliere } from "@/lib/db/ModuleAuditRepository";
 import { prisma } from "@/lib/db/prisma";
-import { SerializedModule } from "@/lib/types";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import CalendarFiliere from "./Calendar";
+import { FiliereView } from "../../(components)/(calendar)/CalendarView";
+import GlobalViewLink from "../../(components)/GlobalViewLink";
+import FiliereHistory from "./FiliereHistory";
+import FilierePage from "./FilierePage";
+import FiliereProvider from "./FiliereProvider";
 
 export type FiliereParamPage = {
   params: { filiereId: string };
 };
 
-export default async function FilierePage({
+export default async function Page({
   params: { filiereId },
 }: FiliereParamPage) {
   const filiereData = await prisma.filiere.findUnique({
     where: {
       nom: filiereId,
     },
-    include: { modules: { include: { formateur: true } } },
+    include: {
+      modules: { include: { formateur: true }, orderBy: { start: "asc" } },
+    },
   });
   if (!filiereData) {
     notFound();
@@ -27,21 +32,43 @@ export default async function FilierePage({
     .filter(({ theme }) => theme !== null)
     .map(({ theme }) => theme as string);
 
-  const showLegend = useLegendStore.getState().showLegend;
-  showLegend([...new Set(allThemes)]);
+  const filiereHistory = await getModuleHistoryOfFiliere(filiereId);
+
+  useLegendStore.getState().showLegend([...new Set(allThemes)]);
+
+  // initializeStore(
+  //   filiereData!.modules.map((m) => ({ ...m, filiere: { nom: filiereId } })),
+  //   filiereHistory
+  // );
 
   return (
-    <ZoomProvider zoomKey={zoom_calendar_filiere}>
-      <CalendarFiliere
-        name={filiereId}
-        modules={serializeDate<SerializedModule>(
-          filiereData.modules.map((m) => ({
-            ...m,
-            label: m.nom,
-          })),
-          ["start", "end"]
-        )}
-      />
-    </ZoomProvider>
+    <div>
+      <h2 className="text-center">{filiereId}</h2>
+
+      <div className="flex justify-center gap-3">
+        <GlobalViewLink view={FiliereView.key} />
+        <button className="btn-link btn">
+          <Link href={`/api/filiere/${filiereId}/pdf`}>Export to PDF</Link>
+        </button>
+      </div>
+      <div className="flex justify-between">
+        <FiliereProvider
+          filiereData={filiereData!.modules
+            .map((m) => ({
+              ...m,
+              filiere: { nom: filiereId },
+            }))
+            .map(serialize)}
+          filiereHistory={filiereHistory.map(serialize)}
+        >
+          <div className="w-2/3">
+            <FilierePage />
+          </div>
+          <div className="w-1/2">
+            <FiliereHistory />
+          </div>
+        </FiliereProvider>
+      </div>
+    </div>
   );
 }

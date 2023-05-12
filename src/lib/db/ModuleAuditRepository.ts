@@ -1,4 +1,5 @@
-import { formateur, module_audit } from "@prisma/client";
+import { module_audit } from "@prisma/client";
+import { ModuleHistory } from "../types";
 import { prisma } from "./prisma";
 export type SimpleHistory = {
   module_id: number;
@@ -37,6 +38,26 @@ export async function getModuleHistory(module_id: number) {
   WHERE module_audit.module_id = ${module_id}
   ORDER BY module_audit.modified_datetime DESC`;
 
+  return mapQueryToModuleAudit(data);
+}
+
+export async function getModuleHistoryOfFiliere(filiereName: string) {
+  const data = await prisma.$queryRaw<
+    (module_audit & { form_nom: string; form_prenom: string })[]
+  >`SELECT id, module_id, module_audit.nom as nom, start, end, theme, filiere_nom, formateur_mail, modified_datetime, action_type, modified_by, 
+  formateur.nom as form_nom, formateur.prenom as form_prenom
+  FROM module_audit
+  LEFT JOIN formateur
+  ON module_audit.formateur_mail = formateur.mail
+  WHERE module_audit.filiere_nom = ${filiereName}
+  ORDER BY module_audit.modified_datetime DESC`;
+
+  return mapQueryToModuleAudit(data);
+}
+
+function mapQueryToModuleAudit(
+  data: (module_audit & { form_nom: string; form_prenom: string })[]
+): ModuleHistory[] {
   return data.map((d) => {
     const {
       formateur_mail: mail,
@@ -69,19 +90,8 @@ export async function getModuleHistory(module_id: number) {
       modified_datetime,
       action_type,
       modified_by,
-      formateur: { mail, nom: formNom, prenom: formPrenom },
+      formateur: mail ? { mail, nom: formNom, prenom: formPrenom } : null,
+      filiere: { nom: filiere_nom },
     };
   });
-}
-
-export async function getModuleHistoryOfFiliere(filiereName: string) {
-  const data = await prisma.$queryRaw<
-    (module_audit & { formateur: formateur })[]
-  >`SELECT *
-  FROM module_audit
-  LEFT JOIN formateur
-  ON module_audit.formateur_mail = formateur.mail
-  WHERE module_audit.filiere_nom = ${filiereName}
-  ORDER BY module_audit.modified_datetime DESC`;
-  return data;
 }

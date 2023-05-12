@@ -2,49 +2,38 @@
 import { createContext, PropsWithChildren, useContext, useRef } from "react";
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
 import {
-  CalendarEventComponent,
   CalendarItem,
+  ComponentForEvent,
   DayProps,
   SimpleEventProps,
 } from "../types";
 
-type SimpleCalendarProps<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
-> = {
+type SimpleCalendarProps<T extends CalendarItem> = {
   cellHeight: string;
-  event: SimpleEventProps<T, E>;
+  event: SimpleEventProps<T>;
   day: DayProps;
 };
 
-type SimpleCalendarStore<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
-> = UseBoundStore<StoreApi<SimpleCalendarProps<T, E>>>;
+type SimpleCalendarStore<T extends CalendarItem> = UseBoundStore<
+  StoreApi<SimpleCalendarProps<T>>
+>;
 
-const CalendarContext = createContext<SimpleCalendarStore<
-  any,
-  CalendarEventComponent<any>
-> | null>(null);
+const CalendarContext = createContext<SimpleCalendarStore<any> | null>(null);
 
-type CreateSimpleCalendarStoreFunction = <
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
->(
+type CreateSimpleCalendarStoreFunction = <T extends CalendarItem>(
   cellHeight: string,
-  event: SimpleEventProps<T, E>,
+  event: SimpleEventProps<T>,
   day: DayProps
-) => SimpleCalendarStore<T, E>;
+) => SimpleCalendarStore<T>;
 
 const calendarStore: CreateSimpleCalendarStoreFunction = <
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
+  T extends CalendarItem
 >(
   cellHeight: string,
-  event: SimpleEventProps<T, E>,
+  event: SimpleEventProps<T>,
   day: DayProps
 ) =>
-  create<SimpleCalendarProps<T, E>>((set) => ({
+  create<SimpleCalendarProps<T>>((set) => ({
     cellHeight,
     event,
     day,
@@ -52,14 +41,14 @@ const calendarStore: CreateSimpleCalendarStoreFunction = <
 
 export default function SimpleCalendarProvider<
   T extends CalendarItem,
-  E extends CalendarEventComponent<T>
+  E extends ComponentForEvent<T>
 >({
   cellHeight,
   event,
   day,
   children,
-}: PropsWithChildren & SimpleCalendarProps<T, E>) {
-  const storeRef = useRef<SimpleCalendarStore<T, E>>();
+}: PropsWithChildren & SimpleCalendarProps<T>) {
+  const storeRef = useRef<SimpleCalendarStore<T>>();
   if (!storeRef.current) {
     storeRef.current = calendarStore(cellHeight, event, day);
   }

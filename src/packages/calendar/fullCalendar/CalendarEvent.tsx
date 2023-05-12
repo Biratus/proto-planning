@@ -2,8 +2,8 @@
 
 import {
   CalendarEvent as CalendarEventType,
-  CalendarEventComponentProps,
   CalendarItem,
+  ComponentForEventProps,
 } from "../types";
 import { useFullCalendarEvent } from "./FullCalendarProvider";
 
@@ -11,9 +11,7 @@ export const defaultEventElement = ({
   event,
   children,
   ...props
-}: CalendarEventComponentProps<CalendarItem>) => (
-  <div {...props}>{children}</div>
-);
+}: ComponentForEventProps<CalendarItem>) => <div {...props}>{children}</div>;
 
 export default function CalendarEvent<T extends CalendarItem>({
   day: { event, span },

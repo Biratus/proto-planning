@@ -57,6 +57,6 @@ export type CalendarView<K> = {
 
 export interface ModuleHistory extends Module {
   module_id: number;
-  modified_by: number;
+  modified_by: number | null;
   modified_datetime: Date;
 }

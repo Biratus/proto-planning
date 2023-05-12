@@ -2,11 +2,8 @@
 
 import cn from "classnames";
 import { isSameDay } from "date-fns";
-import {
-  CalendarEventComponentProps,
-  CalendarItem,
-  DayAndEvent,
-} from "../types";
+import { MouseEvent } from "react";
+import { CalendarItem, ComponentForEventProps, DayAndEvent } from "../types";
 import { formatDayDate } from "../utils";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
@@ -15,9 +12,7 @@ export const defaultSimpleEventElement = ({
   event,
   children,
   ...props
-}: CalendarEventComponentProps<CalendarItem>) => (
-  <div {...props}>{children}</div>
-);
+}: ComponentForEventProps<CalendarItem>) => <div {...props}>{children}</div>;
 
 export default function CalendarCell<T extends CalendarItem>({
   day: { date, event },
@@ -43,8 +38,6 @@ export default function CalendarCell<T extends CalendarItem>({
 
   const styleProps = eventProps.style(date, event);
 
-  const Component = eventProps.as ?? defaultSimpleEventElement;
-
   return (
     <div
       className={`flex flex-col ${dayStyleProps(date).className}`}
@@ -62,7 +55,7 @@ export default function CalendarCell<T extends CalendarItem>({
       </div>
 
       {event && (
-        <Component
+        <div
           className={`flex flex-grow cursor-pointer items-center pl-2 ${styleProps.className}`}
           style={{
             ...styleProps.props,
@@ -70,8 +63,9 @@ export default function CalendarCell<T extends CalendarItem>({
           }}
           onMouseEnter={hoverMe!}
           onMouseLeave={unHoverMe!}
-          onClick={(evt) => eventProps.onClick(event, evt.currentTarget)}
-          event={event}
+          onClick={(evt: MouseEvent<HTMLElement>) =>
+            eventProps.onClick(event, evt.currentTarget)
+          }
         >
           <span
             className={
@@ -83,7 +77,7 @@ export default function CalendarCell<T extends CalendarItem>({
             {(forceEventLabel || isSameDay(event.start, date)) &&
               eventProps.label(event)}
           </span>
-        </Component>
+        </div>
       )}
     </div>
   );
