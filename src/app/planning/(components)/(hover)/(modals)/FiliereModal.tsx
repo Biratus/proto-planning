@@ -1,7 +1,8 @@
 "use client";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import { getOverlapModules } from "@/lib/calendar/calendar";
-import { formatFullDate, nbOfDaysBetween } from "@/lib/date";
+import { formatFullDate, formatMonthYear, nbOfDaysBetween } from "@/lib/date";
+import { startOfMonth } from "date-fns";
 import Link from "next/link";
 import { useMemo, useRef } from "react";
 import { AlertTriangle, Download, Info, User } from "react-feather";
@@ -107,6 +108,15 @@ export default function FiliereModal() {
               </div>
               <div className="collapse-content">
                 <div className="flex flex-col gap-2 p-5">
+                  <Link
+                    href={`/planning/filiere?date=${formatMonthYear(
+                      startOfMonth(overlap.overlappedModules[0].start)
+                    )}`}
+                    className="link"
+                    prefetch={false}
+                  >
+                    Afficher dans le calendrier
+                  </Link>
                   {overlap.overlappedModules.map((mod) => (
                     <div key={mod.id}>
                       Du{" "}
