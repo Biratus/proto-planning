@@ -43,7 +43,7 @@ export default function RevertConflictModal({
             {revertConflicts.map((history, i) => (
               <li
                 className="step-neutral step"
-                data-content={i == revertConflicts.length - 1 ? "●" : "x"}
+                data-content={i == revertConflicts.length - 1 ? "✓" : "x"}
                 key={i}
               >
                 <div className="mb-5">

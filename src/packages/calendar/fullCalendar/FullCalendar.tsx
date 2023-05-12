@@ -1,5 +1,3 @@
-"use client";
-
 import cn from "classnames";
 import {
   addDays,
@@ -208,7 +206,7 @@ function DayHeader({
 }) {
   return (
     <div
-      className="tooltip tooltip-bottom hover:brightness-75"
+      className="tooltip tooltip-top hover:brightness-75"
       style={{
         gridColumnStart: first ? "2" : "auto",
         gridColumnEnd: "span " + span,
