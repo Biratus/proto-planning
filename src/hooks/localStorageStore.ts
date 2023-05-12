@@ -14,19 +14,16 @@ import { devtools, persist } from "zustand/middleware";
  */
 
 export const zoom_calendar_full = "zoom_calendar_full";
-export const zoom_calendar_filiere = "zoom_calendar_filiere";
 export const zoom_calendar_formateur = "zoom_calendar_formateur";
 
 interface PlanningStorage {
   [zoom_calendar_full]: number;
-  [zoom_calendar_filiere]: number;
   [zoom_calendar_formateur]: number;
   set(partial: Partial<Omit<PlanningStorage, "set">>): void;
 }
 
 const defaultPlanningStorage = {
   [zoom_calendar_full]: 2,
-  [zoom_calendar_filiere]: 5,
   [zoom_calendar_formateur]: 5,
 };
 
@@ -43,7 +40,6 @@ const usePersistedStore = create<PlanningStorage>()(
         name: "planningZooms", // needs to be Dynamic
         partialize: (state) => ({
           [zoom_calendar_full]: state[zoom_calendar_full],
-          [zoom_calendar_filiere]: state[zoom_calendar_filiere],
           [zoom_calendar_formateur]: state[zoom_calendar_formateur],
         }),
       }

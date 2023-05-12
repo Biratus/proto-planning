@@ -28,9 +28,6 @@ export default function CalendarDetail<T extends Interval>({
     for (let i in events) {
       let event = events[i];
       if (!isSameMonth(currMonth, event.end)) {
-        let span = currDayCumul;
-        if (event == events[events.length - 1])
-          span += nbOfDaysBetween(event.start, event.end);
         eventsComp.splice(
           currIndexToAdd,
           0,

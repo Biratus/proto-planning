@@ -10,7 +10,7 @@ import { FiliereView, FormateurView } from "./CalendarView";
   ------ Data
 */
 
-export type DisplayView = {
+type DisplayView = {
   label: string;
   print: (mod: ModuleEvent) => string;
   for?: string;
@@ -42,13 +42,11 @@ type CalendarDisplayStore = DisplayViewStore & {
   selectedView: string;
 };
 
-export const calendarDisplayStore = create<CalendarDisplayStore>(
-  (set, get) => ({
-    eventLabel: displayViews[0].print,
-    selectedDisplay: displayViews[0].label,
-    selectedView: FiliereView.key,
-  })
-);
+const calendarDisplayStore = create<CalendarDisplayStore>((set, get) => ({
+  eventLabel: displayViews[0].print,
+  selectedDisplay: displayViews[0].label,
+  selectedView: FiliereView.key,
+}));
 
 export const setSelectedView = (view: string) => {
   calendarDisplayStore.setState({ selectedView: view });
@@ -75,14 +73,14 @@ export const eventLabelDisplay = () =>
   ------ SpecialDays
 */
 
-export type SpecialDaysProps = {
+type SpecialDaysProps = {
   joursFeries: JoursFeries;
 };
 type CalendarStore = SpecialDaysProps & {
   isJoursFeries: (date: Date) => boolean;
   getJourFerie: (date: Date) => string;
 };
-export const calendarStore = create<CalendarStore>((set, get) => ({
+const specialDaysStore = create<CalendarStore>((set, get) => ({
   joursFeries: {},
   vacances: [],
   vacanceData: [],
@@ -92,18 +90,18 @@ export const calendarStore = create<CalendarStore>((set, get) => ({
 }));
 
 export const setSpecialDays = ({ joursFeries }: SpecialDaysProps) =>
-  calendarStore.setState({
+  specialDaysStore.setState({
     joursFeries,
   });
 
 export const useJoursFeries = () =>
-  calendarStore((state) => ({
+  specialDaysStore((state) => ({
     isJoursFeries: state.isJoursFeries,
     getJourFerie: state.getJourFerie,
   }));
 
 export const useSpecialDays = () =>
-  calendarStore((s) => ({
+  specialDaysStore((s) => ({
     isJoursFeries: s.isJoursFeries,
     getJourFerie: s.getJourFerie,
   }));
@@ -185,8 +183,6 @@ const dragStore = create<CalendarDragStore>((set, get) => ({
 
 export const setDraggedModule = (mod: ModuleEvent) =>
   dragStore.setState({ draggedModule: mod });
-
-export const getDraggedModule = () => dragStore((s) => s.draggedModule);
 
 export const useDropTarget = () => ({
   draggedModule: dragStore((s) => s.draggedModule),

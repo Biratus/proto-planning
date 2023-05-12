@@ -3,16 +3,10 @@
 import cn from "classnames";
 import { isSameDay } from "date-fns";
 import { MouseEvent } from "react";
-import { CalendarItem, ComponentForEventProps, DayAndEvent } from "../types";
+import { CalendarItem, DayAndEvent } from "../types";
 import { formatDayDate } from "../utils";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
-
-export const defaultSimpleEventElement = ({
-  event,
-  children,
-  ...props
-}: ComponentForEventProps<CalendarItem>) => <div {...props}>{children}</div>;
 
 export default function CalendarCell<T extends CalendarItem>({
   day: { date, event },

@@ -1,12 +1,7 @@
 "use client";
 import { createContext, PropsWithChildren, useContext, useRef } from "react";
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
-import {
-  CalendarItem,
-  ComponentForEvent,
-  DayProps,
-  SimpleEventProps,
-} from "../types";
+import { CalendarItem, DayProps, SimpleEventProps } from "../types";
 
 type SimpleCalendarProps<T extends CalendarItem> = {
   cellHeight: string;
@@ -33,16 +28,13 @@ const calendarStore: CreateSimpleCalendarStoreFunction = <
   event: SimpleEventProps<T>,
   day: DayProps
 ) =>
-  create<SimpleCalendarProps<T>>((set) => ({
+  create<SimpleCalendarProps<T>>(() => ({
     cellHeight,
     event,
     day,
   }));
 
-export default function SimpleCalendarProvider<
-  T extends CalendarItem,
-  E extends ComponentForEvent<T>
->({
+export default function SimpleCalendarProvider<T extends CalendarItem>({
   cellHeight,
   event,
   day,

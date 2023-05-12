@@ -1,4 +1,4 @@
-export async function getJoursFeries(year: number) {
+async function getJoursFeries(year: number) {
   try {
     const resp = await fetch(
       `https://calendrier.api.gouv.fr/jours-feries/metropole/${year}.json`,

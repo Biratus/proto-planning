@@ -22,7 +22,7 @@ const defaultModule: ModuleEvent = {
 };
 
 export default function ModuleModal() {
-  const { focus, temps } = useFocusModule();
+  const { focus } = useFocusModule();
   const {
     nom: name,
     start,

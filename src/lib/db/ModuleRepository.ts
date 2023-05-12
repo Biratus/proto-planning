@@ -153,7 +153,7 @@ export async function moduleVersionDowngrade(historyId: number) {
       modified_datetime: { gte: history.modified_datetime },
     },
   });
-  let { start, end, nom, filiere_nom, id, formateur_mail, theme } = history;
+  let { start, end, nom, filiere_nom, formateur_mail, theme } = history;
 
   const moduleUpdate = prisma.module.update({
     where: { id: history.module_id },

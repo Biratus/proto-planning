@@ -23,9 +23,6 @@ export interface Formateur {
 export type FormateurWithModule = Formateur & {
   modules: Module[];
 };
-export type SerializedFormateur = Formateur & {
-  modules: SerializedModule[];
-};
 export type Serialized<T> = {
   [K in keyof T]: T[K] extends Date ? string : T[K];
 };

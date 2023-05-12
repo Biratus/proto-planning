@@ -91,10 +91,6 @@ export function nbOfDaysBetween(start: Date, end: Date) {
     : dateFns.eachDayOfInterval({ start, end }).length;
 }
 
-function defaultParseFunction(str: string) {
-  return dateFns.parseISO(str);
-}
-
 export function serializeDate<OUT>(list: any[], fields: string[]): Array<OUT> {
   return list.map((item) => {
     let newItem = { ...item };

@@ -55,7 +55,7 @@ export default function CommonCalendar({
   vacancesScolaire: SerializedVacanceData[];
 }) {
   const router = useRouter();
-  const { isJoursFeries, getJourFerie } = useSpecialDays();
+  const { isJoursFeries } = useSpecialDays();
 
   const vacanceData = useMemo(() => {
     const vacanceData = vacancesScolaire.map((vd) =>
@@ -126,7 +126,7 @@ export default function CommonCalendar({
         return style;
       },
     }),
-    [zoom, timeSpan, dayHeader]
+    [zoom, timeSpan, dayHeader, isJoursFeries]
   );
 
   const updateCalendarData = (newModules: Module[]) => {

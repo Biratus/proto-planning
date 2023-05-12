@@ -111,7 +111,7 @@ export default function CalendarFormateur({
           return style;
         }}
         drag={{
-          drag: (dayAndEvent, formateur, evt) => {
+          drag: (dayAndEvent, _, evt) => {
             if (!dayAndEvent.event!.overlap)
               setDraggedModule(dayAndEvent.event!);
             else evt.preventDefault();
@@ -119,8 +119,8 @@ export default function CalendarFormateur({
           enter: (dayAndEvent, formateur, evt) => {
             changeDropTarget(dayAndEvent, formateur, evt);
           },
-          leave: (dayAndEvent, formateur, evt) => {},
-          drop: (dayAndEvent, formateur, evt) => {
+          leave: () => {},
+          drop: () => {
             dropModule();
           },
           move: (dayAndEvent, formateur, evt) => {

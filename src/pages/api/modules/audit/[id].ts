@@ -13,9 +13,7 @@ export default async function handler(
     }
 
     try {
-      const updated = await moduleVersionDowngrade(
-        parseInt(req.query.id as string)
-      );
+      await moduleVersionDowngrade(parseInt(req.query.id as string));
 
       const moduleHistory = await getModuleHistory(
         parseInt(req.query.id as string)

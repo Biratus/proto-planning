@@ -9,7 +9,7 @@ import { Color, colorFromZones, isDark } from "../colors";
 import { nbOfDaysBetween } from "../date";
 import { Serialized } from "../types";
 
-export type VacanceScolaire = Interval & {
+type VacanceScolaire = Interval & {
   label: string;
   zone: string;
 };
@@ -26,6 +26,7 @@ export type VacanceData = {
   zones: string[];
 };
 export type SerializedVacanceData = Serialized<VacanceData>;
+
 type Moment = {
   date: Date;
   prop: "start" | "end";

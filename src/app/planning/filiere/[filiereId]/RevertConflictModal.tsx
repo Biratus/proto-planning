@@ -10,7 +10,7 @@ export default function RevertConflictModal({
 }: {
   modalRef: RefObject<{ open?: () => void; close?: () => void }>;
 }) {
-  const { revertConflicts, revertBackTo, askConfirm } = useFiliereStore();
+  const { revertConflicts, askConfirm } = useFiliereStore();
   const toggleRef = useRef<HTMLInputElement>(null);
 
   modalRef.current!.close = () => {

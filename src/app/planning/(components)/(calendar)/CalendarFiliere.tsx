@@ -94,7 +94,7 @@ export default function CalendarFiliere({
         return style;
       }}
       drag={{
-        drag: (dayAndEvent, row, evt) => {
+        drag: (dayAndEvent, _, evt) => {
           if (!dayAndEvent.event!.overlap) setDraggedModule(dayAndEvent.event!);
           else evt.preventDefault();
         },

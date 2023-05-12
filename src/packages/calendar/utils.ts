@@ -1,6 +1,6 @@
 import * as dateFns from "date-fns";
 import fr from "date-fns/locale/fr";
-import { Interval, Month } from "./types";
+import { Month } from "./types";
 
 const locale = { locale: fr };
 /*
@@ -16,14 +16,9 @@ export function formatDayDate(d: Date) {
   return format(d, "dd");
 }
 
-export function format(d: Date, f: string) {
+function format(d: Date, f: string) {
   return dateFns.format(d, f, locale);
 }
-
-export function formatSimpleDayLabel(d: Date) {
-  return upperFirst(format(d, "EEEEE"));
-}
-
 /*
   --------
     UTILS
@@ -55,11 +50,6 @@ export const makeMonths: (monthStart: Date, monthEnd: Date) => Month[] = (
     DISPLAY
   --------
 */
-export function moduleDayLabel({ start, end }: Interval) {
-  return dateFns.isSameDay(start, end)
-    ? formatDayDate(start)
-    : formatDayDate(start) + " - " + formatDayDate(end);
-}
-export function upperFirst(str: string) {
+function upperFirst(str: string) {
   return str[0].toUpperCase() + str.substring(1);
 }

@@ -7,9 +7,9 @@ export const monthLabel = createStyle("font-bold", {
     "linear-gradient(170deg, hsl(47, 49%, 61%) 0%, hsl(47, 49%, 61%) 9%, rgba(0,0,0,0) 50%)",
 });
 
-export const day = createStyle("border-gray-600 border-l");
+const day = createStyle("border-gray-600 border-l");
 
-export const weekend: Style = createStyle("", {
+const weekend: Style = createStyle("", {
   background:
     "linear-gradient(170deg, #424242 0%, #424242 10%, #ffffff00 100%)",
 });

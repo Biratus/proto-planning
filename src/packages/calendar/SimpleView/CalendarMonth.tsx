@@ -5,7 +5,7 @@ import { CalendarItem, DayAndEvent, Style } from "../types";
 import { formatMonthYear } from "../utils";
 import CalendarCell from "./CalendarCell";
 
-export type CalendarMonthProp<T extends CalendarItem> = {
+type CalendarMonthProp<T extends CalendarItem> = {
   days: DayAndEvent<T>[];
   isFirstMonth: boolean;
   monthLabelStyle: Style;

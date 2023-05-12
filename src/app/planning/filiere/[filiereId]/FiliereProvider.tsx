@@ -39,7 +39,7 @@ type FiliereStore = {
 
 type ModalRef = { open?: () => void; close?: () => void };
 
-export const FiliereContext = createContext<FiliereStore | null>(null);
+const FiliereContext = createContext<FiliereStore | null>(null);
 
 export default function FiliereProvider({
   filiereData,
