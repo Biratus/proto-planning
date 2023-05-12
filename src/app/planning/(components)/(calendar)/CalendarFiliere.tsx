@@ -69,14 +69,7 @@ export default function CalendarFiliere({
         });
       }
     },
-    [
-      draggedModule,
-      dropTarget,
-      props.timeSpan,
-      setDropTarget,
-      cleanDropTarget,
-      updateModules,
-    ]
+    [draggedModule, dropTarget, props.timeSpan, setDropTarget]
   );
 
   const dropModule = useCallback(() => {
@@ -88,7 +81,7 @@ export default function CalendarFiliere({
       },
     ]);
     cleanDropTarget();
-  }, [draggedModule, dropTarget]);
+  }, [draggedModule, dropTarget, cleanDropTarget, updateModules]);
 
   return (
     <FullCalendar

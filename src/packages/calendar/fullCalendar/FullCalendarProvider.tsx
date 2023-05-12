@@ -1,16 +1,11 @@
 "use client";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
-import {
-  CalendarEventComponent,
-  CalendarItem,
-  DragEvents,
-  Style,
-} from "../types";
+import { CalendarItem, ComponentForEvent, DragEvents, Style } from "../types";
 
 type FullCalendarProps<K, T extends CalendarItem> = {
   days: Date[];
-  eventProps: CalendarEventComponent<T>;
+  eventComponent: ComponentForEvent<T>;
   dayStyle: (date: Date) => Style;
   drag: DragEvents<K, T>;
 };
@@ -23,7 +18,7 @@ type FullCalendarStore<K, T extends CalendarItem> = UseBoundStore<
 
 type CreateFullCalendarStoreFunction = <K, T extends CalendarItem>(
   days: Date[],
-  eventProps: CalendarEventComponent<T>,
+  eventComponent: ComponentForEvent<T>,
   dayStyle: (date: Date) => Style,
   drag: DragEvents<K, T>
 ) => FullCalendarStore<K, T>;
@@ -33,27 +28,27 @@ const calendarStore: CreateFullCalendarStoreFunction = <
   T extends CalendarItem
 >(
   days: Date[],
-  eventProps: CalendarEventComponent<T>,
+  eventComponent: ComponentForEvent<T>,
   dayStyle: (date: Date) => Style,
   drag: DragEvents<K, T>
 ) =>
   create<FullCalendarProps<K, T>>((set) => ({
     days,
-    eventProps,
+    eventComponent,
     dayStyle,
     drag,
   }));
 
 export default function FullCalendarProvider<K, T extends CalendarItem>({
   days,
-  eventProps,
+  eventComponent,
   dayStyle,
   drag,
   children,
 }: PropsWithChildren & FullCalendarProps<K, T>) {
   const store = useMemo(
-    () => calendarStore<K, T>(days, eventProps, dayStyle, drag),
-    [days, eventProps, dayStyle, drag]
+    () => calendarStore<K, T>(days, eventComponent, dayStyle, drag),
+    [days, eventComponent, dayStyle, drag]
   );
 
   return (
@@ -86,7 +81,7 @@ export function useFullCalendarRow<
   }));
 }
 
-type CalendarEventStore<T extends CalendarItem> = CalendarEventComponent<T>;
+type CalendarEventStore<T extends CalendarItem> = ComponentForEvent<T>;
 
 export function useFullCalendarEvent<
   T extends CalendarItem
@@ -97,5 +92,5 @@ export function useFullCalendarEvent<
       "useFullCalendarEvent must be used within a FullCalendarProvider"
     );
 
-  return useStore(store, (state) => state.eventProps);
+  return useStore(store, (state) => state.eventComponent);
 }

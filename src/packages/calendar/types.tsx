@@ -32,7 +32,7 @@ export type ComponentForEventProps<T extends Interval> = {
 } & PropsWithChildren &
   React.HTMLAttributes<HTMLElement>;
 
-type ComponentForEvent<T extends Interval> = React.FC<
+export type ComponentForEvent<T extends Interval> = React.FC<
   ComponentForEventProps<T>
 >;
 

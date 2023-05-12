@@ -83,14 +83,7 @@ export default function CalendarFormateur({
         );
       }
     },
-    [
-      draggedModule,
-      dropTarget,
-      props.timeSpan,
-      setDropTarget,
-      cleanDropTarget,
-      updateModules,
-    ]
+    [draggedModule, dropTarget, props.timeSpan, setDropTarget]
   );
   const dropModule = useCallback(() => {
     updateModules([
@@ -104,7 +97,7 @@ export default function CalendarFormateur({
     cleanDropTarget();
     // dataRefresh();
     // cleanDropTarget();
-  }, [modules, dropTarget, draggedModule]);
+  }, [modules, dropTarget, draggedModule, cleanDropTarget, updateModules]);
 
   return (
     <>

@@ -90,7 +90,7 @@ export default function FiliereProvider({
         filiereHistory,
         isVisible
       ),
-    [deserializedFiliereData, filiereHistory, history, isVisible]
+    [deserializedFiliereData, filiereHistory, isVisible]
   );
 
   const toggleModificationVisibility = useCallback(
@@ -143,24 +143,27 @@ export default function FiliereProvider({
     [filiereHistory]
   );
 
-  const askConfirm = useCallback((historyId: number) => {
-    const targetHistory = filiereHistory.find((h) => h.id == historyId);
-    if (!targetHistory) {
-      console.error("History id:[" + historyId + "] does not exist");
-      return;
-    }
-    const currentData = deserializedFiliereData.find(
-      (d) => d.id == targetHistory.module_id
-    )!;
-    setRevertTarget({
-      id: targetHistory.id,
-      nom: targetHistory.nom,
-      module_id: targetHistory.module_id,
-      after: { ...currentData },
-      before: { ...targetHistory },
-    });
-    confirmRef.current!.open!();
-  }, []);
+  const askConfirm = useCallback(
+    (historyId: number) => {
+      const targetHistory = filiereHistory.find((h) => h.id == historyId);
+      if (!targetHistory) {
+        console.error("History id:[" + historyId + "] does not exist");
+        return;
+      }
+      const currentData = deserializedFiliereData.find(
+        (d) => d.id == targetHistory.module_id
+      )!;
+      setRevertTarget({
+        id: targetHistory.id,
+        nom: targetHistory.nom,
+        module_id: targetHistory.module_id,
+        after: { ...currentData },
+        before: { ...targetHistory },
+      });
+      confirmRef.current!.open!();
+    },
+    [filiereHistory, deserializedFiliereData]
+  );
 
   const downgradeVersion = useCallback(async (historyId: number) => {
     const resp = await apiVersionDowngrade(historyId);

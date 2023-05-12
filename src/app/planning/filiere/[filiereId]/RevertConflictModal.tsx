@@ -33,8 +33,8 @@ export default function RevertConflictModal({
         <label className="modal-box relative max-w-fit" htmlFor="">
           <h3 className="text-xl font-bold">Attention !</h3>
           <p className="py-4">
-            Vous essayez de revenir à une version d'un module sur lequel il y a
-            eu des modifications entre temps:
+            Vous essayez de revenir à une version d&apos;un module sur lequel il
+            y a eu des modifications entre temps:
           </p>
           <ul
             className="steps steps-vertical w-11/12"

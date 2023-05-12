@@ -22,7 +22,7 @@ export default function FullCalendar<K, T extends CalendarItem>({
   data: originalData,
   LabelComponent,
   timeSpan,
-  event: eventProps,
+  event: eventComponent,
   day,
   zoom,
   monthLabelStyle,
@@ -61,7 +61,7 @@ export default function FullCalendar<K, T extends CalendarItem>({
         date={day}
       />
     ));
-  }, [days]);
+  }, [days, DayComponent]);
 
   const monthRow = useMemo(() => {
     return months.map((m, i) => (
@@ -123,7 +123,7 @@ export default function FullCalendar<K, T extends CalendarItem>({
       {...{
         days,
         dayStyle,
-        eventProps,
+        eventComponent,
         drag,
       }}
     >

@@ -7,7 +7,6 @@ import {
 } from "date-fns";
 import { useMemo } from "react";
 import {
-  CalendarEventComponent,
   CalendarItem,
   CalendarSimpleProps,
   DayAndEvent,
@@ -21,10 +20,7 @@ import SimpleCalendarProvider from "./SimpleCalendarProvider";
 const week = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const minCellHeight = 5;
 
-export default function CalendarSimple<
-  T extends CalendarItem,
-  E extends CalendarEventComponent<T>
->({
+export default function CalendarSimple<T extends CalendarItem>({
   timeSpan,
   events,
   eventProps,
@@ -32,7 +28,7 @@ export default function CalendarSimple<
   style,
   monthLabelStyle = { className: "" },
   zoom,
-}: CalendarSimpleProps<T, E>) {
+}: CalendarSimpleProps<T>) {
   const months = useMemo(
     () => makeMonths(timeSpan.start, timeSpan.end),
     [timeSpan]
