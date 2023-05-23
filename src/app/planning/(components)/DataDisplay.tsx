@@ -1,13 +1,12 @@
 import cn from "classnames";
 import {
   displayViews,
-  getSelectedView,
   useModuleEventDisplay,
 } from "./(calendar)/CalendarProvider";
 
-export default function DataDisplay() {
-  const view = getSelectedView();
+export default function DataDisplay({ view }: { view: string }) {
   const { get, set } = useModuleEventDisplay();
+
   return (
     <>
       <div className="mb-3 border-b border-primary text-xl text-primary">

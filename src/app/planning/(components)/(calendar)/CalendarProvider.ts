@@ -38,22 +38,10 @@ type DisplayViewStore = {
   selectedDisplay: string;
 };
 
-type CalendarDisplayStore = DisplayViewStore & {
-  selectedView: string;
-};
-
-const calendarDisplayStore = create<CalendarDisplayStore>((set, get) => ({
+const calendarDisplayStore = create<DisplayViewStore>((set, get) => ({
   eventLabel: displayViews[0].print,
   selectedDisplay: displayViews[0].label,
-  selectedView: FiliereView.key,
 }));
-
-export const setSelectedView = (view: string) => {
-  calendarDisplayStore.setState({ selectedView: view });
-};
-
-export const getSelectedView = () =>
-  calendarDisplayStore(({ selectedView }) => selectedView);
 
 export const useModuleEventDisplay = () =>
   calendarDisplayStore((state) => ({

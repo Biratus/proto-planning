@@ -216,7 +216,7 @@ export default function CommonCalendar({
   return (
     <>
       <div>
-        <DataDisplay />
+        <DataDisplay view={view} />
 
         {isModifying.current && (
           <UpdateDataUI

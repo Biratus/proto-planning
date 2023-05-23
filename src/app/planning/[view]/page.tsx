@@ -20,7 +20,6 @@ import {
   startOfToday,
 } from "date-fns";
 import CommonCalendar from "../(components)/(calendar)/Calendar";
-import { setSelectedView } from "../(components)/(calendar)/CalendarProvider";
 import FiliereModal from "../(components)/(hover)/(modals)/FiliereModal";
 import ModuleModal from "../(components)/(hover)/(modals)/ModuleModal";
 import HoverElements from "../(components)/(hover)/HoverElements";
@@ -61,8 +60,6 @@ export default async function PlanningPage({
     end: endOfMonth(addMonths(focusDate, timeSpan - 1)),
   };
   const datas = await getModulesOfPeriod(activInterval);
-
-  setSelectedView(view);
 
   return (
     <>
