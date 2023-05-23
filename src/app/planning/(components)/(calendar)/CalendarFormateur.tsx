@@ -99,7 +99,7 @@ export default function CalendarFormateur({
     cleanDropTarget();
     // dataRefresh();
     // cleanDropTarget();
-  }, [modules, dropTarget, draggedModule, cleanDropTarget, updateModules]);
+  }, [dropTarget, draggedModule, cleanDropTarget, updateModules]);
 
   return (
     <>
