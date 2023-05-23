@@ -18,6 +18,7 @@ import {
 import {
   areIntervalsOverlapping,
   compareAsc,
+  isSameDay,
   parseISO,
   startOfDay,
 } from "date-fns";
@@ -134,6 +135,21 @@ export default function CommonCalendar({
   );
 
   const updateCalendarData = (newModules: Module[]) => {
+    // Check modifications valid
+    for (let mod of newModules) {
+      let original = deserialize<Module>(
+        serializedData.find((m) => m.id == mod.id)!
+      );
+      console.log({ mod, original });
+      if (
+        isSameDay(original.start, mod.start) &&
+        mod.formateur?.mail == original.formateur?.mail
+      )
+        newModules.splice(newModules.indexOf(mod));
+    }
+    if (newModules.length == 0) return;
+
+    // Update Modification UI
     isModifying.current = true;
     setTempData((prevModules) => {
       const map = new Map(prevModules);
@@ -188,6 +204,7 @@ export default function CommonCalendar({
       setTempData((prevModules) => {
         prevModules.delete(modId);
         const map = new Map(prevModules);
+        if (map.size == 0) isModifying.current = false;
         return map;
       });
     } else {

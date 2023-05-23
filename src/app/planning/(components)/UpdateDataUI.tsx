@@ -1,4 +1,5 @@
-import { formatFullPrettyDate } from "@/lib/date";
+import DiffDates from "@/components/history/DiffDates";
+import DiffFormateur from "@/components/history/DiffFormateur";
 import { Module } from "@/lib/types";
 import { isSameDay } from "date-fns";
 import { Check, MoreHorizontal, X } from "react-feather";
@@ -28,15 +29,15 @@ export default function UpdateDataUI({
         className="modal-toggle"
       />
       <label htmlFor="current-history-modal" className="modal cursor-pointer">
-        <label className="modal-box relative" htmlFor="">
+        <label className="modal-box relative max-w-fit" htmlFor="">
           <div className="text-center text-lg font-bold">
             Modification en cours
           </div>
-          <div className="flex justify-center">
-            <button className={`btn btn-success btn-sm`} onClick={modify}>
-              Valider <Check />
+          <div className="mb-3 flex justify-center">
+            <button className={`btn-success btn-sm btn`} onClick={modify}>
+              Confirmer <Check />
             </button>
-            <button className={`btn btn-error btn-sm`} onClick={() => abort}>
+            <button className={`btn-error btn-sm btn`} onClick={() => abort()}>
               Annuler <X />
             </button>
           </div>
@@ -52,10 +53,10 @@ export default function UpdateDataUI({
           </div>
         </label>
       </label>
-      <button className={`btn btn-success`} onClick={modify}>
+      <button className={`btn-success btn`} onClick={modify}>
         <Check />
       </button>
-      <button className={`btn btn-error`} onClick={() => abort()}>
+      <button className={`btn-error btn`} onClick={() => abort()}>
         <X />
       </button>
     </div>
@@ -80,54 +81,22 @@ function ModuleHistory({
     (!original.formateur && current.formateur) ||
     original.formateur?.mail != current.formateur?.mail;
   return (
-    <div className="mt-2">
-      <div className="space-x-2">
-        <span className="text-lg font-bold">{original.nom}</span>
-        <button className={`btn btn-error btn-sm`} onClick={deleteEntry}>
-          <X />
-        </button>
-      </div>
-      {diffDates && <DiffDates original={original} current={current} />}
-      {diffFormateur && <DiffFormateur original={original} current={current} />}
-    </div>
-  );
-}
-function DiffFormateur({
-  original,
-  current,
-}: {
-  original: Module;
-  current: Module;
-}) {
-  const originalText = original.formateur
-    ? `${original.formateur.nom} ${original.formateur.prenom}`
-    : "N/A";
-  const currentText = current.formateur
-    ? `${current.formateur.nom} ${current.formateur.prenom}`
-    : "N/A";
-  return (
-    <div>
-      {originalText} &rarr; {currentText}
-    </div>
-  );
-}
-
-function DiffDates({
-  original,
-  current,
-}: {
-  original: Module;
-  current: Module;
-}) {
-  return (
-    <div>
+    <div className="group flex items-center gap-2">
       <div>
-        {formatFullPrettyDate(original.start)} &rarr;{" "}
-        {formatFullPrettyDate(original.end)}
+        <div className="font-bold">{original.nom}</div>
+        <div className="pl-3">
+          {diffDates && <DiffDates before={original} after={current} />}
+          {diffFormateur && <DiffFormateur before={original} after={current} />}
+        </div>
       </div>
-      <div className="font-bold">
-        {formatFullPrettyDate(current.start)} &rarr;{" "}
-        {formatFullPrettyDate(current.end)}
+      <div className="invisible group-hover:visible">
+        <button
+          title="Annuler cette modification"
+          className={`btn-ghost btn`}
+          onClick={deleteEntry}
+        >
+          <X size={18} />
+        </button>
       </div>
     </div>
   );
