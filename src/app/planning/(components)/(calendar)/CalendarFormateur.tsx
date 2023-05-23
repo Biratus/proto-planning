@@ -12,6 +12,7 @@ import {
   CalendarEvent,
   CommonCalendarProps,
   DayAndEvent,
+  Style,
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
 import { DragEvent, useCallback, useMemo } from "react";
@@ -27,7 +28,8 @@ export default function CalendarFormateur({
   updateModules,
   dayStyle,
   ...props
-}: CalendarFormateurProps & CommonCalendarProps<ModuleEvent>) {
+}: { dayStyle: (day: Date) => Style } & CalendarFormateurProps &
+  CommonCalendarProps<ModuleEvent>) {
   const calendarData = useMemo(() => {
     let data = toCalendarData<FormateurWithModule>(
       modules,
@@ -44,7 +46,7 @@ export default function CalendarFormateur({
     setDropTarget,
     isDropTarget,
     cleanDropTarget,
-  } = useDropTarget();
+  } = useDropTarget<Formateur>();
 
   const changeDropTarget = useCallback(
     (
@@ -105,9 +107,13 @@ export default function CalendarFormateur({
         {...props}
         data={calendarData}
         LabelComponent={FormateurView.LabelComponent}
-        dayStyle={(date) => {
+        dayStyle={(date, row) => {
           let style = dayStyle(date);
-          if (isDropTarget(date)) style = mergeStyle(style, dropTargetStyle);
+          if (
+            isDropTarget(date) &&
+            (!row || (row && row.mail == dropTarget?.row.mail))
+          )
+            style = mergeStyle(style, dropTargetStyle);
           return style;
         }}
         drag={{

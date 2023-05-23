@@ -118,15 +118,19 @@ export default function CommonCalendar({
       monthLabelStyle: monthLabel,
       daysHeader: dayHeader,
       day: DayComponent,
-      dayStyle: (date: Date) => {
-        let style = {
-          ...calendarDayStyle(date),
-        };
-        if (isJoursFeries(date)) style.className = "text-red-600";
-        return style;
-      },
     }),
-    [zoom, timeSpan, dayHeader, isJoursFeries]
+    [zoom, timeSpan, dayHeader]
+  );
+
+  const dayStyle = useCallback(
+    (date: Date) => {
+      let style = {
+        ...calendarDayStyle(date),
+      };
+      if (isJoursFeries(date)) style.className = "text-red-600";
+      return style;
+    },
+    [isJoursFeries]
   );
 
   const updateCalendarData = (newModules: Module[]) => {
@@ -144,6 +148,7 @@ export default function CommonCalendar({
       <CalendarFiliere
         modules={calendarData}
         updateModules={updateCalendarData}
+        dayStyle={dayStyle}
         {...commonProps}
       />
     ),
@@ -155,6 +160,7 @@ export default function CommonCalendar({
       <CalendarFormateur
         modules={calendarData}
         updateModules={updateCalendarData}
+        dayStyle={dayStyle}
         {...commonProps}
       />
     ),

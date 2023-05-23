@@ -171,9 +171,11 @@ export const setFocusedFiliere = (filiere: Filiere) =>
   ------ Drag
 */
 
+type DropTarget<T> = { row: T; interval: Interval };
+
 interface CalendarDragStore {
   draggedModule: ModuleEvent | null;
-  dropTarget: { row: any; interval: Interval } | null;
+  dropTarget: DropTarget<any> | null;
 }
 
 const dragStore = create<CalendarDragStore>((set, get) => ({
@@ -184,10 +186,10 @@ const dragStore = create<CalendarDragStore>((set, get) => ({
 export const setDraggedModule = (mod: ModuleEvent) =>
   dragStore.setState({ draggedModule: mod });
 
-export const useDropTarget = () => ({
+export const useDropTarget = <T>() => ({
   draggedModule: dragStore((s) => s.draggedModule),
-  dropTarget: dragStore((s) => s.dropTarget),
-  setDropTarget: (interval: Interval, row?: any) =>
+  dropTarget: dragStore((s) => s.dropTarget as DropTarget<T>),
+  setDropTarget: (interval: Interval, row?: T) =>
     dragStore.setState({ dropTarget: { interval, row } }),
   isDropTarget: (day: Date) =>
     dragStore.getState().dropTarget &&

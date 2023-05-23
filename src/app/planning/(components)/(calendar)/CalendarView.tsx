@@ -6,10 +6,11 @@ import {
   FormateurWithModule,
   Module,
 } from "@/lib/types";
+import cn from "classnames";
 import Link from "next/link";
 import { useCallback } from "react";
 import { FiliereDetailModalId } from "../(hover)/(modals)/FiliereModal";
-import { setFocusedFiliere } from "./CalendarProvider";
+import { setFocusedFiliere, useDropTarget } from "./CalendarProvider";
 
 const formateurSimple = ({ nom, prenom, mail }: Formateur) =>
   `${nom} ${prenom} - ${mail}`;
@@ -34,9 +35,16 @@ function FiliereLabel({ labelKey: filiere }: { labelKey: Filiere }) {
     const fetchedFiliere = await apiFetchFiliere(filiere.nom);
     setFocusedFiliere(fetchedFiliere);
   }, [filiere]);
+
+  const { dropTarget } = useDropTarget<Filiere>();
   return (
     <label
-      className="flex h-full  cursor-pointer items-center  border-b border-blue-900  bg-blue-600 pl-1 hover:bg-blue-900"
+      className={cn(
+        "flex h-full  cursor-pointer items-center  border-b border-blue-900  bg-blue-600 pl-1 hover:bg-blue-900",
+        {
+          "bg-amber-600": dropTarget && dropTarget.row.nom == filiere.nom,
+        }
+      )}
       htmlFor={FiliereDetailModalId}
       onClick={setFocus}
     >
@@ -49,24 +57,25 @@ function FormateurLabel({
 }: {
   labelKey: Formateur;
 }) {
+  const { dropTarget } = useDropTarget<Formateur>();
+
   return (
-    <RowLabel
-      label={formateurSimple({ nom, prenom, mail })}
-      href={`formateur/${mail}`}
-    />
-  );
-}
-function RowLabel({ href, label }: { href: string; label: string }) {
-  return (
-    <div className="flex h-full  items-center border-b  border-blue-900 bg-blue-600  pl-1 hover:bg-blue-900">
+    <div
+      className={cn(
+        "flex h-full  items-center border-b  border-blue-900 bg-blue-600  pl-1 hover:bg-blue-900",
+        {
+          "bg-amber-600": dropTarget && dropTarget.row.mail == mail,
+        }
+      )}
+    >
       <span className="truncate">
         <Link
-          href={`planning/${href}`}
+          href={`planning/formateur/${mail}`}
           prefetch={false}
           className="no-underline"
           style={{ color: "inherit" }}
         >
-          {label}
+          {formateurSimple({ nom, prenom, mail })}
         </Link>
       </span>
     </div>

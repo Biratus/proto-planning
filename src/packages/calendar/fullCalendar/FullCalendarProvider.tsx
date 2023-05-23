@@ -6,7 +6,7 @@ import { CalendarItem, ComponentForEvent, DragEvents, Style } from "../types";
 type FullCalendarProps<K, T extends CalendarItem> = {
   days: Date[];
   eventComponent: ComponentForEvent<T>;
-  dayStyle: (date: Date) => Style;
+  dayStyle: (date: Date, row?: K) => Style;
   drag: DragEvents<K, T>;
 };
 
@@ -19,7 +19,7 @@ type FullCalendarStore<K, T extends CalendarItem> = UseBoundStore<
 type CreateFullCalendarStoreFunction = <K, T extends CalendarItem>(
   days: Date[],
   eventComponent: ComponentForEvent<T>,
-  dayStyle: (date: Date) => Style,
+  dayStyle: (date: Date, row?: K) => Style,
   drag: DragEvents<K, T>
 ) => FullCalendarStore<K, T>;
 
@@ -29,7 +29,7 @@ const calendarStore: CreateFullCalendarStoreFunction = <
 >(
   days: Date[],
   eventComponent: ComponentForEvent<T>,
-  dayStyle: (date: Date) => Style,
+  dayStyle: (date: Date, row?: K) => Style,
   drag: DragEvents<K, T>
 ) =>
   create<FullCalendarProps<K, T>>((set) => ({
@@ -60,7 +60,7 @@ export default function FullCalendarProvider<K, T extends CalendarItem>({
 
 type CalendarRowStore<K, T extends CalendarItem> = {
   days: Date[];
-  dayStyle: (date: Date) => Style;
+  dayStyle: (date: Date, row?: K) => Style;
   drag: DragEvents<K, T>;
 };
 

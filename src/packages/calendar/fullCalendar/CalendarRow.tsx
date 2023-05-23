@@ -56,8 +56,8 @@ export default function CalendarRow<K, T extends CalendarItem>({
         ) : (
           <div
             key={id}
-            className={`text-center ${dayStyle!(day.date).className}`}
-            style={dayStyle!(day.date).props}
+            className={`text-center ${dayStyle!(day.date, labelKey).className}`}
+            style={dayStyle!(day.date, labelKey).props}
             {...dragEvents}
           ></div>
         );

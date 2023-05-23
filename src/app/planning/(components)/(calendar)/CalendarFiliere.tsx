@@ -8,6 +8,7 @@ import {
   CalendarEvent,
   CommonCalendarProps,
   DayAndEvent,
+  Style,
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
 import { DragEvent, useCallback, useMemo } from "react";
@@ -24,7 +25,8 @@ export default function CalendarFiliere({
   updateModules,
   dayStyle,
   ...props
-}: CalendarFiliereProps & CommonCalendarProps<ModuleEvent>) {
+}: { dayStyle: (day: Date) => Style } & CalendarFiliereProps &
+  CommonCalendarProps<ModuleEvent>) {
   const calendarData = useMemo(() => {
     const data = toCalendarData<Filiere & { modules: Module[] }>(
       modules,
@@ -41,7 +43,7 @@ export default function CalendarFiliere({
     setDropTarget,
     isDropTarget,
     cleanDropTarget,
-  } = useDropTarget();
+  } = useDropTarget<Filiere>();
 
   const changeDropTarget = useCallback(
     (dayAndEvent: DayAndEvent<ModuleEvent>, evt: DragEvent<HTMLElement>) => {
@@ -63,10 +65,13 @@ export default function CalendarFiliere({
         );
       }
       if (!dropTarget || !isSameDay(targetDay, dropTarget.interval.start)) {
-        setDropTarget({
-          start: targetDay,
-          end: addDays(targetDay, draggedModule!.duration - 1),
-        });
+        setDropTarget(
+          {
+            start: targetDay,
+            end: addDays(targetDay, draggedModule!.duration - 1),
+          },
+          draggedModule?.filiere
+        );
       }
     },
     [draggedModule, dropTarget, props.timeSpan, setDropTarget]
@@ -88,9 +93,13 @@ export default function CalendarFiliere({
       {...props}
       data={calendarData}
       LabelComponent={FiliereView.LabelComponent}
-      dayStyle={(date) => {
+      dayStyle={(date, row) => {
         let style = dayStyle(date);
-        if (isDropTarget(date)) style = mergeStyle(style, dropTargetStyle);
+        if (
+          isDropTarget(date) &&
+          (!row || (row && row.nom == dropTarget?.row.nom))
+        )
+          style = mergeStyle(style, dropTargetStyle);
         return style;
       }}
       drag={{

@@ -73,7 +73,6 @@ export type CommonCalendarProps<T extends CalendarItem> = {
   event: ComponentForEvent<T>; // Le component utilisé pour affiché les évenements
   monthLabelStyle: Style;
   daysHeader?: DayHeaderData[]; // Vacances scolaire
-  dayStyle: (day: Date) => Style; // Style des jours sans évenements
 };
 
 // Props spécifique à un calendrier
@@ -84,6 +83,7 @@ export type CalendarProps<
   data: CalendarData<K, T>[];
   LabelComponent: CalendarRowLabel<K>;
   drag: DragEvents<K, T>;
+  dayStyle: (day: Date, row?: K) => Style; // Style des jours sans évenements
 };
 
 // Props spécifique à une ligne
