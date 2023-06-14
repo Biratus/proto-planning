@@ -7,9 +7,9 @@ import {
 } from "date-fns";
 import { useCallback, useMemo } from "react";
 import {
+  CalendarDay,
   CalendarItem,
   CalendarSimpleProps,
-  DayAndEvent,
   Month,
 } from "../types";
 import { makeMonths } from "../utils";
@@ -91,7 +91,7 @@ const Day = ({ day }: { day: string }) => (
 function mergeDaysAndEvent<T extends CalendarItem>(
   days: Date[],
   events: T[]
-): DayAndEvent<T>[] {
+): CalendarDay<T>[] {
   function eventOf(d: Date) {
     for (let evt of events) {
       let { start, end } = evt;

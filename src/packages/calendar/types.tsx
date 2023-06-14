@@ -105,14 +105,14 @@ export type CalendarEvent<T extends CalendarItem> = {
 };
 
 // Donnée d'un jour ou évenement
-export type DayAndEvent<T extends CalendarItem> = Optional<
+export type CalendarDay<T extends CalendarItem> = Optional<
   CalendarEvent<T>,
   "event"
 >;
 
 //DragFunctions
 type DragFunction<K, T extends CalendarItem> = (
-  dayAndEvent: DayAndEvent<T>, // Jour qui est target
+  day: CalendarDay<T>, // Jour qui est target
   key: K, // Objet de la ligne
   evt: DragEvent<HTMLElement>
 ) => void;

@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { CalendarItem, DayAndEvent, Style } from "../types";
+import { CalendarDay, CalendarItem, Style } from "../types";
 import { formatMonthYear } from "../utils";
 import CalendarCell from "./CalendarCell";
 
 type CalendarMonthProp<T extends CalendarItem> = {
-  days: DayAndEvent<T>[];
+  days: CalendarDay<T>[];
   isFirstMonth: boolean;
   monthLabelStyle: Style;
 };

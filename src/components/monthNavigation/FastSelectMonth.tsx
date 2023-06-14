@@ -22,12 +22,17 @@ export default function FastSelectMonth({
 
   const monthsActions = months.map((m) => ({
     label: formatMonthYear(m),
-    onClick: () => onChange(m),
+    key: m,
     selected: isSameMonth(focusedMonth, m),
   }));
 
   return (
-    <Dropdown label="Aller au mois..." actions={monthsActions} compact={true} />
+    <Dropdown
+      label="Aller au mois..."
+      actions={monthsActions}
+      compact={true}
+      onClick={onChange}
+    />
   );
 }
 

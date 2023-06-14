@@ -1,32 +1,30 @@
-"use client";
 import cn from "classnames";
 import { useCallback, useEffect, useRef } from "react";
 import { ChevronDown } from "react-feather";
 
-type DropdownAction = {
+type DropdownAction<T> = {
+  key: T;
   label: string;
-  onClick: (key: string) => void;
   selected: boolean;
 };
-export default function Dropdown({
+export default function Dropdown<T>({
   label,
   actions,
   compact = false,
+  onClick,
 }: {
   label: string;
-  actions: DropdownAction[];
+  actions: DropdownAction<T>[];
+  onClick: (key: T) => void;
   compact?: boolean;
 }) {
   const activeRef = useRef<HTMLLIElement>(null);
 
-  const itemClick = useCallback(
-    (key: string, onClick: (key: string) => void) => {
-      onClick(key);
-      /**@ts-ignore */
-      document.activeElement!.blur();
-    },
-    []
-  );
+  const itemClick = useCallback((key: T) => {
+    onClick(key);
+    /**@ts-ignore */
+    document.activeElement!.blur();
+  }, []);
 
   useEffect(() => {
     activeRef.current?.scrollIntoView();
@@ -46,10 +44,10 @@ export default function Dropdown({
           "menu-compact": compact,
         })}
       >
-        {actions.map(({ label, onClick, selected }, i) =>
+        {actions.map(({ label, key, selected }, i) =>
           selected ? (
             <li
-              onClick={(evt) => itemClick(label, onClick)}
+              onClick={(evt) => itemClick(key)}
               key={i}
               ref={activeRef}
               className="snap-start"
@@ -58,7 +56,7 @@ export default function Dropdown({
             </li>
           ) : (
             <li
-              onClick={(evt) => itemClick(label, onClick)}
+              onClick={(evt) => itemClick(key)}
               key={i}
               className="snap-start"
             >

@@ -3,10 +3,10 @@
 import { isWithinInterval } from "date-fns";
 import { DragEvent } from "react";
 import {
+  CalendarDay,
   CalendarEvent as CalendarEventType,
   CalendarItem,
   CalendarRowProps,
-  DayAndEvent,
   Interval,
 } from "../types";
 import { nbOfDaysBetween } from "../utils";
@@ -70,7 +70,7 @@ function mergeDaysAndEvent<T extends CalendarItem>(
   days: Date[],
   events: T[],
   timeSpan: Interval
-): DayAndEvent<T>[] {
+): CalendarDay<T>[] {
   function eventOf(d: Date) {
     for (let evt of events) {
       let { start, end } = evt;

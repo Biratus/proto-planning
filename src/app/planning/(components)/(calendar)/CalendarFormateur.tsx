@@ -9,9 +9,9 @@ import {
 } from "@/lib/types";
 import FullCalendar from "@/packages/calendar/fullCalendar/FullCalendar";
 import {
+  CalendarDay,
   CalendarEvent,
   CommonCalendarProps,
-  DayAndEvent,
   Style,
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
@@ -50,20 +50,20 @@ export default function CalendarFormateur({
 
   const changeDropTarget = useCallback(
     (
-      dayAndEvent: DayAndEvent<ModuleEvent>,
+      day: CalendarDay<ModuleEvent>,
       formateur: Formateur,
       evt: DragEvent<HTMLElement>
     ) => {
       let targetDay;
-      if (!dayAndEvent.event || dayAndEvent.event.duration == 1) {
+      if (!day.event || day.event.duration == 1) {
         // Simple day or single day event
-        targetDay = dayAndEvent.date;
+        targetDay = day.date;
       } else {
         // Day with event accross multiple days
         // Calculate on which day it was droped
         let rect = evt.currentTarget.getBoundingClientRect();
         targetDay = getTargetDay(
-          dayAndEvent as CalendarEvent<ModuleEvent>,
+          day as CalendarEvent<ModuleEvent>,
           {
             targetWidth: evt.currentTarget.clientWidth,
             mouseOffsetX: evt.clientX - rect.x,
@@ -117,21 +117,20 @@ export default function CalendarFormateur({
           return style;
         }}
         drag={{
-          drag: (dayAndEvent, _, evt) => {
-            if (!dayAndEvent.event!.overlap)
-              setDraggedModule(dayAndEvent.event!);
+          drag: (day, _, evt) => {
+            if (!day.event!.overlap) setDraggedModule(day.event!);
             else evt.preventDefault();
           },
-          enter: (dayAndEvent, formateur, evt) => {
-            changeDropTarget(dayAndEvent, formateur, evt);
+          enter: (day, formateur, evt) => {
+            changeDropTarget(day, formateur, evt);
           },
           leave: () => {},
           drop: () => {
             dropModule();
           },
-          move: (dayAndEvent, formateur, evt) => {
+          move: (day, formateur, evt) => {
             evt.preventDefault();
-            changeDropTarget(dayAndEvent, formateur, evt);
+            changeDropTarget(day, formateur, evt);
           },
         }}
       />

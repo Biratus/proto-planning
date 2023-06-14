@@ -3,7 +3,7 @@
 import cn from "classnames";
 import { isSameDay } from "date-fns";
 import { MouseEvent } from "react";
-import { CalendarItem, DayAndEvent } from "../types";
+import { CalendarDay, CalendarItem } from "../types";
 import { formatDayDate } from "../utils";
 import { useHover } from "./HoverProvider";
 import { useSimpleCalendar } from "./SimpleCalendarProvider";
@@ -12,7 +12,7 @@ export default function CalendarCell<T extends CalendarItem>({
   day: { date, event },
   forceEventLabel,
 }: {
-  day: DayAndEvent<T>;
+  day: CalendarDay<T>;
   forceEventLabel: boolean;
 }) {
   const {
