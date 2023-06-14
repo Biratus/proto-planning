@@ -1,6 +1,8 @@
 import puppeteer from "puppeteer";
 
-export async function makePDF(htmlContent:string) {
+export async function makePDF(
+  htmlContent: string
+): Promise<[Buffer, () => Promise<void>]> {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -12,7 +14,7 @@ export async function makePDF(htmlContent:string) {
   return [pdfBuffer, async () => await browser.close()];
 }
 
-export function objectToCSS(obj:any) {
+export function objectToCSS(obj: any) {
   let cssString = "";
   for (let key in obj) {
     cssString += key + " { ";

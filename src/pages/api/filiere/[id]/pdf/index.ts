@@ -32,6 +32,5 @@ export default async function handler(
   );
   res.send(pdfBuffer);
 
-  /**@ts-ignore */
   await finished(); // Important!
 }

@@ -16,28 +16,33 @@ import { devtools, persist } from "zustand/middleware";
 export const zoom_calendar_full = "zoom_calendar_full";
 export const zoom_calendar_formateur = "zoom_calendar_formateur";
 
-interface PlanningStorage {
+export type PlanningStorage = {
   [zoom_calendar_full]: number;
   [zoom_calendar_formateur]: number;
-  set(partial: Partial<Omit<PlanningStorage, "set">>): void;
-}
+};
 
 const defaultPlanningStorage = {
   [zoom_calendar_full]: 2,
   [zoom_calendar_formateur]: 5,
 };
 
-const usePersistedStore = create<PlanningStorage>()(
+type FullLocalStorage = PlanningStorage & {
+  set(partial: Partial<Omit<FullLocalStorage, "set">>): void;
+};
+
+const defaultFullLocalStorage = { ...defaultPlanningStorage };
+
+const usePersistedStore = create<FullLocalStorage>()(
   devtools(
     persist(
       (set) => ({
-        ...defaultPlanningStorage,
+        ...defaultFullLocalStorage,
         set(partial) {
           set(partial);
         },
       }),
       {
-        name: "planningZooms", // needs to be Dynamic
+        name: "localStorageValues",
         partialize: (state) => ({
           [zoom_calendar_full]: state[zoom_calendar_full],
           [zoom_calendar_formateur]: state[zoom_calendar_formateur],
@@ -53,7 +58,7 @@ const useStore = ((selector, compare) => {
   return isHydrated
     ? store
     : selector({
-        ...defaultPlanningStorage,
+        ...defaultFullLocalStorage,
         set() {
           /**/
         },
@@ -61,9 +66,16 @@ const useStore = ((selector, compare) => {
 }) as typeof usePersistedStore;
 useStore.getState = usePersistedStore.getState;
 
-export const useSpecialStore = (key: string) => {
+export const usePlanningStore = (key: keyof PlanningStorage) => {
   return useStore((s) => ({
-    value: s[key as keyof PlanningStorage] as number,
+    value: s[key] as number,
     setValue: (nv: number) => s.set({ [key]: nv }),
   }));
 };
+
+export function useLocalStorageStore<T>(key: keyof FullLocalStorage) {
+  return useStore((s) => ({
+    value: s[key] as T,
+    setValue: (nv: T) => s.set({ [key]: nv }),
+  }));
+}

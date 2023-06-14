@@ -5,7 +5,7 @@ import {
   isWithinInterval,
   startOfMonth,
 } from "date-fns";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   CalendarItem,
   CalendarSimpleProps,
@@ -34,14 +34,17 @@ export default function CalendarSimple<T extends CalendarItem>({
     [timeSpan]
   );
 
-  const daysAndEventsOf = ({ day }: Month) =>
-    mergeDaysAndEvent<T>(
-      eachDayOfInterval({
-        start: startOfMonth(day),
-        end: endOfMonth(day),
-      }),
-      events
-    );
+  const daysAndEventsOf = useCallback(
+    ({ day }: Month) =>
+      mergeDaysAndEvent<T>(
+        eachDayOfInterval({
+          start: startOfMonth(day),
+          end: endOfMonth(day),
+        }),
+        events
+      ),
+    [events]
+  );
 
   return (
     <div

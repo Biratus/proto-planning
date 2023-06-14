@@ -13,7 +13,6 @@ export type ModuleForSingleCalendar = Module & { overlap: boolean };
 
 export default function FilierePage() {
   const { displayedFiliereData } = useFiliereStore();
-  console.log("FilierePage");
   const filiereData: ModuleForSingleCalendar[] = useMemo(() => {
     return displayedFiliereData
       .sort((mod1, mod2) => mod1.start.getTime() - mod2.start.getTime())

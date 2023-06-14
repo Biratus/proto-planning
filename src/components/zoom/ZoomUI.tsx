@@ -9,16 +9,16 @@ export default function ZoomUI({ range }: { range: number }) {
   const incZoom = useCallback(() => setZoom(zoom + 1), [zoom, setZoom]);
   const decZoom = useCallback(() => setZoom(zoom - 1), [zoom, setZoom]);
   return (
-    <div className="btn-group">
+    <div className="join">
       <button
-        className="btn-outline btn btn-md"
+        className="join-item btn-outline btn-md btn"
         onClick={incZoom}
         disabled={zoom >= range}
       >
         <ZoomIn size={28} />
       </button>
       <button
-        className="btn-outline btn btn-md"
+        className="join-item btn-outline btn-md btn"
         onClick={decZoom}
         disabled={zoom <= 0}
       >
