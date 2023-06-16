@@ -1,18 +1,12 @@
 import { useFiliereStore } from "@/app/planning/filiere/[filiereId]/FiliereProvider";
 import { formatFullDate, formatTime } from "@/lib/date";
-import { ModuleModification } from "@/lib/history";
+import { HistoryModification, ModuleModification } from "@/lib/history";
 import cn from "classnames";
 import { Eye, EyeOff, RotateCcw } from "react-feather";
 import DiffDates from "./DiffDates";
 import DiffFormateur from "./DiffFormateur";
 
-export function ModuleHistoryUI({
-  date,
-  modifications,
-}: {
-  date: number;
-  modifications: ModuleModification[];
-}) {
+export function ModuleHistoryUI({ date, modifications }: HistoryModification) {
   return (
     <li className="step-neutral step" data-content="">
       <div className="mb-5 flex w-full items-center justify-between">

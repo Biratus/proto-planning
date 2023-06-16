@@ -85,6 +85,7 @@ export default function CommonCalendar({
     [originalTimeSpan]
   );
 
+  // on désérialise les données
   const calendarData = useMemo<Module[]>(() => {
     const calendarData = fromSerializedData(serializedData);
     for (let [id, mod] of tempData) {

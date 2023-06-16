@@ -21,7 +21,7 @@ export type HistoryModification = {
   modifications: ModuleModification[];
 };
 
-export function toMapDateHistory(
+export function toHistoryModifcation(
   history: ModuleHistory[],
   currentData: Module[]
 ) {

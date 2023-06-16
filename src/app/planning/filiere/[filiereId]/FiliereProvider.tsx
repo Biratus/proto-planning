@@ -8,7 +8,7 @@ import {
   HistoryModification,
   makeRevertConflictModification,
   ModuleModification,
-  toMapDateHistory,
+  toHistoryModifcation,
 } from "@/lib/history";
 import { Module, ModuleHistory, Serialized } from "@/lib/types";
 import { useRouter } from "next/navigation";
@@ -79,7 +79,7 @@ export default function FiliereProvider({
   );
 
   const history = useMemo(
-    () => toMapDateHistory(filiereHistory, deserializedFiliereData),
+    () => toHistoryModifcation(filiereHistory, deserializedFiliereData),
     [deserializedFiliereData, filiereHistory]
   );
 
