@@ -20,7 +20,7 @@ export default async function handler(
     },
   });
 
-  if (!filiere) return notFound(res, "Filière");
+  if (!filiere) return notFound("Filière");
 
   const modules = filiere.modules;
   const [pdfBuffer, finished] = await makePDF(htmlFromFiliere(fId, modules));
