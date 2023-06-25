@@ -58,8 +58,8 @@ export default async function Page({
               ...m,
               filiere: { nom: filiereId },
             }))
-            .map(serialize)}
-          filiereHistory={filiereHistory.map(serialize)}
+            .map((m) => serialize(m))}
+          filiereHistory={filiereHistory.map((h) => serialize(h))}
         >
           <div className="w-2/3">
             <FilierePage />

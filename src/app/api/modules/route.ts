@@ -7,15 +7,18 @@ import { NextRequest } from "next/server";
 export async function PUT(request: NextRequest) {
   let serializedModules: SerializedModule[] = [];
   const body = await request.json();
+
   if (!(body instanceof Array)) {
     serializedModules.push(body as SerializedModule);
   } else serializedModules = body as SerializedModule[];
+
   for (let serializedMod of serializedModules) {
     if (!serializedMod.id) return badRequest("No id was provided");
     if (!isValidModule(serializedMod)) {
       return badRequest("Invalid dates");
     }
   }
+
   const modulesToUpdate = serializedModules.map((m) => deserialize<Module>(m));
   const dbResp = await updateModules(modulesToUpdate);
   const response: PutModulesResponse = {

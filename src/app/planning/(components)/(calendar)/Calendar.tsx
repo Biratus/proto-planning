@@ -141,7 +141,6 @@ export default function CommonCalendar({
       let original = deserialize<Module>(
         serializedData.find((m) => m.id == mod.id)!
       );
-      console.log({ mod, original });
       if (
         isSameDay(original.start, mod.start) &&
         mod.formateur?.mail == original.formateur?.mail
