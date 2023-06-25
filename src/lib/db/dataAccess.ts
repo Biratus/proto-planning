@@ -66,22 +66,30 @@ export async function getAllFormateurs() {
 export async function getAllFormateursSimple() {
   return prisma.formateur.findMany();
 }
-export async function searchFormateurs({
-  search,
-  able,
-  available,
-}: {
-  search?: string;
-  able?: Module;
-  available?: Interval;
-}) {
+export async function searchFormateurs(
+  {
+    search,
+    able,
+    available,
+    alphabetically,
+  }: {
+    search?: string;
+    able?: Module;
+    available?: Interval;
+    alphabetically?: boolean;
+  },
+  { page, count }: { page?: number; count?: number }
+) {
   let where = {};
+  let pagination = {};
   if (search) {
     where = {
       ...where,
-      nom: { contains: search },
-      prenom: { contains: search },
-      email: { contains: search },
+      OR: [
+        { nom: { contains: search } },
+        { prenom: { contains: search } },
+        { mail: { contains: search } },
+      ],
     };
   }
   // TODO
@@ -102,8 +110,21 @@ export async function searchFormateurs({
       },
     };
   }
+
+  if (page !== undefined && count !== undefined) {
+    pagination = {
+      skip: (page - 1) * count,
+      take: count,
+    };
+  }
   return prisma.formateur.findMany({
     where,
+    orderBy: alphabetically
+      ? {
+          nom: "asc",
+        }
+      : {},
+    ...pagination,
   });
 }
 

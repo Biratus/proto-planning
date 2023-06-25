@@ -1,7 +1,14 @@
 import { searchFormateurs } from "@/lib/dataAccess";
 import { Formateur, Module } from "@/lib/types";
 import cn from "classnames";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { User } from "react-feather";
 import { Interval } from "../../packages/calendar/types";
 
@@ -10,6 +17,8 @@ type SearchProps = {
   available?: Interval;
   able?: Module;
 };
+
+const countDisplayed = 6;
 
 export default function FormateurSelect({
   formateur,
@@ -26,32 +35,50 @@ export default function FormateurSelect({
     [forModule]
   );
 
+  const listRef = useRef<HTMLLIElement>(null);
   const [filteredFormateurs, setFilteredFormateurs] = useState<Formateur[]>([]);
+  const [nextPageLoading, setNextPageLoading] = useState(false);
+  const pageRef = useRef(1);
+  const [searchProps, setSearchProps] = useState<SearchProps>({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) nextPage();
+    });
+    observer.observe(listRef.current!);
+    return () => {
+      if (listRef.current) observer.unobserve(listRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
-      console.log("fetch formateurs in effect");
-      const formateurs = await searchFormateurs({});
-      setFilteredFormateurs(
-        formateurs.map((f) => ({
-          ...f,
-          nom: f.nom || "",
-          prenom: f.prenom || "",
-        }))
-      );
+      const formateurs = await pageSearch();
+      setFilteredFormateurs(formateurs);
     })();
   }, []);
 
-  const [searchProps, setSearchProps] = useState<SearchProps>({});
-
+  // Recherche
   const filterFormateurs = useCallback(
     async (evt: ChangeEvent<HTMLInputElement>) => {
-      const search = evt.target.value;
-      setSearchProps((prev) => ({ ...prev, search }));
+      setSearchProps((prev) => ({
+        ...prev,
+        search: evt.target.value,
+      }));
+      const formateurs =
+        evt.target.value.length == 0
+          ? await pageSearch()
+          : await searchFormateurs({
+              alphabetically: true,
+              ...searchProps,
+              search: evt.target.value,
+            });
+      setFilteredFormateurs(formateurs);
     },
     []
   );
 
+  // disponible
   const availableFormateurs = useCallback(
     async (evt: ChangeEvent<HTMLInputElement>) => {
       const newSearchProps = {
@@ -59,10 +86,11 @@ export default function FormateurSelect({
         available: evt.target.checked ? moduleInterval : undefined,
       };
       setSearchProps(newSearchProps);
-      setFilteredFormateurs(await searchFormateurs(newSearchProps));
+      setFilteredFormateurs(await pageSearch(newSearchProps));
     },
     [searchProps, moduleInterval]
   );
+
   const ableFormateurs = useCallback(
     async (evt: ChangeEvent<HTMLInputElement>) => {
       const newSearchProps = {
@@ -75,6 +103,24 @@ export default function FormateurSelect({
     [searchProps, forModule]
   );
 
+  const nextPage = useCallback(async () => {
+    setNextPageLoading(true);
+    pageRef.current++;
+    const formateurs = await pageSearch();
+
+    if (formateurs.length == 0 || formateurs.length < countDisplayed)
+      pageRef.current = -1;
+    setFilteredFormateurs((prev) => [...prev, ...formateurs]);
+    setNextPageLoading(false);
+  }, [pageRef]);
+
+  const pageSearch = useCallback(async (extra?: SearchProps) => {
+    return searchFormateurs({
+      alphabetically: true,
+      page: pageRef.current,
+      count: countDisplayed,
+    });
+  }, []);
   return (
     <div className="dropdown">
       <label className="btn" tabIndex={0}>
@@ -112,32 +158,27 @@ export default function FormateurSelect({
           className="input-bordered input input-sm"
           onChange={filterFormateurs}
         />
-        <ul className="menu mt-2 h-80 flex-nowrap overflow-y-scroll bg-base-100">
-          {filterSearchFormateurs(filteredFormateurs, searchProps.search).map(
-            (f) => (
-              <li key={f.mail}>
-                <a
-                  className={cn({
-                    active: formateur && f.mail == formateur.mail,
-                  })}
-                  onClick={() => setFormateur(f)}
-                >
-                  {f.prenom} {f.nom}
-                </a>
-              </li>
-            )
+        <ul className="menu mt-2 h-auto max-h-60 flex-nowrap overflow-y-scroll bg-base-100">
+          {filteredFormateurs.map((f) => (
+            <li key={f.mail}>
+              <a
+                className={cn({
+                  active: formateur && f.mail == formateur.mail,
+                })}
+                onClick={() => setFormateur(f)}
+              >
+                {f.prenom} {f.nom}
+              </a>
+            </li>
+          ))}
+          {nextPageLoading && (
+            <li>
+              <progress className="progress w-full"></progress>
+            </li>
           )}
+          {pageRef.current > 0 && <li ref={listRef}></li>}
         </ul>
       </div>
     </div>
-  );
-}
-
-function filterSearchFormateurs(formateurs: Formateur[], search = "") {
-  return formateurs.filter(
-    (f) =>
-      f.nom.toLowerCase().includes(search.toLowerCase()) ||
-      f.prenom.toLowerCase().includes(search.toLowerCase()) ||
-      f.mail.toLowerCase().includes(search.toLowerCase())
   );
 }

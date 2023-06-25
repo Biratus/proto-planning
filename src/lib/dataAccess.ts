@@ -1,7 +1,7 @@
 import {
   ClientPutModulesResponse,
   PutModulesResponse,
-} from "@/pages/api/modules";
+} from "@/app/api/modules/route";
 import axios from "axios";
 import { formatISO, parseISO } from "date-fns";
 import { deserialize } from "./date";
@@ -21,8 +21,12 @@ export async function fetchMods(): Promise<Module[]> {
 }
 
 export async function searchFormateurs(params: {
+  search?: string;
   able?: Module;
   available?: Interval;
+  page?: number;
+  count?: number;
+  alphabetically?: boolean;
 }): Promise<Formateur[]> {
   let parsedParams = { ...params } as any;
   if (params.available) {
