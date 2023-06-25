@@ -52,6 +52,27 @@ export async function apiFetchFiliere(nomFiliere: string): Promise<Filiere> {
 
   return filiere;
 }
+export async function apiUpdateModule(module: Module) {
+  const resp = await axios.put("/api/modules/", module);
+
+  const ret: PutModulesResponse = {
+    updated: (resp.data as ClientPutModulesResponse).updated.map((m) => ({
+      ...m,
+      start: parseISO(m.start),
+      end: parseISO(m.end),
+    })),
+    errors: (resp.data as ClientPutModulesResponse).errors.map((err) => ({
+      error: err.error,
+      module: {
+        ...err.module,
+        start: parseISO(err.module.start as string),
+        end: parseISO(err.module.end as string),
+      },
+    })),
+  };
+
+  return ret;
+}
 
 export async function apiUpdateModules(modules: Module[]) {
   const resp = await axios.put("/api/modules/", modules);

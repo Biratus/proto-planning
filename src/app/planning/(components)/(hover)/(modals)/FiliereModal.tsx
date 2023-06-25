@@ -1,4 +1,5 @@
 "use client";
+import { useFocusedFiliere } from "@/app/planning/(store)/hoverStore";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import { getOverlapModules } from "@/lib/calendar/calendar";
 import { formatFullDate, formatMonthYear, nbOfDaysBetween } from "@/lib/date";
@@ -6,7 +7,6 @@ import { startOfMonth } from "date-fns";
 import Link from "next/link";
 import { useMemo, useRef } from "react";
 import { AlertTriangle, Download, Info, User } from "react-feather";
-import { useFocusedFiliere } from "../../(calendar)/CalendarProvider";
 
 export const FiliereDetailModalId = "filiereDetailModalId";
 

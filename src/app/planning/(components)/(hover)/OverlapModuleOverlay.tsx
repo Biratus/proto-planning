@@ -3,11 +3,8 @@ import { useLegendStore } from "@/components/legend/Legend";
 import { Module, ModuleEvent } from "@/lib/types";
 import { eachDayOfInterval } from "date-fns";
 import { useCallback, useMemo, useRef } from "react";
-import {
-  setDraggedModule,
-  setFocusModule,
-  useOverlapModuleUI,
-} from "../(calendar)/CalendarProvider";
+import { setDraggedModule } from "../../(store)/dragStore";
+import { setFocusModule, useOverlapModuleUI } from "../../(store)/hoverStore";
 import { ModuleDetailModalId } from "./(modals)/ModuleModal";
 
 export const overlayID = "overlapModuleOverlayId";

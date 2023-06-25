@@ -11,7 +11,6 @@ import CalendarSimple from "@/packages/calendar/SimpleView/CalendarSimple";
 import { SerializedInterval } from "@/packages/calendar/types";
 import { isWeekend, parseISO, startOfDay } from "date-fns";
 import { useMemo } from "react";
-import { useJoursFeries } from "../../(components)/(calendar)/CalendarProvider";
 import {
   calendarDayStyle,
   dayEventStyle,
@@ -19,6 +18,7 @@ import {
 } from "../../(components)/(calendar)/CalendarStyle";
 import { FormateurView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
+import { useJoursFeries } from "../../(store)/specialDaysStore";
 
 type CalendarFormateurProps = {
   formateur: Formateur;

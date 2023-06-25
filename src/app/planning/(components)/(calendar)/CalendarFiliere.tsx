@@ -12,7 +12,7 @@ import {
 } from "@/packages/calendar/types";
 import { addDays, isSameDay } from "date-fns";
 import { DragEvent, useCallback, useMemo } from "react";
-import { setDraggedModule, useDropTarget } from "./CalendarProvider";
+import { setDraggedModule, useDropTarget } from "../../(store)/dragStore";
 import { dropTargetStyle } from "./CalendarStyle";
 import { FiliereView } from "./CalendarView";
 type CalendarFiliereProps = {

@@ -1,47 +1,52 @@
+import AsyncButton from "@/components/AsyncButton";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import FormateurSelect from "@/components/formulaires/FormateurSelect";
+import { apiUpdateModule } from "@/lib/dataAccess";
 import { Formateur, Module } from "@/lib/types";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import ModuleTitle from "./ModuleTitle";
 export const SwitchFormateurModalId = "switchFormateurModal";
 
-type SwitchFormateurModalProps<T extends Module> = {
-  module: T | null;
-  setModule: (mod: T) => void;
-  onClose: () => void;
-  submit: (mod?: T) => Promise<boolean>;
+export type SwitchFormateurModalProps<T extends Module> = {
+  module: T;
+  // setModule: (mod: T) => void;
+  // onClose: () => void;
+  onSuccess: (formateur: Formateur | null) => void;
 };
 
 export default function SwitchFormateurModal<T extends Module>({
   module,
-  setModule,
-  onClose,
-  submit,
+  // setModule,
+  onSuccess,
 }: SwitchFormateurModalProps<T>) {
   const modalRef = useRef<ModalRef>({});
+  const switchFormateurRef = useRef<Formateur>(module.formateur || null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const close = useCallback(() => {
     if (!modalRef.current?.isClosed!()) {
       modalRef.current!.close!();
-      onClose();
     }
-  }, [onClose]);
+  }, []);
 
   const submitForm = async () => {
-    const success = await submit();
-    // const success = await submit({
-    //   ...module!,
-    //   formateur: formateurs.get(formateurRef.current!.mail)!,
-    // });
-    if (success) close();
+    setErrorMessage(null);
+    const newModule: T = { ...module, formateur: switchFormateurRef.current };
+    const response = await apiUpdateModule(newModule);
+    if (response.updated) {
+      onSuccess(switchFormateurRef.current);
+      close();
+    } else {
+      setErrorMessage(response.errors[0].error);
+    }
   };
 
-  const onSelectFormateur = (formateur: Formateur) => {
-    setModule({
-      ...module!,
-      formateur,
-    });
-  };
+  // const onSelectFormateur = (formateur: Formateur) => {
+  //   setModule({
+  //     ...module!,
+  //     formateur,
+  //   });
+  // };
 
   return (
     <CommonModal inputId={SwitchFormateurModalId} modalRef={modalRef}>
@@ -55,15 +60,17 @@ export default function SwitchFormateurModal<T extends Module>({
           {/* <div>Début : {formatFullPrettyDate(module.start)}</div>
           <div>Fin : {formatFullPrettyDate(module.end)}</div>
           <div>{JSON.stringify(module.formateur)}</div> */}
+          {errorMessage && <div className="text-error">{errorMessage}</div>}
           <FormateurSelect
+            formateurRef={switchFormateurRef}
             formateur={module.formateur || undefined}
             forModule={module}
-            setFormateur={onSelectFormateur}
+            // setFormateur={onSelectFormateur}
           />
           <div className="modal-action w-full">
-            <button className="btn btn-success" onClick={submitForm}>
+            <AsyncButton className="btn-success btn" asyncFunction={submitForm}>
               Modifier
-            </button>
+            </AsyncButton>
           </div>
         </>
       )}

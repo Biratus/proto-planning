@@ -10,7 +10,8 @@ import cn from "classnames";
 import Link from "next/link";
 import { useCallback } from "react";
 import { FiliereDetailModalId } from "../(hover)/(modals)/FiliereModal";
-import { setFocusedFiliere, useDropTarget } from "./CalendarProvider";
+import { useDropTarget } from "../../(store)/dragStore";
+import { setFocusedFiliere } from "../../(store)/hoverStore";
 
 const formateurSimple = ({ nom, prenom, mail }: Formateur) =>
   `${nom} ${prenom} - ${mail}`;

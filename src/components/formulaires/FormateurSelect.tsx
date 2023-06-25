@@ -3,6 +3,7 @@ import { Formateur, Module } from "@/lib/types";
 import cn from "classnames";
 import {
   ChangeEvent,
+  MutableRefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -23,17 +24,21 @@ const countDisplayed = 6;
 export default function FormateurSelect({
   formateur,
   forModule,
-  setFormateur,
+  // setFormateur,
+  formateurRef,
 }: {
   formateur?: Formateur;
   forModule?: Module;
-  setFormateur: (f: Formateur) => void;
+  // setFormateur: (f: Formateur) => void;
+  formateurRef: MutableRefObject<Formateur | null>;
 }) {
   const moduleInterval = useMemo<Interval | undefined>(
     () =>
       forModule ? { start: forModule.start, end: forModule.end } : undefined,
     [forModule]
   );
+
+  const [selectedFormateur, setSelectedFormateur] = useState(formateur);
 
   const listRef = useRef<HTMLLIElement>(null);
   const [filteredFormateurs, setFilteredFormateurs] = useState<Formateur[]>([]);
@@ -56,6 +61,11 @@ export default function FormateurSelect({
       const formateurs = await pageSearch();
       setFilteredFormateurs(formateurs);
     })();
+  }, []);
+
+  const selectFormateur = useCallback((formateur: Formateur) => {
+    setSelectedFormateur(formateur);
+    formateurRef.current = formateur;
   }, []);
 
   // Recherche
@@ -124,7 +134,9 @@ export default function FormateurSelect({
   return (
     <div className="dropdown">
       <label className="btn" tabIndex={0}>
-        {formateur ? `${formateur.prenom} ${formateur.nom}` : "N/A"}{" "}
+        {selectedFormateur
+          ? `${selectedFormateur.prenom} ${selectedFormateur.nom}`
+          : "N/A"}{" "}
         <User className="ml-1" />
       </label>
       <div
@@ -163,9 +175,9 @@ export default function FormateurSelect({
             <li key={f.mail}>
               <a
                 className={cn({
-                  active: formateur && f.mail == formateur.mail,
+                  active: selectedFormateur && f.mail == selectedFormateur.mail,
                 })}
-                onClick={() => setFormateur(f)}
+                onClick={() => selectFormateur(f)}
               >
                 {f.prenom} {f.nom}
               </a>

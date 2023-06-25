@@ -1,13 +1,20 @@
 "use client";
+import {
+  setFocusModule,
+  useFocusModule,
+} from "@/app/planning/(store)/hoverStore";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
 import { formatFullDate } from "@/lib/date";
-import { ModuleEvent } from "@/lib/types";
-import { ReactNode, useMemo, useRef } from "react";
+import { Formateur, ModuleEvent } from "@/lib/types";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { ReactNode, useCallback, useMemo, useRef } from "react";
 import { MoreVertical, User, Users } from "react-feather";
-import { useFocusModule } from "../../(calendar)/CalendarProvider";
 import ModuleTitle from "./ModuleTitle";
 import { SplitModuleModalId } from "./SplitModuleModal";
 import { SwitchFormateurModalId } from "./SwitchFormateurModal";
+const SplitModuleModal = dynamic(() => import("./SplitModuleModal"));
+const SwitchFormateurModal = dynamic(() => import("./SwitchFormateurModal"));
 export const ModuleDetailModalId = "moduleDetailModalId";
 
 const defaultModule: ModuleEvent = {
@@ -22,7 +29,7 @@ const defaultModule: ModuleEvent = {
 };
 
 export default function ModuleModal() {
-  const { focus } = useFocusModule();
+  const { focus, temps: tempModules } = useFocusModule();
   const {
     nom: name,
     start,
@@ -33,6 +40,7 @@ export default function ModuleModal() {
   } = focus || defaultModule;
 
   const modalRef = useRef<ModalRef>({});
+  const router = useRouter();
 
   const dateActions = useMemo(
     () => [
@@ -63,32 +71,68 @@ export default function ModuleModal() {
     ],
     []
   );
+  const submitSwitchForm = useCallback(
+    (newFormateur: Formateur | null) => {
+      console.log("submitSwitchForm");
+      // console.log({ old: focus, new: tempModules[0] });
+
+      setFocusModule({ ...focus!, formateur: newFormateur });
+      router.refresh();
+    },
+    [focus]
+  );
+  const submitSplitForm = useCallback(async () => {
+    console.log(tempModules);
+    // async ({ split, formateurs }: { split: Date; formateurs: Formateur[] }) => {
+    // console.log("submitSplitForm");
+    // console.log({ split, formateurs, focusModule });
+    // if(success)
+    // resetHoverProps();
+    return true;
+  }, [tempModules]);
 
   return (
-    <CommonModal inputId={ModuleDetailModalId} modalRef={modalRef}>
-      {/* Info basiques */}
-      <ModuleTitle name={name} filiere={filiere.nom} />
-      <button className="btn" onClick={() => console.log(focus)}>
-        Log focus
-      </button>
-      {/* Dates */}
-      <div className="flex flex-row items-center gap-4">
-        <span>
-          Du <span className="font-bold">{formatFullDate(start)}</span> au{" "}
-          <span className="font-bold">{formatFullDate(end)}</span> - {duration}{" "}
-          jours
-        </span>
-        {/* Actions */}
-        <MoreActions actions={dateActions} />
-      </div>
-      <div className="flex flex-row items-center gap-4">
-        <div className="flex flex-row gap-2">
-          Formateur : <User />{" "}
-          {formateur ? `${formateur.prenom} ${formateur.nom}` : "N/A"}
+    <>
+      <CommonModal inputId={ModuleDetailModalId} modalRef={modalRef}>
+        {/* Info basiques */}
+        <ModuleTitle name={name} filiere={filiere.nom} />
+        <button className="btn" onClick={() => console.log(focus)}>
+          Log focus
+        </button>
+        {/* Dates */}
+        <div className="flex flex-row items-center gap-4">
+          <span>
+            Du <span className="font-bold">{formatFullDate(start)}</span> au{" "}
+            <span className="font-bold">{formatFullDate(end)}</span> -{" "}
+            {duration} jours
+          </span>
+          {/* Actions */}
+          <MoreActions actions={dateActions} />
         </div>
-        <MoreActions actions={formateurActions} />
-      </div>
-    </CommonModal>
+        <div className="flex flex-row items-center gap-4">
+          <div className="flex flex-row gap-2">
+            Formateur : <User />{" "}
+            {formateur ? `${formateur.prenom} ${formateur.nom}` : "N/A"}
+          </div>
+          <MoreActions actions={formateurActions} />
+        </div>
+      </CommonModal>
+      {focus && (
+        <>
+          <SwitchFormateurModal
+            module={focus}
+            // setModule={setTempModule}
+            onSuccess={submitSwitchForm}
+          />
+          {/* <SplitModuleModal
+            onClose={resetHoverProps}
+            modules={tempModules}
+            setModules={setTempModules}
+            submit={submitSplitForm}
+          /> */}
+        </>
+      )}
+    </>
   );
 }
 

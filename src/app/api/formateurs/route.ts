@@ -1,5 +1,5 @@
 import { ok } from "@/lib/api";
-import { searchFormateurs } from "@/lib/db/dataAccess";
+import { searchFormateurs } from "@/lib/db/formateurs";
 import { parseISO } from "date-fns";
 import { NextRequest } from "next/server";
 

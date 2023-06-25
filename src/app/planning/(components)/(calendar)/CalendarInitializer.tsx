@@ -1,7 +1,7 @@
 "use client";
 import { JoursFeries } from "@/lib/calendar/joursFeries";
 import { useRef } from "react";
-import { setSpecialDays } from "./CalendarProvider";
+import { setSpecialDays } from "../../(store)/specialDaysStore";
 
 type SerializedSpecialDaysProps = {
   joursFeries: JoursFeries;

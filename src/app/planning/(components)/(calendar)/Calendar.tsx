@@ -25,11 +25,11 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AlertCircle } from "react-feather";
+import { useSpecialDays } from "../../(store)/specialDaysStore";
 import DataDisplay from "../DataDisplay";
 import UpdateDataUI from "../UpdateDataUI";
 import CalendarFiliere from "./CalendarFiliere";
 import CalendarFormateur from "./CalendarFormateur";
-import { useSpecialDays } from "./CalendarProvider";
 import { calendarDayStyle, monthLabel } from "./CalendarStyle";
 import { FiliereView, FormateurView } from "./CalendarView";
 import DayComponent from "./DayComponent";

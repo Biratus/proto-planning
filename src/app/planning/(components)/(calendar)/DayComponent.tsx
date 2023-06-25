@@ -5,7 +5,8 @@ import { mergeStyle } from "@/lib/style";
 import { DayComponentProps } from "@/packages/calendar/types";
 import cn from "classnames";
 import { useMemo } from "react";
-import { useDropTarget, useSpecialDays } from "./CalendarProvider";
+import { useDropTarget } from "../../(store)/dragStore";
+import { useSpecialDays } from "../../(store)/specialDaysStore";
 import { calendarDayStyle, dropTargetStyle } from "./CalendarStyle";
 
 export default function DayComponent({ date, ...props }: DayComponentProps) {

@@ -1,8 +1,5 @@
 import cn from "classnames";
-import {
-  displayViews,
-  useModuleEventDisplay,
-} from "./(calendar)/CalendarProvider";
+import { displayViews, useModuleEventDisplay } from "../(store)/displayStore";
 
 export default function DataDisplay({ view }: { view: string }) {
   const { get, set } = useModuleEventDisplay();

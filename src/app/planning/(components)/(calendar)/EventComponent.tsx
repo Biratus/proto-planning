@@ -9,11 +9,8 @@ import { useCallback, useMemo } from "react";
 import { AlertTriangle } from "react-feather";
 import { ModuleDetailModalId } from "../(hover)/(modals)/ModuleModal";
 import { overlayID } from "../(hover)/OverlapModuleOverlay";
-import {
-  eventLabelDisplay,
-  openOverlapUI,
-  setFocusModule,
-} from "./CalendarProvider";
+import { eventLabelDisplay } from "../../(store)/displayStore";
+import { openOverlapUI, setFocusModule } from "../../(store)/hoverStore";
 import {
   eventStyle,
   missingFormateurStyle,
