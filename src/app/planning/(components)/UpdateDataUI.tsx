@@ -1,7 +1,9 @@
+import AsyncButton from "@/components/AsyncButton";
 import DiffDates from "@/components/history/DiffDates";
 import DiffFormateur from "@/components/history/DiffFormateur";
 import { Module } from "@/lib/types";
 import { isSameDay } from "date-fns";
+import { useCallback, useRef, useState } from "react";
 import { Check, MoreHorizontal, X } from "react-feather";
 
 export default function UpdateDataUI({
@@ -10,11 +12,24 @@ export default function UpdateDataUI({
   originalData,
   tempData,
 }: {
-  modify: () => void;
+  modify: () => Promise<void>;
   abort: (modId?: number) => void;
   originalData: Map<number, Module>;
   tempData: Map<number, Module>;
 }) {
+  const modalRef = useRef<HTMLInputElement>(null);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+
+  const confirm = useCallback(async () => {
+    try {
+      await modify();
+      modalRef.current!.checked = false;
+    } catch (e: any) {
+      modalRef.current!.checked = true;
+      setErrorMessage(e.message);
+    }
+  }, [modify]);
+
   return (
     <div className="flex items-center gap-4 rounded border border-slate-900 p-4">
       {/* The button to open modal */}
@@ -27,20 +42,28 @@ export default function UpdateDataUI({
         type="checkbox"
         id="current-history-modal"
         className="modal-toggle"
+        ref={modalRef}
       />
       <label htmlFor="current-history-modal" className="modal cursor-pointer">
         <label className="modal-box relative max-w-fit" htmlFor="">
           <div className="text-center text-lg font-bold">
             Modification en cours
           </div>
-          <div className="mb-3 flex justify-center">
-            <button className={`btn-success btn-sm btn`} onClick={modify}>
+          <div className="mb-3 flex justify-center gap-3">
+            <AsyncButton
+              className={`btn-success`}
+              size="sm"
+              asyncFunction={confirm}
+            >
               Confirmer <Check />
-            </button>
+            </AsyncButton>
             <button className={`btn-error btn-sm btn`} onClick={() => abort()}>
               Annuler <X />
             </button>
           </div>
+          {errorMessage && (
+            <div className="mb-3 text-error">{errorMessage}</div>
+          )}
           <div>
             {Array.from(tempData.values()).map((mod) => (
               <ModuleHistory
@@ -53,9 +76,9 @@ export default function UpdateDataUI({
           </div>
         </label>
       </label>
-      <button className={`btn-success btn`} onClick={modify}>
+      <AsyncButton className={`btn-success`} asyncFunction={confirm}>
         <Check />
-      </button>
+      </AsyncButton>
       <button className={`btn-error btn`} onClick={() => abort()}>
         <X />
       </button>
