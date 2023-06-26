@@ -83,9 +83,10 @@ export default function FiliereModal() {
           <Link
             href={`/api/filiere/${nom}/pdf`}
             className="flex items-center gap-2"
+            prefetch={false}
           >
             <Download />
-            Planning
+            PDF Planning
           </Link>
         </button>
       </div>

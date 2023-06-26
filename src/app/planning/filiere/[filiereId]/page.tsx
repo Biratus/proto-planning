@@ -4,6 +4,7 @@ import { getModuleHistoryOfFiliere } from "@/lib/db/ModuleAuditRepository";
 import { prisma } from "@/lib/db/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Download } from "react-feather";
 import { FiliereView } from "../../(components)/(calendar)/CalendarView";
 import GlobalViewLink from "../../(components)/GlobalViewLink";
 import FiliereHistory from "./FiliereHistory";
@@ -48,7 +49,10 @@ export default async function Page({
       <div className="flex justify-center gap-3">
         <GlobalViewLink view={FiliereView.key} />
         <button className="btn-link btn">
-          <Link href={`/api/filiere/${filiereId}/pdf`}>Export to PDF</Link>
+          <Link href={`/api/filiere/${filiereId}/pdf`} prefetch={false}>
+            <Download />
+            PDF Planning
+          </Link>
         </button>
       </div>
       <div className="flex justify-between">
