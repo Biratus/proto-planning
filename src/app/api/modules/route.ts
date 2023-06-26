@@ -1,6 +1,6 @@
-import { badRequest, ok } from "@/lib/api";
-import { deserialize, isValid } from "@/lib/date";
-import { createModule, updateModules } from "@/lib/db/ModuleRepository";
+import { badRequest, isValidModule, ok, serverError } from "@/lib/api";
+import { deserialize } from "@/lib/date";
+import { createModule_async, updateModules } from "@/lib/db/ModuleRepository";
 import { Module, SerializedModule } from "@/lib/types";
 import { NextRequest } from "next/server";
 
@@ -45,18 +45,16 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const dbRes = await createModule(deserialize<Module>(serializedMod));
+      const dbRes = await createModule_async(
+        deserialize<Module>(serializedMod)
+      );
       return ok(dbRes);
     } catch (e) {
-      throw e;
+      return serverError("Création de module");
     }
   } catch (e) {
     return badRequest("Invalid body");
   }
-}
-
-function isValidModule(mod: SerializedModule) {
-  return isValid(mod.start as string) && isValid(mod.end as string);
 }
 
 export type PutModulesResponse = {

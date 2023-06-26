@@ -22,7 +22,6 @@ import {
 import CommonCalendar from "../(components)/(calendar)/Calendar";
 import FiliereModal from "../(components)/(hover)/(modals)/FiliereModal";
 import ModuleModal from "../(components)/(hover)/(modals)/ModuleModal";
-import HoverElements from "../(components)/(hover)/HoverElements";
 import OverlapModuleOverlay from "../(components)/(hover)/OverlapModuleOverlay";
 import SwitchView from "../(components)/SwitchView";
 
@@ -89,7 +88,6 @@ export default async function PlanningPage({
       <OverlapModuleOverlay />
       <FiliereModal />
       <ModuleModal />
-      <HoverElements />
     </>
   );
 }

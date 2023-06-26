@@ -41,13 +41,6 @@ export default function SwitchFormateurModal<T extends Module>({
     }
   };
 
-  // const onSelectFormateur = (formateur: Formateur) => {
-  //   setModule({
-  //     ...module!,
-  //     formateur,
-  //   });
-  // };
-
   return (
     <CommonModal inputId={SwitchFormateurModalId} modalRef={modalRef}>
       {module && (
@@ -65,7 +58,6 @@ export default function SwitchFormateurModal<T extends Module>({
             formateurRef={switchFormateurRef}
             formateur={module.formateur || undefined}
             forModule={module}
-            // setFormateur={onSelectFormateur}
           />
           <div className="modal-action w-full">
             <AsyncButton className="btn-success btn" asyncFunction={submitForm}>

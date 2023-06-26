@@ -168,7 +168,7 @@ export default function FiliereProvider({
   const downgradeVersion = useCallback(async (historyId: number) => {
     const resp = await apiVersionDowngrade(historyId);
     if ("error" in resp) {
-      console.error("Trouble downgrading version");
+      console.error(resp.error);
     } else {
       conflictRef.current!.close!();
       confirmRef.current!.close!();

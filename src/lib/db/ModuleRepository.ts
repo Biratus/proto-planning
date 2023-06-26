@@ -55,19 +55,8 @@ export async function getModulesOfFiliere(
   });
 }
 
-export async function createModule(module: Module) {
-  let { start, end, nom, filiere, formateur, theme } = module;
-  return prisma.module.create({
-    data: {
-      start,
-      end,
-      nom,
-      theme,
-      filiere: { connect: filiere },
-      formateur: formateur ? { connect: formateur } : undefined,
-      id: undefined,
-    },
-  });
+export async function createModule_async(module: Module) {
+  return createModule_sync(module);
 }
 
 // Mise à jour des modules en batch
@@ -105,6 +94,37 @@ export async function updateModule(module: Module) {
   ]);
 }
 
+export async function splitModule(modules: Module[]) {
+  const currModule = await getModule(modules[0].id);
+
+  if (!currModule)
+    return Promise.reject(
+      new Error("Pas de module avec id[" + module.id + "]")
+    );
+
+  return prisma.$transaction([
+    createModule_sync(modules[1]),
+    updateFromModule(modules[0]),
+    auditModule(currModule),
+  ]);
+}
+
+function createModule_sync(module: Module) {
+  let { start, end, nom, filiere, formateur, theme } = module;
+  return prisma.module.create({
+    data: {
+      start,
+      end,
+      nom,
+      theme,
+      filiere: { connect: { nom: filiere.nom } },
+      formateur: formateur ? { connect: { mail: formateur.mail } } : undefined,
+      id: undefined,
+    },
+    include: includesOfModule,
+  });
+}
+
 function updateFromModule(module: Module) {
   let { start, end, nom, filiere, id, formateur, theme } = module;
 
@@ -118,6 +138,7 @@ function updateFromModule(module: Module) {
       filiere: { connect: { nom: filiere.nom } },
       formateur: formateur ? { connect: { mail: formateur.mail } } : undefined,
     },
+    include: includesOfModule,
   });
 }
 

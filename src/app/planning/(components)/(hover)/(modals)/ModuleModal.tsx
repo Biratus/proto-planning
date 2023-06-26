@@ -4,8 +4,8 @@ import {
   useFocusModule,
 } from "@/app/planning/(store)/hoverStore";
 import CommonModal, { ModalRef } from "@/components/CommonModal";
-import { formatFullDate } from "@/lib/date";
-import { Formateur, ModuleEvent } from "@/lib/types";
+import { formatFullDate, nbOfDaysBetween } from "@/lib/date";
+import { Formateur, Module, ModuleEvent } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ReactNode, useCallback, useMemo, useRef } from "react";
@@ -29,7 +29,7 @@ const defaultModule: ModuleEvent = {
 };
 
 export default function ModuleModal() {
-  const { focus, temps: tempModules } = useFocusModule();
+  const { focus } = useFocusModule();
   const {
     nom: name,
     start,
@@ -71,25 +71,20 @@ export default function ModuleModal() {
     ],
     []
   );
-  const submitSwitchForm = useCallback(
+  const switchFormSuccess = useCallback(
     (newFormateur: Formateur | null) => {
-      console.log("submitSwitchForm");
-      // console.log({ old: focus, new: tempModules[0] });
-
       setFocusModule({ ...focus!, formateur: newFormateur });
       router.refresh();
     },
     [focus]
   );
-  const submitSplitForm = useCallback(async () => {
-    console.log(tempModules);
-    // async ({ split, formateurs }: { split: Date; formateurs: Formateur[] }) => {
-    // console.log("submitSplitForm");
-    // console.log({ split, formateurs, focusModule });
-    // if(success)
-    // resetHoverProps();
-    return true;
-  }, [tempModules]);
+  const submitSplitForm = useCallback(async ([_, updated]: Module[]) => {
+    setFocusModule({
+      ...updated,
+      duration: nbOfDaysBetween(updated.start, updated.end),
+    });
+    router.refresh();
+  }, []);
 
   return (
     <>
@@ -122,14 +117,9 @@ export default function ModuleModal() {
           <SwitchFormateurModal
             module={focus}
             // setModule={setTempModule}
-            onSuccess={submitSwitchForm}
+            onSuccess={switchFormSuccess}
           />
-          {/* <SplitModuleModal
-            onClose={resetHoverProps}
-            modules={tempModules}
-            setModules={setTempModules}
-            submit={submitSplitForm}
-          /> */}
+          <SplitModuleModal module={focus} onSuccess={submitSplitForm} />
         </>
       )}
     </>
@@ -142,7 +132,7 @@ function MoreActions({
   actions: { labelId: string; content: ReactNode }[];
 }) {
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown-end dropdown">
       <label tabIndex={0} className="btn-ghost btn-circle btn">
         <div className="flex w-10 justify-center rounded-full">
           <MoreVertical />

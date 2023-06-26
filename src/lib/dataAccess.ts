@@ -5,7 +5,6 @@ import {
 import axios from "axios";
 import { formatISO, parseISO } from "date-fns";
 import { deserialize, serialize } from "./date";
-import { SimpleHistory } from "./db/ModuleAuditRepository";
 import {
   Filiere,
   Formateur,
@@ -52,6 +51,11 @@ export async function apiFetchFiliere(nomFiliere: string): Promise<Filiere> {
 
   return filiere;
 }
+
+export async function apiCreateModule(module: Module) {
+  return axios.post("/api/modules/", serialize(module));
+}
+
 export async function apiUpdateModule(module: Module) {
   return apiUpdateModules([module]);
 }
@@ -81,31 +85,6 @@ export async function apiUpdateModules(modules: Module[]) {
   return ret;
 }
 
-export async function apiHistoryModules(page = 1, count = 20) {
-  try {
-    const resp = await axios.get(
-      "/api/modules/audit?" +
-        new URLSearchParams({
-          page: page.toString(),
-          count: count.toString(),
-        }).toString()
-    );
-    return resp.data as SimpleHistory[];
-  } catch (e) {
-    throw e;
-  }
-}
-export async function apiHistoryModule(module_id: number) {
-  try {
-    const resp = await axios.get("/api/modules/audit/" + module_id);
-    return (resp.data as Serialized<ModuleHistory>[]).map((d) =>
-      deserialize<ModuleHistory>(d)
-    );
-  } catch (e) {
-    throw e;
-  }
-}
-
 export async function apiVersionDowngrade(historyId: number) {
   try {
     const resp = await axios.put("/api/modules/audit/" + historyId);
@@ -114,6 +93,21 @@ export async function apiVersionDowngrade(historyId: number) {
       deserialize<ModuleHistory>(d)
     );
   } catch (e: any) {
-    return { error: e.message };
+    return { error: e.response.data.message };
+  }
+}
+
+// [current,toCreate]
+export async function apiSplitModule(modules: Module[]) {
+  try {
+    const resp = await axios.post(
+      "/api/modules/split/",
+      modules.map((m) => serialize(m))
+    );
+
+    const [created, updated] = resp.data;
+    return [deserialize<Module>(created), deserialize<Module>(updated)];
+  } catch (e: any) {
+    return { error: e.response.data.message };
   }
 }
