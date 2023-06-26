@@ -9,7 +9,6 @@ interface CalendarHoverStore {
   anchor: HTMLElement | null;
   focus: ModuleEvent | null;
   overlapFocus: ModuleEvent | null;
-  tempFocus: ModuleEvent[];
   openOverlapUI: (mod: ModuleEvent, ref: HTMLElement) => void;
   filiereFocus: Filiere | null;
 }
@@ -18,7 +17,6 @@ const initialHoverProps = {
   anchor: null,
   focus: null,
   overlapFocus: null,
-  tempFocus: [],
   filiereFocus: null,
 };
 
@@ -28,24 +26,13 @@ const calendarHoverStore = create<CalendarHoverStore>((set, get) => ({
     set({ anchor: ref, overlapFocus: mod }),
 }));
 
-export const resetHoverProps = () => {
-  calendarHoverStore.setState({ ...initialHoverProps });
-};
-
 export const useFocusModule = () =>
   calendarHoverStore((state) => ({
     focus: state.focus,
-    temps: state.tempFocus,
-    setTempModule: (mod: ModuleEvent) =>
-      calendarHoverStore.setState({ tempFocus: [mod, mod] }),
-    setTempModules: (mods: ModuleEvent[]) => {
-      calendarHoverStore.setState({ tempFocus: mods });
-    },
   }));
 export const setFocusModule = (mod: ModuleEvent) =>
   calendarHoverStore.setState({
     focus: mod,
-    tempFocus: [{ ...mod }, { ...mod }],
   });
 
 export const useOverlapModuleUI = () =>
