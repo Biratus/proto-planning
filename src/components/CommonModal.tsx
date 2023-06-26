@@ -33,7 +33,7 @@ export default function CommonModal({
       />
       <label htmlFor={inputId} className={`modal-drawer modal drawer-${side}`}>
         <label
-          className="modal-box h-full max-h-screen w-2/5 max-w-none rounded-none"
+          className="modal-box h-full max-h-screen w-[35vw] max-w-none rounded-none"
           htmlFor=""
         >
           {children}
