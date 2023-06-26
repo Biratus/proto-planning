@@ -105,6 +105,27 @@ export default function FiliereProvider({
     },
     [historyVisiblity]
   );
+  const askConfirm = useCallback(
+    (historyId: number) => {
+      const targetHistory = filiereHistory.find((h) => h.id == historyId);
+      if (!targetHistory) {
+        console.error("History id:[" + historyId + "] does not exist");
+        return;
+      }
+      const currentData = deserializedFiliereData.find(
+        (d) => d.id == targetHistory.module_id
+      )!;
+      setRevertTarget({
+        id: targetHistory.id,
+        nom: targetHistory.nom,
+        module_id: targetHistory.module_id,
+        after: { ...currentData },
+        before: { ...targetHistory },
+      });
+      confirmRef.current!.open!();
+    },
+    [filiereHistory, deserializedFiliereData]
+  );
 
   const revertBackTo = useCallback(
     async (historyId: number) => {
@@ -140,41 +161,22 @@ export default function FiliereProvider({
         askConfirm(historyId);
       }
     },
-    [filiereHistory]
+    [filiereHistory, askConfirm]
   );
 
-  const askConfirm = useCallback(
-    (historyId: number) => {
-      const targetHistory = filiereHistory.find((h) => h.id == historyId);
-      if (!targetHistory) {
-        console.error("History id:[" + historyId + "] does not exist");
-        return;
+  const downgradeVersion = useCallback(
+    async (historyId: number) => {
+      const resp = await apiVersionDowngrade(historyId);
+      if ("error" in resp) {
+        console.error(resp.error);
+      } else {
+        conflictRef.current!.close!();
+        confirmRef.current!.close!();
+        router.refresh();
       }
-      const currentData = deserializedFiliereData.find(
-        (d) => d.id == targetHistory.module_id
-      )!;
-      setRevertTarget({
-        id: targetHistory.id,
-        nom: targetHistory.nom,
-        module_id: targetHistory.module_id,
-        after: { ...currentData },
-        before: { ...targetHistory },
-      });
-      confirmRef.current!.open!();
     },
-    [filiereHistory, deserializedFiliereData]
+    [router]
   );
-
-  const downgradeVersion = useCallback(async (historyId: number) => {
-    const resp = await apiVersionDowngrade(historyId);
-    if ("error" in resp) {
-      console.error(resp.error);
-    } else {
-      conflictRef.current!.close!();
-      confirmRef.current!.close!();
-      router.refresh();
-    }
-  }, []);
 
   return (
     <FiliereContext.Provider

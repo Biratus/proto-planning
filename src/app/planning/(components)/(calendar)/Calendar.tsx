@@ -168,7 +168,7 @@ export default function CommonCalendar({
         {...commonProps}
       />
     ),
-    [calendarData, commonProps, dayStyle]
+    [calendarData, commonProps, dayStyle, updateCalendarData]
   );
 
   const calendarFormateur = useMemo(
@@ -180,7 +180,7 @@ export default function CommonCalendar({
         {...commonProps}
       />
     ),
-    [calendarData, commonProps, dayStyle]
+    [calendarData, commonProps, dayStyle, updateCalendarData]
   );
 
   const updateData = useCallback(async () => {

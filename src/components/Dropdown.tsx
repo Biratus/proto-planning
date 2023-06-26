@@ -20,11 +20,14 @@ export default function Dropdown<T>({
 }) {
   const activeRef = useRef<HTMLLIElement>(null);
 
-  const itemClick = useCallback((key: T) => {
-    onClick(key);
-    /**@ts-ignore */
-    document.activeElement!.blur();
-  }, []);
+  const itemClick = useCallback(
+    (key: T) => {
+      onClick(key);
+      /**@ts-ignore */
+      document.activeElement!.blur();
+    },
+    [onClick]
+  );
 
   useEffect(() => {
     activeRef.current?.scrollIntoView();

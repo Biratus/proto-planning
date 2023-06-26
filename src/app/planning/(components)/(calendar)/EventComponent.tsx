@@ -44,7 +44,7 @@ export default function EventComponent({
       style = mergeStyle(style, missingFormateurStyle(colorOf(mod.theme)));
     }
     return style;
-  }, [mod]);
+  }, [mod, colorOf]);
 
   return (
     <label

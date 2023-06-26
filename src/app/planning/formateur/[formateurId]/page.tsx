@@ -3,7 +3,7 @@ import MonthNavigationProvider from "@/components/monthNavigation/MonthNavigatio
 import ZoomProvider from "@/components/zoom/ZoomProvider";
 import { zoom_calendar_formateur } from "@/hooks/localStorageStore";
 import { parseMonthAndYear, serializeDate } from "@/lib/date";
-import { getAllFormateursSimple } from "@/lib/db/dataAccess";
+import { getAllFormateursSimple } from "@/lib/db/formateurs";
 import { getModulesOfFormateur } from "@/lib/db/ModuleRepository";
 import { Formateur } from "@/lib/types";
 import { SerializedInterval } from "@/packages/calendar/types";

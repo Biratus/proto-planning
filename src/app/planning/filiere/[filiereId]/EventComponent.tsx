@@ -19,7 +19,7 @@ export default function EventComponent({
             className: "",
             props: { backgroundColor: colorOf(module.theme) },
           },
-    [module]
+    [module, colorOf]
   );
   return (
     <div

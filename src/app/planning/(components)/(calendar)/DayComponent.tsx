@@ -21,7 +21,7 @@ export default function DayComponent({ date, ...props }: DayComponentProps) {
     if (isDropTarget(date)) style = mergeStyle(style, dropTargetStyle);
 
     return style;
-  }, [date, isDropTarget]);
+  }, [date, isDropTarget, isJoursFeries]);
 
   return (
     <div

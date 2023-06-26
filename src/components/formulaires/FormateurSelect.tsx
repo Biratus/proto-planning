@@ -63,10 +63,21 @@ export default function FormateurSelect({
     })();
   }, []);
 
-  const selectFormateur = useCallback((formateur: Formateur) => {
-    setSelectedFormateur(formateur);
-    formateurRef.current = formateur;
+  const pageSearch = useCallback(async (extra?: SearchProps) => {
+    return searchFormateurs({
+      alphabetically: true,
+      page: pageRef.current,
+      count: countDisplayed,
+    });
   }, []);
+
+  const selectFormateur = useCallback(
+    (formateur: Formateur) => {
+      setSelectedFormateur(formateur);
+      formateurRef.current = formateur;
+    },
+    [formateurRef]
+  );
 
   // Recherche
   const filterFormateurs = useCallback(
@@ -85,7 +96,7 @@ export default function FormateurSelect({
             });
       setFilteredFormateurs(formateurs);
     },
-    []
+    [pageSearch]
   );
 
   // disponible
@@ -98,7 +109,7 @@ export default function FormateurSelect({
       setSearchProps(newSearchProps);
       setFilteredFormateurs(await pageSearch(newSearchProps));
     },
-    [searchProps, moduleInterval]
+    [searchProps, moduleInterval, pageSearch]
   );
 
   const ableFormateurs = useCallback(
@@ -122,15 +133,8 @@ export default function FormateurSelect({
       pageRef.current = -1;
     setFilteredFormateurs((prev) => [...prev, ...formateurs]);
     setNextPageLoading(false);
-  }, [pageRef]);
+  }, [pageRef, pageSearch]);
 
-  const pageSearch = useCallback(async (extra?: SearchProps) => {
-    return searchFormateurs({
-      alphabetically: true,
-      page: pageRef.current,
-      count: countDisplayed,
-    });
-  }, []);
   return (
     <div className="dropdown">
       <label className="btn" tabIndex={0}>

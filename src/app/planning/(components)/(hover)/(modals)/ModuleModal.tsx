@@ -76,15 +76,18 @@ export default function ModuleModal() {
       setFocusModule({ ...focus!, formateur: newFormateur });
       router.refresh();
     },
-    [focus]
+    [focus, router]
   );
-  const submitSplitForm = useCallback(async ([_, updated]: Module[]) => {
-    setFocusModule({
-      ...updated,
-      duration: nbOfDaysBetween(updated.start, updated.end),
-    });
-    router.refresh();
-  }, []);
+  const submitSplitForm = useCallback(
+    async ([_, updated]: Module[]) => {
+      setFocusModule({
+        ...updated,
+        duration: nbOfDaysBetween(updated.start, updated.end),
+      });
+      router.refresh();
+    },
+    [router]
+  );
 
   return (
     <>
